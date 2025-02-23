@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Atkinson';
-    src: url('fonts/PoiretOne-Regular.ttf');
+    src: url('../../src/styles/fonts/PoiretOne-Regular.ttf');
 }
 
 body {

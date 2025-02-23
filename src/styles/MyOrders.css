@@ -1,9 +1,18 @@
+:root {
+    --background-color: #111722;
+    --primary-color: #243047;
+    --secondary-color: white;
+    --font-family: 'Inter', 'Noto Sans', sans-serif;
+    --border-color: rgba(36, 48, 71, 0.6);
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 @font-face {
     font-family: 'Atkinson';
     src: url('fonts/PoiretOne-Regular.ttf');
 }
 
-body {
+.my_orders {
     font-family: 'Atkinson', Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -15,14 +24,15 @@ body {
     min-height: 100vh;
 }
 
-h1, h2 {
+.my_orders h1,
+.my_orders h2 {
     text-align: center;
     margin: 20px 0;
     font-weight: normal;
     color: #f7f7f7;
 }
 
-.container {
+.my_orders .container {
     flex: 1;
     width: 100%;
     max-width: 1200px;
@@ -33,11 +43,11 @@ h1, h2 {
     gap: 40px;
 }
 
-.content-section {
+.my_orders .content-section {
     padding: 20px;
 }
 
-.section-header {
+.my_orders .section-header {
     font-size: 36px;
     margin-bottom: 20px;
     text-transform: uppercase;
@@ -46,14 +56,14 @@ h1, h2 {
 }
 
 /* Стили для списка заказов */
-.order-list {
+.my_orders .order-list {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
 }
 
-.order-item {
+.my_orders .order-item {
     display: flex;
     gap: 20px;
     align-items: center;
@@ -62,32 +72,33 @@ h1, h2 {
     width: 100%;
 }
 
-.order-image {
+.my_orders .order-image {
     width: 100px;
     height: 100px;
     object-fit: cover;
 }
 
-.order-details {
+.my_orders .order-details {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     flex-grow: 1;
 }
 
-.order-title {
+.my_orders .order-title {
     font-size: 24px;
     margin: 0;
     font-weight: 500;
 }
 
-.order-price, .order-quantity {
+.my_orders .order-price,
+.my_orders .order-quantity {
     font-size: 18px;
     margin: 5px 0;
 }
 
 /* Разделительная линия между заказами */
-.order-divider {
+.my_orders .order-divider {
     width: 100%;
     height: 10px;
     background-color: #0c132c;
