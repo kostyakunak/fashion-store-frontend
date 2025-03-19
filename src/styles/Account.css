@@ -1,0 +1,59 @@
+/* Global Styles */
+:root {
+    --background-color: #111722;
+    --primary-color: #243047;
+    --secondary-color: white;
+    --font-family: 'Inter', 'Noto Sans', sans-serif;
+    --border-color: rgba(36, 48, 71, 0.6);
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.account {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #0c132c;
+    color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+/* Navigation */
+.account main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.account .navigation {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; /* Reduced gap between buttons */
+    width: 90%; /* Slightly narrower to fit more on screen */
+    max-width: 800px; /* Increased to allow larger buttons */
+}
+
+.account .nav-button {
+    text-decoration: none;
+    background-color: #1e2433;
+    color: #f7f7f7;
+    height: 180px; /* Increased height */
+    width: 390px; /* Increased width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px; /* Adjusted font size for larger buttons */
+    border: 2px solid #2f3950;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+/* Hover Effect */
+.account .nav-button:hover {
+    background-color: #2f3950; /* Adjusted hover background */
+    color: #ffffff;
+    transform: translateY(-3px);
+}

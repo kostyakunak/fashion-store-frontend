@@ -1,0 +1,96 @@
+
+/* Глобальные стили */
+:root {
+    --background-color: #111722;
+    --primary-color: #243047;
+    --secondary-color: white;
+    --font-family: 'Inter', 'Noto Sans', sans-serif;
+    --border-color: rgba(36, 48, 71, 0.6);
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.order_details {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+
+}
+
+
+.order_details .status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.order_details .status h3,
+.order_details .status p {
+    margin: 3px;
+    padding: 0;
+}
+
+.order_details .status .cost {
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Контейнер изображений */
+.order_details .item-images img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 5 / 10;
+    object-fit: cover;
+    box-shadow: var(--box-shadow);
+    border-radius: 5px;
+}
+
+/* Контейнер адреса доставки */
+.order_details .delivery-item-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* Адрес доставки */
+.order_details .delivery-address {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.order_details .buttonclass {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--box-shadow);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Контейнер изображений */
+.order_details .item-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+/* Ссылки */
+.order_details a {
+    text-decoration: none;
+    color: var(--secondary-color);
+}
+
+.order_details a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,189 @@
+.item {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #0c132c;
+    color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.item h1,
+.item h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.item p {
+    margin-top: 10px;
+    text-align: center;
+    color: #a0a0a0;
+}
+
+.item .product-item {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item .product-card {
+    max-width: 900px;
+    background-color: #2f3950;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.item .images-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+}
+
+.item .card-sizing {
+    flex: 0 0 auto;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.item .card-sizing img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.item .card-sizing img:hover {
+    transform: scale(1.1);
+}
+
+.item .card-sizing.active {
+    flex-basis: 300px;
+    aspect-ratio: 2 / 3;
+}
+
+.item .card-sizing.inactive {
+    flex-basis: 150px;
+    aspect-ratio: 1 / 3;
+}
+
+.item .price-wishlist-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.item .cost {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ff6f61, #ffcc70);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.item .wishlist-button {
+    background-color: #2f3950;
+    color: #ffffff;
+    border: 1px solid #4a5568;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.item .wishlist-button:hover {
+    background-color: #1e2433;
+    transform: scale(1.05);
+}
+
+.item .details-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.item .details-left, .details-right {
+    width: 48%;
+}
+
+.item .details-left h3, .details-left p {
+    text-align: left;
+}
+
+.item .details-right h3, .details-right p {
+    text-align: right;
+}
+
+.item .add-to-bag {
+    width: 100%;
+    background-color: #2f3950;
+    color: #ffffff;
+    padding: 12px;
+    font-size: 18px;
+    border: 1px solid #4a5568;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.item .add-to-bag:hover {
+    background-color: #1e2433;
+}
+
+.item .size-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.item .size-button {
+    flex: 1;
+    background-color: #2f3950;
+    color: #ffffff;
+    padding: 12px 0;
+    font-size: 16px;
+    border: 1px solid #4a5568;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.item .size-button:hover {
+    background-color: #1e2433;
+}
+
+@media (max-width: 768px) {
+    .item   .details-container {
+        flex-direction: column;
+    }
+
+    .item   .details-left, .details-right {
+        width: 100%;
+    }
+}
+
+/* Лупа (увеличительное стекло) */
+/* Лупа (увеличительное стекло) */
+.zoom-lens {
+    position: absolute;
+    width: 50vh;
+    height: 50vh;
+    border: 2px solid white;
+    background-repeat: no-repeat;
+    background-size: 200% 200%;
+    pointer-events: none;
+    z-index: 1100;
+}
+

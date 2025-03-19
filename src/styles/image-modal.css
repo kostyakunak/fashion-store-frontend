@@ -1,0 +1,53 @@
+/* Затемнение фона */
+.image-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6); /* Затемнение на 40% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Контейнер изображения */
+.image-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Само изображение */
+.image-modal-content img {
+    width: auto;
+    height: auto;
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    display: block; /* Убирает возможные артефакты inline-элемента */
+}
+
+/* Кнопка закрытия */
+.image-modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: -30px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+
+.zoom-box {
+    position: absolute;
+    width: min(50vh, 50vw);
+    height: min(50vh, 50vw);
+    border: 2px solid white;
+    overflow: hidden;
+    pointer-events: none;
+}
