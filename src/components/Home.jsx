@@ -32,6 +32,8 @@ function Home() {
                         <li><Link to="/cart">Cart</Link></li>
                         <li><Link to="/wishlist">Wishlist</Link></li>
                         <li><Link to="/contacts">Contacts</Link></li>
+                        <li><a href="/admin/products">Admin</a></li>
+
                     </ul>
                 </nav>
 
