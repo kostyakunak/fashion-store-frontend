@@ -1,0 +1,35 @@
+import axios from "axios";
+
+const API_URL = "http://localhost:8080/api/admin/payments"; // Проверяем, что URL верный
+
+// ✅ Создать новый платеж
+export const createPayment = async (paymentData) => {
+    try {
+        const response = await axios.post(`${API_URL}`, paymentData);
+        return response.data;
+    } catch (error) {
+        console.error("Ошибка при создании платежа:", error);
+        throw error;
+    }
+};
+
+// ✅ Получить все платежи
+export const getPayments = async () => {
+    try {
+        const response = await axios.get(`${API_URL}`);
+        return response.data;
+    } catch (error) {
+        console.error("Ошибка при получении списка платежей:", error);
+        return [];
+    }
+};
+
+// ✅ Удалить платеж
+export const deletePayment = async (id) => {
+    try {
+        await axios.delete(`${API_URL}/${id}`);
+    } catch (error) {
+        console.error("Ошибка при удалении платежа:", error);
+        throw error;
+    }
+};

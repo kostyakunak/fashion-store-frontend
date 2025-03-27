@@ -10,7 +10,8 @@ import Wishlist from "./components/Wishlist";
 import Item from "./components/Item";
 import Cart from "./components/Cart";
 import AccountDetails from "./components/AccountDetails";
-import AdminProducts from "./pages/admin/AdminProducts"; // ✅ Добавили
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminOrders from "./pages/admin/AdminOrders";
 
 function App() {
   return (
@@ -27,7 +28,8 @@ function App() {
             <Route path="/item" element={<Item />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/account-details" element={<AccountDetails />} />
-            <Route path="/admin/products" element={<AdminProducts />} /> {/* ✅ Новый маршрут */}
+            <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
           </Routes>
         </div>
       </Router>

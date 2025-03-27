@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-    getProducts, createProduct, updateProduct, deleteProduct,
-    getCategories, createPrice, createImage, createWarehouse, getSizes
-} from "../../api/adminApi";
+import { getProducts, createProduct, updateProduct, deleteProduct } from "../../api/productsApi";
+import { createPrice } from "../../api/pricesApi";
+import { createImage } from "../../api/imagesApi";
+import { createWarehouse } from "../../api/warehouseApi";
+import { getCategories } from "../../api/categoriesApi";
+import { getSizes } from "../../api/sizesApi";
 
 const AdminProducts = () => {
     const [products, setProducts] = useState([]);
