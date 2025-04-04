@@ -16,7 +16,7 @@ const AdminProducts = () => {
         measurements: "",
         categoryId: "",
         originalPrice: "",
-        currentPrice: "",
+        current_price: "",
         imageUrl: "",
         sizeId: "",
         quantity: ""
@@ -62,8 +62,8 @@ const AdminProducts = () => {
             console.log("Отправляемый товар:", newProduct);
             await createPrice({
                 product: { id: createdProduct.id },
-                originalPrice: newProduct.originalPrice,
-                currentPrice: newProduct.currentPrice
+                original_price: newProduct.originalPrice,
+                present_price: newProduct.current_price
             });
 
             // 3️⃣ Добавляем изображение
@@ -87,7 +87,7 @@ const AdminProducts = () => {
                 measurements: "",
                 categoryId: "",
                 originalPrice: "",
-                currentPrice: "",
+                current_price: "",
                 imageUrl: "",
                 sizeId: "",
                 quantity: ""
@@ -149,8 +149,8 @@ const AdminProducts = () => {
                 <input
                     type="number"
                     placeholder="Текущая цена"
-                    value={newProduct.currentPrice}
-                    onChange={(e) => setNewProduct({ ...newProduct, currentPrice: e.target.value })}
+                    value={newProduct.current_price}
+                    onChange={(e) => setNewProduct({ ...newProduct, current_price: e.target.value })}
                 />
 
                 <input

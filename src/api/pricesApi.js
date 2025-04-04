@@ -10,3 +10,13 @@ export const createPrice = async (priceData) => {
         throw error;
     }
 };
+
+export const getLatestPrice = async (productId) => {
+    try {
+        const response = await axios.get(`${API_URL}/latest/${productId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching latest price:', error);
+        throw error;
+    }
+};

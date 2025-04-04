@@ -6,12 +6,14 @@ import { getProducts } from "../../api/productsApi";
 import { getUsers } from "../../api/usersApi";
 import { createPayment } from "../../api/paymentsApi";
 import { getSizes } from "../../api/sizesApi";
+import { getLatestPrice } from "../../api/pricesApi";
 
 const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
     const [sizes, setSizes] = useState([]);
+    const [productPrices, setProductPrices] = useState({});
     const [newOrder, setNewOrder] = useState({
         userId: "",
         items: [],
@@ -26,6 +28,25 @@ const AdminOrders = () => {
         fetchProducts();
         fetchSizes();
     }, []);
+
+    useEffect(() => {
+        if (products.length > 0) {
+            fetchProductPrices();
+        }
+    }, [products]);
+
+    const fetchProductPrices = async () => {
+        const prices = {};
+        for (const product of products) {
+            try {
+                const price = await getLatestPrice(product.id);
+                prices[product.id] = price;
+            } catch (error) {
+                console.error(`Error fetching price for product ${product.id}:`, error);
+            }
+        }
+        setProductPrices(prices);
+    };
 
     const fetchOrders = async () => {
         const data = await getOrders();
@@ -72,7 +93,7 @@ const AdminOrders = () => {
             // ✅ 1. Создаем заказ
             const createdOrder = await createOrder({
                 userId: newOrder.userId,
-                status: newOrder.status,
+                status: "AWAITING_PAYMENT",
                 items: newOrder.items
             });
 
@@ -85,10 +106,10 @@ const AdminOrders = () => {
             // ✅ 2. Создаем объект платежа
             const paymentData = {
                 userId: newOrder.userId,
-                order: { id: createdOrder.id }, // <-- ПОПРАВЛЕННАЯ СТРОКА
+                order: { id: createdOrder.id },
                 amount: newOrder.items.reduce((total, item) => {
-                    const product = products.find(p => p.id === item.productId);
-                    return total + (product ? product.currentPrice * item.quantity : 0);
+                    const price = productPrices[item.productId];
+                    return total + (price ? price * item.quantity : 0);
                 }, 0),
                 paymentMethod: newOrder.paymentMethod,
                 status: newOrder.paymentStatus
