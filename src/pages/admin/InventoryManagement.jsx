@@ -12,10 +12,19 @@ const InventoryManagement = () => {
     const [newItem, setNewItem] = useState({
         id: "",
         productId: "",
-        quantity: "",
-        sizeId: ""
+        sizeId: "",
+        quantity: ""
     });
     const [editingValue, setEditingValue] = useState("");
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [searchField, setSearchField] = useState('product');
+
+    const searchFields = [
+        { value: 'id', label: 'ID' },
+        { value: 'product', label: 'Product Name' },
+        { value: 'size', label: 'Size' },
+        { value: 'quantity', label: 'Quantity' }
+    ];
 
     useEffect(() => {
         fetchInventory();
@@ -27,13 +36,13 @@ const InventoryManagement = () => {
         try {
             const response = await fetch("http://localhost:8080/api/admin/warehouse");
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Failed to fetch inventory');
             }
             const data = await response.json();
-            setInventory(Array.isArray(data) ? data : []);
+            setInventory(data);
         } catch (error) {
             console.error("Error fetching inventory:", error);
-            setInventory([]);
+            alert("Error fetching inventory: " + error.message);
         }
     };
 
@@ -41,26 +50,27 @@ const InventoryManagement = () => {
         try {
             const response = await fetch("http://localhost:8080/api/admin/products");
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Failed to fetch products');
             }
             const data = await response.json();
-            setProducts(Array.isArray(data) ? data : []);
+            setProducts(data);
         } catch (error) {
             console.error("Error fetching products:", error);
-            setProducts([]);
+            alert("Error fetching products: " + error.message);
         }
     };
 
     const fetchSizes = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/admin/sizes');
+            const response = await fetch("http://localhost:8080/api/admin/sizes");
             if (!response.ok) {
                 throw new Error('Failed to fetch sizes');
             }
             const data = await response.json();
-            setSizes(Array.isArray(data) ? data : []);
+            setSizes(data);
         } catch (error) {
-            console.error('Error fetching sizes:', error);
+            console.error("Error fetching sizes:", error);
+            alert("Error fetching sizes: " + error.message);
         }
     };
 
@@ -210,56 +220,103 @@ const InventoryManagement = () => {
         }
     };
 
-    const filteredInventory = Array.isArray(inventory) ? inventory.filter((item) =>
-        item?.product?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) : [];
-
-    // Функция для нахождения следующего свободного ID
     const findNextFreeId = () => {
-        if (!inventory || inventory.length === 0) return 1;
-        
-        // Создаем отсортированный массив всех существующих ID
-        const existingIds = inventory.map(item => item.id).sort((a, b) => a - b);
-        
-        // Ищем первый пропуск в последовательности
+        const existingIds = inventory.map(item => item.id);
         let nextId = 1;
-        for (const id of existingIds) {
-            if (id > nextId) {
-                // Нашли пропуск
-                return nextId;
-            }
-            nextId = id + 1;
+        while (existingIds.includes(nextId)) {
+            nextId++;
         }
-        
-        // Если пропусков нет, возвращаем следующий ID после последнего
         return nextId;
     };
 
-    // Обновляем показ формы добавления, чтобы автоматически заполнять ID
-    const handleShowAddForm = () => {
-        setEditingItem(null);
-        setNewItem({
-            ...newItem,
-            id: findNextFreeId()
-        });
-        setShowAddForm(true);
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
     };
 
+    const sortedInventory = React.useMemo(() => {
+        let sortableInventory = [...inventory];
+        if (sortConfig.key) {
+            sortableInventory.sort((a, b) => {
+                let aValue = a[sortConfig.key];
+                let bValue = b[sortConfig.key];
+
+                if (sortConfig.key === 'product') {
+                    aValue = a.product.name;
+                    bValue = b.product.name;
+                } else if (sortConfig.key === 'size') {
+                    aValue = a.size.name;
+                    bValue = b.size.name;
+                }
+
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sortableInventory;
+    }, [inventory, sortConfig]);
+
+    const filteredInventory = sortedInventory.filter(item => {
+        const searchLower = searchTerm.toLowerCase();
+        switch (searchField) {
+            case 'id':
+                return item.id.toString().includes(searchLower);
+            case 'product':
+                return item.product.name.toLowerCase().includes(searchLower);
+            case 'size':
+                return item.size.name.toLowerCase().includes(searchLower);
+            case 'quantity':
+                return item.quantity.toString().includes(searchLower);
+            default:
+                return true;
+        }
+    });
+
     return (
-        <div className="admin-table-container">
-            <h1>Inventory Management</h1>
+        <div className="admin-page">
+            <h1>Управление инвентарем</h1>
             
             <div className="search-container">
+                <select 
+                    value={searchField} 
+                    onChange={(e) => setSearchField(e.target.value)}
+                    className="search-field-select"
+                >
+                    {searchFields.map(field => (
+                        <option key={field.value} value={field.value}>
+                            {field.label}
+                        </option>
+                    ))}
+                </select>
                 <input
                     type="text"
-                    placeholder="Search by product name..."
+                    placeholder={`Поиск по ${searchFields.find(f => f.value === searchField)?.label.toLowerCase()}...`}
                     value={searchTerm}
-                    onChange={handleSearch}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
                 />
-                {!showAddForm && (
-                    <button onClick={handleShowAddForm}>Add New Item</button>
-                )}
             </div>
+
+            <button className="add-button" onClick={() => {
+                setShowAddForm(true);
+                setEditingItem(null);
+                setNewItem({
+                    id: findNextFreeId().toString(),
+                    productId: "",
+                    sizeId: "",
+                    quantity: "",
+                });
+            }}>
+                Добавить запись
+            </button>
 
             {showAddForm && !editingItem && (
                 <div className="form-container">
@@ -354,10 +411,30 @@ const InventoryManagement = () => {
             <table className="admin-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Product</th>
-                        <th>Size</th>
-                        <th>Quantity</th>
+                        <th 
+                            onClick={() => handleSort('id')}
+                            className="sortable-header"
+                        >
+                            ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                            onClick={() => handleSort('product')}
+                            className="sortable-header"
+                        >
+                            Product {sortConfig.key === 'product' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                            onClick={() => handleSort('size')}
+                            className="sortable-header"
+                        >
+                            Size {sortConfig.key === 'size' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                            onClick={() => handleSort('quantity')}
+                            className="sortable-header"
+                        >
+                            Quantity {sortConfig.key === 'quantity' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -365,8 +442,8 @@ const InventoryManagement = () => {
                     {filteredInventory.map((item) => (
                         <tr key={item.id}>
                             <td>{item.id}</td>
-                            <td>{item.product?.name}</td>
-                            <td>{item.size?.name}</td>
+                            <td>{item.product.name}</td>
+                            <td>{item.size.name}</td>
                             <td>{item.quantity}</td>
                             <td>
                                 <button onClick={() => handleEdit(item)}>Edit</button>

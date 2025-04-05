@@ -13,6 +13,15 @@ const PricesManagement = () => {
         original_price: "",
         present_price: ""
     });
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [searchField, setSearchField] = useState('product');
+
+    const searchFields = [
+        { value: 'id', label: 'ID' },
+        { value: 'product', label: 'Product Name' },
+        { value: 'original_price', label: 'Original Price' },
+        { value: 'present_price', label: 'Present Price' }
+    ];
 
     useEffect(() => {
         fetchPrices();
@@ -55,6 +64,54 @@ const PricesManagement = () => {
         }
         return nextId;
     };
+
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const sortedPrices = React.useMemo(() => {
+        let sortablePrices = [...prices];
+        if (sortConfig.key) {
+            sortablePrices.sort((a, b) => {
+                let aValue = a[sortConfig.key];
+                let bValue = b[sortConfig.key];
+
+                if (sortConfig.key === 'product') {
+                    aValue = a.product.name;
+                    bValue = b.product.name;
+                }
+
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sortablePrices;
+    }, [prices, sortConfig]);
+
+    const filteredPrices = sortedPrices.filter(price => {
+        const searchLower = searchTerm.toLowerCase();
+        switch (searchField) {
+            case 'id':
+                return price.id.toString().includes(searchLower);
+            case 'product':
+                return price.product.name.toLowerCase().includes(searchLower);
+            case 'original_price':
+                return price.original_price?.toString().includes(searchLower);
+            case 'present_price':
+                return price.present_price?.toString().includes(searchLower);
+            default:
+                return true;
+        }
+    });
 
     const handleEdit = (price) => {
         setEditingPrice({
@@ -227,26 +284,28 @@ const PricesManagement = () => {
         }
     };
 
-    const filteredPrices = prices.filter(price => {
-        const searchLower = searchTerm.toLowerCase();
-        return (
-            price.id.toString().includes(searchLower) ||
-            price.product.name.toLowerCase().includes(searchLower) ||
-            price.original_price.toString().includes(searchLower) ||
-            price.present_price.toString().includes(searchLower)
-        );
-    });
-
     return (
         <div className="admin-page">
             <h1>Управление ценами</h1>
             
-            <div className="search-bar">
+            <div className="search-container">
+                <select 
+                    value={searchField} 
+                    onChange={(e) => setSearchField(e.target.value)}
+                    className="search-field-select"
+                >
+                    {searchFields.map(field => (
+                        <option key={field.value} value={field.value}>
+                            {field.label}
+                        </option>
+                    ))}
+                </select>
                 <input
                     type="text"
-                    placeholder="Поиск по продукту..."
+                    placeholder={`Поиск по ${searchFields.find(f => f.value === searchField)?.label.toLowerCase()}...`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
                 />
             </div>
 
@@ -354,10 +413,30 @@ const PricesManagement = () => {
             <table className="admin-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Product</th>
-                        <th>Original Price</th>
-                        <th>Present Price</th>
+                        <th 
+                            onClick={() => handleSort('id')}
+                            className="sortable-header"
+                        >
+                            ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                            onClick={() => handleSort('product')}
+                            className="sortable-header"
+                        >
+                            Product {sortConfig.key === 'product' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                            onClick={() => handleSort('original_price')}
+                            className="sortable-header"
+                        >
+                            Original Price {sortConfig.key === 'original_price' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                            onClick={() => handleSort('present_price')}
+                            className="sortable-header"
+                        >
+                            Present Price {sortConfig.key === 'present_price' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
