@@ -1,59 +1,52 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/AdminTables.css";
-import { getUsers } from "../../api/usersApi";
 
 const OrdersManagement = () => {
     const [orders, setOrders] = useState([]);
     const [users, setUsers] = useState([]);
-    const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [showAddForm, setShowAddForm] = useState(false);
     const [editingOrder, setEditingOrder] = useState(null);
-    const [editingField, setEditingField] = useState(null);
     const [newOrder, setNewOrder] = useState({
         id: "",
         userId: "",
         status: "AWAITING_PAYMENT"
     });
-    const [editingValue, setEditingValue] = useState("");
-    const [sortConfig, setSortConfig] = useState({
-        key: 'id',
-        direction: 'asc'
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [searchField, setSearchField] = useState('id');
+
+    const searchFields = [
+        { value: 'id', label: 'ID' },
+        { value: 'userId', label: 'User ID' },
+        { value: 'status', label: 'Status' },
+        { value: 'totalPrice', label: 'Total Price' }
+    ];
+
+    const statusOptions = [
+        { value: '', label: 'Все статусы' },
+        { value: 'AWAITING_PAYMENT', label: 'Ожидает оплаты' },
+        { value: 'PENDING', label: 'В обработке' },
+        { value: 'SHIPPED', label: 'Отправлен' },
+        { value: 'DELIVERED', label: 'Доставлен' },
+        { value: 'CANCELLED', label: 'Отменен' }
+    ];
 
     useEffect(() => {
-        fetchData();
+        fetchOrders();
+        fetchUsers();
     }, []);
-
-    const fetchData = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            await Promise.all([
-                fetchOrders(),
-                fetchUsers(),
-                fetchProducts()
-            ]);
-        } catch (error) {
-            setError("Ошибка при загрузке данных. Пожалуйста, попробуйте позже.");
-            console.error("Error fetching data:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const fetchOrders = async () => {
         try {
             const response = await fetch("http://localhost:8080/api/admin/orders");
             if (!response.ok) {
-                throw new Error(`Ошибка сервера: ${response.status}`);
+                throw new Error('Failed to fetch orders');
             }
             const data = await response.json();
-            setOrders(Array.isArray(data) ? data : []);
+            setOrders(data);
         } catch (error) {
             console.error("Error fetching orders:", error);
-            throw error;
+            alert("Error fetching orders: " + error.message);
         }
     };
 
@@ -61,154 +54,188 @@ const OrdersManagement = () => {
         try {
             const response = await fetch("http://localhost:8080/api/admin/users");
             if (!response.ok) {
-                throw new Error(`Ошибка сервера: ${response.status}`);
+                throw new Error('Failed to fetch users');
             }
             const data = await response.json();
-            setUsers(Array.isArray(data) ? data : []);
+            setUsers(data);
         } catch (error) {
             console.error("Error fetching users:", error);
-            throw error;
+            alert("Error fetching users: " + error.message);
         }
     };
 
-    const fetchProducts = async () => {
-        try {
-            const response = await fetch("http://localhost:8080/api/admin/products");
-            if (!response.ok) {
-                throw new Error(`Ошибка сервера: ${response.status}`);
-            }
-            const data = await response.json();
-            setProducts(Array.isArray(data) ? data : []);
-        } catch (error) {
-            console.error("Error fetching products:", error);
-            throw error;
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
         }
+        setSortConfig({ key, direction });
     };
 
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
-    };
+    const sortedOrders = React.useMemo(() => {
+        let sortableOrders = [...orders];
+        if (sortConfig.key) {
+            sortableOrders.sort((a, b) => {
+                let aValue = a[sortConfig.key];
+                let bValue = b[sortConfig.key];
+
+                // Специальная обработка для userId
+                if (sortConfig.key === 'userId') {
+                    aValue = a.user?.id;
+                    bValue = b.user?.id;
+                }
+
+                // Если значения равны null или undefined, они должны идти в конец
+                if (aValue == null && bValue == null) return 0;
+                if (aValue == null) return 1;
+                if (bValue == null) return -1;
+
+                // Сравнение чисел
+                if (typeof aValue === 'number' || typeof bValue === 'number') {
+                    return sortConfig.direction === 'asc' 
+                        ? (aValue - bValue)
+                        : (bValue - aValue);
+                }
+
+                // Сравнение строк
+                const aString = String(aValue).toLowerCase();
+                const bString = String(bValue).toLowerCase();
+                
+                if (aString < bString) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (aString > bString) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sortableOrders;
+    }, [orders, sortConfig]);
+
+    const filteredOrders = sortedOrders.filter(order => {
+        const searchLower = searchTerm.toLowerCase();
+        switch (searchField) {
+            case 'id':
+                return order.id.toString().includes(searchLower);
+            case 'userId':
+                return order.user?.id?.toString().includes(searchLower);
+            case 'status':
+                return order.status.toLowerCase().includes(searchLower);
+            case 'totalPrice':
+                return order.totalPrice?.toString().includes(searchLower);
+            default:
+                return true;
+        }
+    });
 
     const handleEdit = (order) => {
         setEditingOrder({
             oldId: order.id,
-            ...order
-        });
-        setNewOrder({
             id: order.id,
-            userId: order.user.id,
-            status: order.status
+            userId: order.user.id.toString(),
+            status: order.status,
+            totalPrice: order.totalPrice?.toString() || ""
         });
+        setShowAddForm(true);
     };
 
-    const handleFieldEdit = (field, value) => {
-        setEditingField(field);
-        setEditingValue(value);
-    };
-
-    const handleSave = async () => {
-        setLoading(true);
-        setError(null);
+    const handleUpdate = async () => {
         try {
-            if (!editingOrder || !editingOrder.id) {
-                throw new Error("Нет заказа для обновления");
+            if (!editingOrder) return;
+
+            const originalId = parseInt(editingOrder.oldId);
+            const newId = parseInt(editingOrder.id);
+            const idChanged = originalId !== newId;
+
+            const duplicateOrder = idChanged ? orders.find(o => o.id === newId) : null;
+            if (duplicateOrder) {
+                throw new Error(`Заказ с ID ${newId} уже существует`);
             }
 
-            if (!newOrder.status || !["AWAITING_PAYMENT", "PENDING", "SHIPPED", "DELIVERED", "CANCELLED"].includes(newOrder.status)) {
-                throw new Error("Неверный статус заказа");
-            }
+            const requestData = {
+                id: newId,
+                userId: parseInt(editingOrder.userId),
+                status: editingOrder.status,
+                totalPrice: editingOrder.totalPrice ? parseFloat(editingOrder.totalPrice) : 0
+            };
 
-            const response = await fetch(`http://localhost:8080/api/admin/orders/${editingOrder.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    id: newOrder.id,
-                    status: newOrder.status,
-                    userId: newOrder.userId
-                }),
-            });
+            let response;
+            if (idChanged) {
+                try {
+                    await fetch(`http://localhost:8080/api/admin/orders/${originalId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    response = await fetch("http://localhost:8080/api/admin/orders", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(requestData),
+                    });
+                } catch (error) {
+                    console.error('Error deleting old record:', error);
+                    throw new Error('Failed to delete old record: ' + error.message);
+                }
+            } else {
+                response = await fetch(`http://localhost:8080/api/admin/orders/${originalId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(requestData),
+                });
+            }
 
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Ошибка обновления заказа: ${errorText}`);
+                const errorData = await response.json();
+                console.error("Ответ сервера:", errorData);
+                throw new Error(errorData.message || "Failed to update order");
             }
 
             const updatedOrder = await response.json();
-            setOrders(prevOrders => {
-                const updatedOrders = prevOrders.map(order => {
-                    if (order.id === editingOrder.id) {
-                        return {
-                            ...order,
-                            id: updatedOrder.id,
-                            status: updatedOrder.status,
-                            totalPrice: updatedOrder.totalPrice,
-                            items: updatedOrder.items,
-                            user: updatedOrder.user
-                        };
-                    }
-                    return order;
-                });
-                return updatedOrders;
-            });
+            
+            if (idChanged) {
+                setOrders(orders.filter(o => o.id !== originalId).concat(updatedOrder).sort((a, b) => a.id - b.id));
+            } else {
+                setOrders(orders.map(o => o.id === originalId ? updatedOrder : o).sort((a, b) => a.id - b.id));
+            }
 
-            setEditingField(null);
-            setEditingValue("");
+            setShowAddForm(false);
             setEditingOrder(null);
             setNewOrder({
-                id: "",
                 userId: "",
-                status: "AWAITING_PAYMENT"
+                status: "AWAITING_PAYMENT",
+                totalPrice: ""
             });
         } catch (error) {
-            setError(error.message);
-            console.error("Ошибка обновления заказа:", error);
-        } finally {
-            setLoading(false);
+            console.error("Error updating order:", error);
+            alert("Ошибка при обновлении заказа: " + error.message);
         }
-    };
-
-    const handleFieldCancel = () => {
-        setEditingField(null);
-        setEditingValue("");
-        setEditingOrder(null);
-        setNewOrder({
-            id: "",
-            userId: "",
-            status: "AWAITING_PAYMENT"
-        });
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Вы уверены, что хотите удалить этот заказ?")) {
-            return;
-        }
+        if (!window.confirm('Are you sure you want to delete this order?')) return;
 
-        setLoading(true);
-        setError(null);
         try {
             const response = await fetch(`http://localhost:8080/api/admin/orders/${id}`, {
-                method: "DELETE",
+                method: 'DELETE',
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Ошибка удаления заказа: ${errorText}`);
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete order');
             }
 
-            await fetchOrders();
+            setOrders(orders.filter(order => order.id !== id));
         } catch (error) {
-            setError(error.message);
-            console.error("Ошибка удаления заказа:", error);
-        } finally {
-            setLoading(false);
+            console.error('Error deleting order:', error);
+            alert('Error deleting order: ' + error.message);
         }
     };
 
     const handleAdd = async () => {
-        setLoading(true);
-        setError(null);
         try {
             if (!newOrder.userId) {
                 throw new Error("Пожалуйста, выберите пользователя");
@@ -218,145 +245,125 @@ const OrdersManagement = () => {
                 throw new Error("Пожалуйста, введите ID заказа");
             }
 
-            if (!newOrder.status || !["AWAITING_PAYMENT", "PENDING", "SHIPPED", "DELIVERED", "CANCELLED"].includes(newOrder.status)) {
-                throw new Error("Неверный статус заказа");
-            }
+            const requestData = {
+                id: parseInt(newOrder.id),
+                userId: parseInt(newOrder.userId),
+                status: newOrder.status
+            };
 
             const response = await fetch("http://localhost:8080/api/admin/orders", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    id: newOrder.id,
-                    userId: newOrder.userId,
-                    status: newOrder.status,
-                    items: []
-                }),
+                body: JSON.stringify(requestData),
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Ошибка добавления заказа: ${errorText}`);
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to add order");
             }
 
-            await fetchOrders();
+            const addedOrder = await response.json();
+            setOrders([...orders, addedOrder].sort((a, b) => a.id - b.id));
+            setShowAddForm(false);
             setNewOrder({
                 id: "",
                 userId: "",
                 status: "AWAITING_PAYMENT"
             });
         } catch (error) {
-            setError(error.message);
-            console.error("Ошибка добавления заказа:", error);
-        } finally {
-            setLoading(false);
+            console.error("Error adding order:", error);
+            alert("Error adding order: " + error.message);
         }
     };
-
-    const sortedOrders = useMemo(() => {
-        let sortableOrders = [...orders];
-        if (sortConfig.key) {
-            sortableOrders.sort((a, b) => {
-                const aValue = a[sortConfig.key];
-                const bValue = b[sortConfig.key];
-
-                if (aValue === null || aValue === undefined) return 1;
-                if (bValue === null || bValue === undefined) return -1;
-
-                if (typeof aValue === 'string') {
-                    return sortConfig.direction === 'asc' 
-                        ? aValue.localeCompare(bValue)
-                        : bValue.localeCompare(aValue);
-                }
-
-                return sortConfig.direction === 'asc' 
-                    ? aValue - bValue 
-                    : bValue - aValue;
-            });
-        }
-        return sortableOrders;
-    }, [orders, sortConfig]);
-
-    const requestSort = (key) => {
-        let direction = 'asc';
-        if (sortConfig.key === key && sortConfig.direction === 'asc') {
-            direction = 'desc';
-        }
-        setSortConfig({ key, direction });
-    };
-
-    const getClassNamesFor = (name) => {
-        if (!sortConfig) {
-            return;
-        }
-        return sortConfig.key === name ? sortConfig.direction : undefined;
-    };
-
-    // Добавляем эффект для логирования изменений в orders
-    useEffect(() => {
-        console.log("Orders state updated:", orders);
-    }, [orders]);
 
     return (
-        <div className="admin-table-container">
+        <div className="admin-page">
             <h1>Управление заказами</h1>
             
-            {error && (
-                <div className="error-message">
-                    {error}
-                </div>
-            )}
-
-            {loading && (
-                <div className="loading-indicator">
-                    Загрузка...
-                </div>
-            )}
-
             <div className="search-container">
+                <select 
+                    value={searchField} 
+                    onChange={(e) => setSearchField(e.target.value)}
+                    className="search-field-select"
+                >
+                    {searchFields.map(field => (
+                        <option key={field.value} value={field.value}>
+                            {field.label}
+                        </option>
+                    ))}
+                </select>
                 <input
                     type="text"
-                    placeholder="Поиск по ID заказа..."
+                    placeholder={`Поиск по ${searchFields.find(f => f.value === searchField)?.label.toLowerCase()}...`}
                     value={searchTerm}
-                    onChange={handleSearch}
-                    disabled={loading}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
                 />
             </div>
 
-            {editingOrder ? (
+            <button className="add-button" onClick={() => {
+                setShowAddForm(true);
+                setEditingOrder(null);
+                setNewOrder({
+                    id: "",
+                    userId: "",
+                    status: "AWAITING_PAYMENT"
+                });
+            }}>
+                Добавить заказ
+            </button>
+
+            {showAddForm && (
                 <div className="form-container">
-                    <h2>Редактировать заказ</h2>
-                    <div className="edit-field">
-                        <label>ID заказа:</label>
+                    <h2>{editingOrder ? "Редактировать заказ" : "Добавить новый заказ"}</h2>
+                    <div className="form-group">
+                        <label>ID:</label>
                         <input
-                            type="text"
-                            value={newOrder.id}
-                            onChange={(e) => setNewOrder({ ...newOrder, id: e.target.value })}
-                            disabled={loading}
+                            type="number"
+                            value={editingOrder ? editingOrder.id : newOrder.id}
+                            onChange={(e) => {
+                                if (editingOrder) {
+                                    setEditingOrder({ ...editingOrder, id: e.target.value });
+                                } else {
+                                    setNewOrder({ ...newOrder, id: e.target.value });
+                                }
+                            }}
+                            min="1"
                         />
                     </div>
-                    <div className="edit-field">
+                    <div className="form-group">
                         <label>Пользователь:</label>
                         <select
-                            value={newOrder.userId}
-                            onChange={(e) => setNewOrder({ ...newOrder, userId: e.target.value })}
-                            disabled={loading}
+                            value={editingOrder ? editingOrder.userId : newOrder.userId}
+                            onChange={(e) => {
+                                if (editingOrder) {
+                                    setEditingOrder({ ...editingOrder, userId: e.target.value });
+                                } else {
+                                    setNewOrder({ ...newOrder, userId: e.target.value });
+                                }
+                            }}
                         >
                             <option value="">Выберите пользователя</option>
-                            {users.map(user => (
+                            {users.map((user) => (
                                 <option key={user.id} value={user.id}>
-                                    {user.id}
+                                    {user.email}
                                 </option>
                             ))}
                         </select>
                     </div>
-                    <div className="edit-field">
+                    <div className="form-group">
                         <label>Статус:</label>
                         <select
-                            value={newOrder.status}
-                            onChange={(e) => setNewOrder({ ...newOrder, status: e.target.value })}
-                            disabled={loading}
+                            value={editingOrder ? editingOrder.status : newOrder.status}
+                            onChange={(e) => {
+                                if (editingOrder) {
+                                    setEditingOrder({ ...editingOrder, status: e.target.value });
+                                } else {
+                                    setNewOrder({ ...newOrder, status: e.target.value });
+                                }
+                            }}
                         >
                             <option value="AWAITING_PAYMENT">Ожидает оплаты</option>
                             <option value="PENDING">В обработке</option>
@@ -365,60 +372,22 @@ const OrdersManagement = () => {
                             <option value="CANCELLED">Отменен</option>
                         </select>
                     </div>
-                    <div className="button-group">
-                        <button onClick={handleSave} disabled={loading}>
-                            {loading ? 'Сохранение...' : 'Сохранить'}
+                    <div className="form-actions">
+                        <button onClick={editingOrder ? handleUpdate : handleAdd}>
+                            {editingOrder ? "Сохранить" : "Добавить"}
                         </button>
-                        <button onClick={handleFieldCancel} disabled={loading}>
+                        <button onClick={() => {
+                            setShowAddForm(false);
+                            setEditingOrder(null);
+                            setNewOrder({
+                                id: "",
+                                userId: "",
+                                status: "AWAITING_PAYMENT"
+                            });
+                        }}>
                             Отмена
                         </button>
                     </div>
-                </div>
-            ) : (
-                <div className="form-container">
-                    <h2>Добавить новый заказ</h2>
-                    <div className="edit-field">
-                        <label>ID заказа:</label>
-                        <input
-                            type="text"
-                            value={newOrder.id}
-                            onChange={(e) => setNewOrder({ ...newOrder, id: e.target.value })}
-                            placeholder="Введите ID заказа"
-                            disabled={loading}
-                        />
-                    </div>
-                    <div className="edit-field">
-                        <label>Пользователь:</label>
-                        <select
-                            value={newOrder.userId}
-                            onChange={(e) => setNewOrder({ ...newOrder, userId: e.target.value })}
-                            disabled={loading}
-                        >
-                            <option value="">Выберите пользователя</option>
-                            {users.map(user => (
-                                <option key={user.id} value={user.id}>
-                                    {user.id}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="edit-field">
-                        <label>Статус:</label>
-                        <select
-                            value={newOrder.status}
-                            onChange={(e) => setNewOrder({ ...newOrder, status: e.target.value })}
-                            disabled={loading}
-                        >
-                            <option value="AWAITING_PAYMENT">Ожидает оплаты</option>
-                            <option value="PENDING">В обработке</option>
-                            <option value="SHIPPED">Отправлен</option>
-                            <option value="DELIVERED">Доставлен</option>
-                            <option value="CANCELLED">Отменен</option>
-                        </select>
-                    </div>
-                    <button onClick={handleAdd} disabled={loading}>
-                        {loading ? 'Добавление...' : 'Добавить заказ'}
-                    </button>
                 </div>
             )}
 
@@ -426,39 +395,35 @@ const OrdersManagement = () => {
                 <thead>
                     <tr>
                         <th 
-                            className={getClassNamesFor('id')}
-                            onClick={() => requestSort('id')}
+                            onClick={() => handleSort('id')}
+                            className="sortable-header"
                         >
-                            ID
+                            ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th>ID пользователя</th>
-                        <th>Статус</th>
-                        <th>Общая сумма</th>
-                        <th>Действия</th>
+                        <th 
+                            onClick={() => handleSort('userId')}
+                            className="sortable-header"
+                        >
+                            User ID {sortConfig.key === 'userId' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                            onClick={() => handleSort('status')}
+                            className="sortable-header"
+                        >
+                            Status {sortConfig.key === 'status' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedOrders.filter((order) =>
-                        order?.id?.toString().includes(searchTerm)
-                    ).map((order) => (
+                    {filteredOrders.map((order) => (
                         <tr key={order.id}>
                             <td>{order.id}</td>
                             <td>{order.user?.id || 'N/A'}</td>
                             <td>{order.status}</td>
-                            <td>{order.totalPrice || '0.00'}</td>
                             <td>
-                                <button 
-                                    onClick={() => handleEdit(order)} 
-                                    disabled={loading}
-                                >
-                                    Редактировать
-                                </button>
-                                <button 
-                                    onClick={() => handleDelete(order.id)} 
-                                    disabled={loading}
-                                >
-                                    Удалить
-                                </button>
+                                <button onClick={() => handleEdit(order)}>Edit</button>
+                                <button onClick={() => handleDelete(order.id)}>Delete</button>
                             </td>
                         </tr>
                     ))}
