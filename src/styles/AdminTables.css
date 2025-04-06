@@ -1,5 +1,5 @@
 .admin-table-container {
-    padding: 2rem;
+    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -11,33 +11,26 @@
 }
 
 .search-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    align-items: center;
+    margin: 20px 0;
 }
 
-.search-field-select {
+.search-container input {
+    width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    background-color: white;
-    min-width: 150px;
 }
 
-.search-input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    flex-grow: 1;
+.search-container input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
 }
 
 .form-container {
-    margin: 20px 0;
+    background-color: #f5f5f5;
     padding: 20px;
-    border: 1px solid #ddd;
     border-radius: 4px;
-    background-color: #f9f9f9;
+    margin-bottom: 20px;
 }
 
 .form-container h2 {
@@ -45,69 +38,78 @@
     color: #333;
 }
 
-.form-container .edit-field {
+.edit-field {
     margin-bottom: 15px;
 }
 
-.form-container label {
+.edit-field label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-.form-container input,
-.form-container select {
+.edit-field input,
+.edit-field select {
     width: 100%;
     padding: 8px;
-    margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
-.form-container button {
-    margin-right: 10px;
+.edit-field input:disabled,
+.edit-field select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
     padding: 8px 16px;
-    background-color: #4CAF50;
+    background-color: #2196f3;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.form-container button:hover {
-    background-color: #45a049;
+button:hover {
+    background-color: #1976d2;
 }
 
-.form-container button:last-child {
-    background-color: #f44336;
-}
-
-.form-container button:last-child:hover {
-    background-color: #da190b;
+button:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
 }
 
 .admin-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 
 .admin-table th,
 .admin-table td {
-    padding: 1rem;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
 .admin-table th {
     background-color: #f5f5f5;
-    font-weight: 600;
-    color: #333;
+    cursor: pointer;
+}
+
+.admin-table th:hover {
+    background-color: #e0e0e0;
 }
 
 .admin-table tr:hover {
-    background-color: #f9f9f9;
+    background-color: #f5f5f5;
 }
 
 .admin-table td button {
@@ -131,49 +133,6 @@
 }
 
 .admin-table td button:hover {
-    opacity: 0.9;
-}
-
-.edit-field {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-}
-
-.edit-field label {
-    min-width: 120px;
-    font-weight: bold;
-}
-
-.edit-field span {
-    flex: 1;
-}
-
-.edit-field input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.edit-field button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-}
-
-.edit-field button:last-child {
-    background-color: #f44336;
-}
-
-.edit-field button:hover {
     opacity: 0.9;
 }
 
@@ -227,4 +186,34 @@
 .sortable-header.desc::after {
     border-bottom: 5px solid #666;
     border-top: none;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ef9a9a;
+}
+
+.loading-indicator {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #90caf9;
+    text-align: center;
+}
+
+.disabled-input {
+    background-color: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+    border: 1px solid #ddd;
+}
+
+.disabled-input:hover {
+    border: 1px solid #ddd;
 } 

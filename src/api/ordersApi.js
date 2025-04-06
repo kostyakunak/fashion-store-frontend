@@ -1,9 +1,19 @@
 import axios from "axios";
+
 const API_URL = "http://localhost:8080/api/admin/orders";
+
+const axiosInstance = axios.create({
+    baseURL: API_URL,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+});
 
 export const getOrders = async () => {
     try {
-        const response = await axios.get(API_URL);
+        const response = await axiosInstance.get("");
         return response.data;
     } catch (error) {
         console.error("Ошибка при получении заказов:", error);
@@ -13,7 +23,7 @@ export const getOrders = async () => {
 
 export const createOrder = async (orderData) => {
     try {
-        const response = await axios.post(API_URL, orderData);
+        const response = await axiosInstance.post("", orderData);
         return response.data;
     } catch (error) {
         console.error("Ошибка при создании заказа:", error);
@@ -23,7 +33,7 @@ export const createOrder = async (orderData) => {
 
 export const updateOrderStatus = async (id, status) => {
     try {
-        const response = await axios.put(`${API_URL}/${id}`, { status });
+        const response = await axiosInstance.put(`/${id}`, { status });
         return response.data;
     } catch (error) {
         console.error("Ошибка при обновлении статуса заказа:", error);
@@ -33,7 +43,7 @@ export const updateOrderStatus = async (id, status) => {
 
 export const deleteOrder = async (id) => {
     try {
-        await axios.delete(`${API_URL}/${id}`);
+        await axiosInstance.delete(`/${id}`);
     } catch (error) {
         console.error("Ошибка при удалении заказа:", error);
         throw error;

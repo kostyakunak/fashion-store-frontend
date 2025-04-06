@@ -36,13 +36,14 @@ const InventoryManagement = () => {
         try {
             const response = await fetch("http://localhost:8080/api/admin/warehouse");
             if (!response.ok) {
-                throw new Error('Failed to fetch inventory');
+                const errorText = await response.text();
+                throw new Error(`Failed to fetch inventory: ${errorText}`);
             }
             const data = await response.json();
             setInventory(data);
         } catch (error) {
             console.error("Error fetching inventory:", error);
-            alert("Error fetching inventory: " + error.message);
+            alert("Ошибка при загрузке инвентаря: " + error.message);
         }
     };
 
@@ -94,104 +95,70 @@ const InventoryManagement = () => {
         setEditingValue(value.toString());
     };
 
-    const handleFieldSave = async () => {
+    const handleFieldSave = async (id, field, value) => {
         try {
-            if (!editingItem) return;
-
-            const originalId = parseInt(editingItem.oldId);
-            const newId = parseInt(editingItem.id);
-            const idChanged = originalId !== newId;
-
-            const duplicateItem = idChanged ? inventory.find(item => item.id === newId) : null;
-            if (duplicateItem) {
-                throw new Error(`Запись с ID ${newId} уже существует`);
+            if (field === 'quantity' && value < 0) {
+                throw new Error('Количество не может быть отрицательным');
             }
 
-            const updatedData = {
-                id: newId,
-                productId: parseInt(editingItem.productId),
-                sizeId: parseInt(editingItem.sizeId),
-                quantity: parseInt(editingItem.quantity)
-            };
-
-            console.log('Sending update:', updatedData);
-
-            let response;
-            if (idChanged) {
-                try {
-                    await fetch(`http://localhost:8080/api/admin/warehouse/${originalId}`, {
-                        method: 'DELETE'
-                    });
-                    
-                    response = await fetch(`http://localhost:8080/api/admin/warehouse`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(updatedData),
-                    });
-                } catch (error) {
-                    console.error('Error deleting old record:', error);
-                    throw new Error('Failed to delete old record: ' + error.message);
-                }
-            } else {
-                response = await fetch(`http://localhost:8080/api/admin/warehouse/${originalId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updatedData),
-                });
-            }
+            const response = await fetch(`http://localhost:8080/api/admin/warehouse/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ [field]: value }),
+            });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Server response:', errorText);
-                throw new Error('Failed to update inventory: ' + errorText);
+                throw new Error(`Ошибка обновления: ${errorText}`);
             }
 
-            const updatedDataFromServer = await response.json();
-            console.log('Received update:', updatedDataFromServer);
-
-            if (idChanged) {
-                setInventory(inventory.filter(item => item.id !== originalId).concat(updatedDataFromServer));
-            } else {
-                setInventory(inventory.map(item => 
-                    item.id === originalId ? updatedDataFromServer : item
-                ));
-            }
-            
-            fetchInventory();
-            setEditingItem(null);
+            const updatedItem = await response.json();
+            setInventory(inventory.map(item => 
+                item.id === id ? updatedItem : item
+            ));
+            setEditingField(null);
+            setEditingValue('');
         } catch (error) {
-            console.error('Error updating inventory:', error);
-            alert('Failed to update inventory: ' + error.message);
+            console.error('Ошибка обновления:', error);
+            alert('Ошибка обновления: ' + error.message);
         }
     };
 
     const handleFieldCancel = () => {
         setEditingField(null);
-        setEditingValue("");
-        setEditingItem(null);
+        setEditingValue('');
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this inventory item?")) {
-            try {
-                const response = await fetch(`http://localhost:8080/api/admin/warehouse/${id}`, {
-                    method: "DELETE",
-                });
-                if (response.ok) {
-                    fetchInventory();
-                }
-            } catch (error) {
-                console.error("Error deleting inventory item:", error);
+        if (!window.confirm('Вы уверены, что хотите удалить эту запись?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/admin/warehouse/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to delete item: ${errorText}`);
             }
+
+            setInventory(inventory.filter(item => item.id !== id));
+        } catch (error) {
+            console.error("Error deleting item:", error);
+            alert("Ошибка при удалении записи: " + error.message);
         }
     };
 
     const handleAdd = async () => {
         try {
+            if (newItem.quantity < 0) {
+                throw new Error('Количество не может быть отрицательным');
+            }
+
             const response = await fetch("http://localhost:8080/api/admin/warehouse", {
                 method: "POST",
                 headers: {
@@ -202,8 +169,7 @@ const InventoryManagement = () => {
             
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Server response:', errorText);
-                throw new Error('Failed to add inventory: ' + errorText);
+                throw new Error(`Ошибка добавления: ${errorText}`);
             }
             
             await fetchInventory();
@@ -211,12 +177,12 @@ const InventoryManagement = () => {
             setNewItem({
                 id: "",
                 productId: "",
-                quantity: "",
-                sizeId: ""
+                sizeId: "",
+                quantity: ""
             });
         } catch (error) {
-            console.error("Error adding inventory item:", error);
-            alert('Failed to add inventory: ' + error.message);
+            console.error("Ошибка добавления:", error);
+            alert('Ошибка добавления: ' + error.message);
         }
     };
 
@@ -238,30 +204,25 @@ const InventoryManagement = () => {
     };
 
     const sortedInventory = React.useMemo(() => {
-        let sortableInventory = [...inventory];
+        let sortableItems = [...inventory];
         if (sortConfig.key) {
-            sortableInventory.sort((a, b) => {
-                let aValue = a[sortConfig.key];
-                let bValue = b[sortConfig.key];
-
+            sortableItems.sort((a, b) => {
                 if (sortConfig.key === 'product') {
-                    aValue = a.product.name;
-                    bValue = b.product.name;
+                    return sortConfig.direction === 'asc' 
+                        ? a.product.name.localeCompare(b.product.name)
+                        : b.product.name.localeCompare(a.product.name);
                 } else if (sortConfig.key === 'size') {
-                    aValue = a.size.name;
-                    bValue = b.size.name;
+                    return sortConfig.direction === 'asc'
+                        ? a.size.name.localeCompare(b.size.name)
+                        : b.size.name.localeCompare(a.size.name);
+                } else {
+                    return sortConfig.direction === 'asc'
+                        ? a[sortConfig.key] - b[sortConfig.key]
+                        : b[sortConfig.key] - a[sortConfig.key];
                 }
-
-                if (aValue < bValue) {
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                }
-                if (aValue > bValue) {
-                    return sortConfig.direction === 'asc' ? 1 : -1;
-                }
-                return 0;
             });
         }
-        return sortableInventory;
+        return sortableItems;
     }, [inventory, sortConfig]);
 
     const filteredInventory = sortedInventory.filter(item => {
@@ -403,7 +364,7 @@ const InventoryManagement = () => {
                         value={editingItem.quantity}
                         onChange={(e) => setEditingItem({ ...editingItem, quantity: e.target.value })}
                     />
-                    <button onClick={handleFieldSave}>Save</button>
+                    <button onClick={() => handleFieldSave(editingItem.id, editingField, editingValue)}>Save</button>
                     <button onClick={() => setEditingItem(null)}>Cancel</button>
                 </div>
             )}
@@ -439,12 +400,29 @@ const InventoryManagement = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredInventory.map((item) => (
+                    {sortedInventory.map((item) => (
                         <tr key={item.id}>
                             <td>{item.id}</td>
                             <td>{item.product.name}</td>
                             <td>{item.size.name}</td>
-                            <td>{item.quantity}</td>
+                            <td>
+                                {editingField === 'quantity' && editingItem?.id === item.id ? (
+                                    <div className="edit-field">
+                                        <input
+                                            type="number"
+                                            value={editingValue}
+                                            onChange={(e) => setEditingValue(e.target.value)}
+                                            min="0"
+                                        />
+                                        <button onClick={() => handleFieldSave(item.id, 'quantity', parseInt(editingValue))}>Save</button>
+                                        <button onClick={() => handleFieldCancel()}>Cancel</button>
+                                    </div>
+                                ) : (
+                                    <span onClick={() => handleFieldEdit('quantity', item.quantity)}>
+                                        {item.quantity}
+                                    </span>
+                                )}
+                            </td>
                             <td>
                                 <button onClick={() => handleEdit(item)}>Edit</button>
                                 <button onClick={() => handleDelete(item.id)}>Delete</button>

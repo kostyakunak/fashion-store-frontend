@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/admin/sizes";
+const API_URL = "http://localhost:8080/api/admin/colors";
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
@@ -11,12 +11,12 @@ const axiosInstance = axios.create({
     }
 });
 
-export const getSizes = async () => {
+export const getColors = async () => {
     try {
         const response = await axiosInstance.get("");
         return response.data;
     } catch (error) {
-        console.error("Ошибка при получении списка размеров:", error);
+        console.error("Ошибка при получении списка цветов:", error);
         return [];
     }
-};
+}; 

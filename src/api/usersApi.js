@@ -2,9 +2,18 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/admin/users";
 
+const axiosInstance = axios.create({
+    baseURL: API_URL,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+});
+
 export const getUsers = async () => {
     try {
-        const response = await axios.get(API_URL);
+        const response = await axiosInstance.get("");
         return response.data;
     } catch (error) {
         console.error("Ошибка при получении пользователей:", error);
@@ -14,7 +23,7 @@ export const getUsers = async () => {
 
 export const createUser = async (userData) => {
     try {
-        const response = await axios.post(API_URL, userData);
+        const response = await axiosInstance.post("", userData);
         return response.data;
     } catch (error) {
         console.error("Ошибка при создании пользователя:", error);
@@ -24,7 +33,7 @@ export const createUser = async (userData) => {
 
 export const updateUser = async (id, userData) => {
     try {
-        const response = await axios.put(`${API_URL}/${id}`, userData);
+        const response = await axiosInstance.put(`/${id}`, userData);
         return response.data;
     } catch (error) {
         console.error("Ошибка при обновлении пользователя:", error);
@@ -34,7 +43,7 @@ export const updateUser = async (id, userData) => {
 
 export const deleteUser = async (id) => {
     try {
-        await axios.delete(`${API_URL}/${id}`);
+        await axiosInstance.delete(`/${id}`);
     } catch (error) {
         console.error("Ошибка при удалении пользователя:", error);
         throw error;
