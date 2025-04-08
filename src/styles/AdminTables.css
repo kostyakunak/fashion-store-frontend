@@ -223,27 +223,35 @@ button:disabled {
     border: 1px solid #ddd;
 }
 
-.search-field-select {
-    padding: 0.5rem;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    min-width: 120px;
+/* Специфичные стили для заказов */
+.order-items-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.search-input {
-    flex: 1;
-    padding: 0.5rem;
-    border: 1px solid #ced4da;
+.order-item-input {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
     border-radius: 4px;
-    font-size: 0.875rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.search-input:focus,
-.search-field-select:focus {
-    outline: none;
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+.order-items-display {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.order-item-display {
+    padding: 5px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.9em;
 }
 
 /* Удаляем все стили для фильтров */

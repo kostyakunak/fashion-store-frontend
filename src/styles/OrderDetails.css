@@ -1,4 +1,3 @@
-
 /* Глобальные стили */
 :root {
     --background-color: #111722;
@@ -93,4 +92,77 @@
 
 .order_details a:hover {
     text-decoration: underline;
+}
+
+.order-details-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.order-details-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+select, input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+button {
+    padding: 8px 16px;
+    margin-right: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:last-child {
+    margin-right: 0;
+}
+
+button[onClick*="Delete"] {
+    background-color: #dc3545;
+}
+
+button[onClick*="Delete"]:hover {
+    background-color: #c82333;
+}
+
+button[onClick*="Cancel"] {
+    background-color: #6c757d;
+}
+
+button[onClick*="Cancel"]:hover {
+    background-color: #5a6268;
 }

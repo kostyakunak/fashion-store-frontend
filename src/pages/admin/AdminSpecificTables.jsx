@@ -19,6 +19,10 @@ const AdminSpecificTables = () => {
                     <h2>Orders Table</h2>
                     <p>View and manage customer orders and their status</p>
                 </Link>
+                <Link to="/admin/order-details" className="table-card">
+                    <h2>Order Details Table</h2>
+                    <p>Manage order items, quantities, and prices</p>
+                </Link>
             </div>
         </div>
     );
