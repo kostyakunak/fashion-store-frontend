@@ -19,6 +19,10 @@ const AdminPanel = () => {
                     <h2>Управление пользователями</h2>
                     <p>Управление пользователями и их адресами</p>
                 </Link>
+                <Link to="/admin/addresses" className="admin-menu-item">
+                    <h2>Управление адресами</h2>
+                    <p>Управление адресами пользователей</p>
+                </Link>
                 <Link to="/admin/specific-tables" className="admin-menu-item">
                     <h2>Специфические таблицы</h2>
                     <p>Управление ценами, складом и заказами</p>

@@ -21,6 +21,7 @@ import PricesManagement from "./pages/admin/PricesManagement";
 import InventoryManagement from "./pages/admin/InventoryManagement";
 import OrdersManagement from "./pages/admin/OrdersManagement";
 import AdminOrderDetails from './pages/admin/AdminOrderDetails';
+import AdminAddresses from './pages/admin/AdminAddresses';
 
 function App() {
     return (
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/admin/inventory-management" element={<InventoryManagement />} />
                     <Route path="/admin/orders-management" element={<OrdersManagement />} />
                     <Route path="/admin/order-details" element={<AdminOrderDetails />} />
+                    <Route path="/admin/addresses" element={<AdminAddresses />} />
                 </Routes>
             </div>
         </Router>
