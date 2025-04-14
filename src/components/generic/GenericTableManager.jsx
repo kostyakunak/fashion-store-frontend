@@ -2,6 +2,26 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import '../../styles/AdminTables.css';
 
+// Компонент для стилизованного отображения ошибок
+const ErrorAlert = ({ message }) => {
+    if (!message) return null;
+    return (
+        <div style={{
+            backgroundColor: '#ffebee',
+            border: '1px solid #f44336',
+            color: '#d32f2f',
+            borderRadius: '4px',
+            padding: '10px 16px',
+            margin: '10px 0',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            boxShadow: '0 0 5px rgba(0,0,0,0.1)'
+        }}>
+            {message}
+        </div>
+    );
+};
+
 const GenericTableManager = ({
     title,
     apiClient,
@@ -113,6 +133,9 @@ const GenericTableManager = ({
 
     const handleAdd = async () => {
         try {
+            // Очистка ошибок перед отправкой
+            setErrors({});
+            
             // Проверка ID при сохранении
             if (!newItem.id || isNaN(newItem.id)) {
                 setErrors({ id: 'ID обязателен и должен быть числом' });
@@ -128,6 +151,25 @@ const GenericTableManager = ({
             const existingItem = items.find(item => item.id === id);
             if (existingItem) {
                 setErrors({ id: 'Этот ID уже существует. Пожалуйста, выберите другой.' });
+                return;
+            }
+
+            // Проверка обязательных полей
+            let hasErrors = false;
+            const newErrors = {};
+            
+            fields.forEach(field => {
+                if (field.required && !newItem[field.name]) {
+                    newErrors[field.name] = `Поле ${field.label} обязательно`;
+                    hasErrors = true;
+                    console.log(`Поле '${field.name}' (${field.label}) не заполнено, текущее значение:`, newItem[field.name]);
+                }
+            });
+            
+            if (hasErrors) {
+                console.log('Проверка формы выявила ошибки:', newErrors);
+                console.log('Текущие данные формы:', newItem);
+                setErrors(newErrors);
                 return;
             }
 
@@ -149,23 +191,48 @@ const GenericTableManager = ({
             setNewItem({});
         } catch (error) {
             console.error("Error adding item:", error);
-            setErrors({ add: error.message });
+            setErrors({ add: error.response?.data?.message || error.message || 'Произошла ошибка при добавлении' });
         }
     };
 
     const handleOpenAddForm = () => {
         const nextId = getNextAvailableId();
         console.log('Opening form with next ID:', nextId);
-        setNewItem({ id: nextId });
+        
+        // Создаем объект с ID и значениями по умолчанию
+        const defaultValues = { id: nextId };
+        
+        // Устанавливаем значения по умолчанию для известных полей
+        fields.forEach(field => {
+            // Если это поле роли, устанавливаем значение по умолчанию "USER"
+            if (field.name === 'role') {
+                defaultValues.role = 'USER';
+            }
+        });
+        
+        setNewItem(defaultValues);
         setShowAddForm(true);
     };
 
     const handleEdit = (item) => {
-        setEditingItem({ ...item, originalId: item.id });
+        console.log('Начало редактирования элемента:', item);
+        
+        // Проверяем, есть ли у элемента все необходимые поля
+        const itemWithDefaults = { ...item, originalId: item.id };
+        
+        // Если это пользователь и нет роли, установим её по умолчанию
+        if ('role' in item && !item.role) {
+            itemWithDefaults.role = 'USER';
+        }
+        
+        setEditingItem(itemWithDefaults);
     };
 
     const handleUpdate = async () => {
         try {
+            // Очистка ошибок перед отправкой
+            setErrors({});
+            
             // Проверка ID при обновлении
             if (!editingItem.id || isNaN(editingItem.id)) {
                 setErrors({ id: 'ID обязателен и должен быть числом' });
@@ -184,24 +251,46 @@ const GenericTableManager = ({
                 return;
             }
 
+            // Проверка обязательных полей
+            let hasErrors = false;
+            const newErrors = {};
+            
+            fields.forEach(field => {
+                if (field.required && !editingItem[field.name]) {
+                    newErrors[field.name] = `Поле ${field.label} обязательно`;
+                    hasErrors = true;
+                    console.log(`Поле '${field.name}' (${field.label}) не заполнено, текущее значение:`, editingItem[field.name]);
+                }
+            });
+            
+            if (hasErrors) {
+                console.log('Проверка формы редактирования выявила ошибки:', newErrors);
+                console.log('Текущие данные формы редактирования:', editingItem);
+                setErrors(newErrors);
+                return;
+            }
+
             const handler = customHandlers?.onUpdate || apiClient.update;
             await handler(editingItem.originalId, editingItem);
             await fetchItems();
             setEditingItem(null);
         } catch (error) {
             console.error("Error updating item:", error);
-            setErrors({ update: error.message });
+            setErrors({ update: error.response?.data?.message || error.message || 'Произошла ошибка при обновлении' });
         }
     };
 
     const handleDelete = async (id) => {
         try {
+            // Очистка ошибок перед отправкой
+            setErrors({});
+            
             const handler = customHandlers?.onDelete || apiClient.delete;
             await handler(id);
             await fetchItems();
         } catch (error) {
             console.error("Error deleting item:", error);
-            setErrors({ delete: error.message });
+            setErrors({ delete: error.response?.data?.message || error.message || 'Произошла ошибка при удалении' });
         }
     };
 
@@ -210,14 +299,50 @@ const GenericTableManager = ({
         return maxId + 1;
     };
 
+    // Функция для получения глобального сообщения об ошибках валидации
+    const getValidationErrorSummary = () => {
+        const errorFields = Object.keys(errors).filter(key => 
+            key !== 'fetch' && key !== 'add' && key !== 'update' && key !== 'delete'
+        );
+        
+        if (errorFields.length === 0) return null;
+        
+        return (
+            <ErrorAlert 
+                message={
+                    <div>
+                        <div>Форма содержит ошибки:</div>
+                        <ul style={{ marginTop: '5px', paddingLeft: '20px' }}>
+                            {errorFields.map(field => (
+                                <li key={field}>{errors[field]}</li>
+                            ))}
+                        </ul>
+                    </div>
+                } 
+            />
+        );
+    };
+
     return (
         <div className="admin-table-container" style={styles?.container}>
             <h1>{title}</h1>
 
+            {getValidationErrorSummary()}
+
             {errors.fetch && (
-                <div className="error-message">
-                    Error loading data: {errors.fetch}
-                </div>
+                <ErrorAlert message={errors.fetch} />
+            )}
+
+            {errors.add && (
+                <ErrorAlert message={errors.add} />
+            )}
+
+            {errors.update && (
+                <ErrorAlert message={errors.update} />
+            )}
+
+            {errors.delete && (
+                <ErrorAlert message={errors.delete} />
             )}
 
             {loading ? (
@@ -261,7 +386,7 @@ const GenericTableManager = ({
                                         />
                                     )}
                                     {errors[field.name] && (
-                                        <div className="error-message">{errors[field.name]}</div>
+                                        <ErrorAlert message={errors[field.name]} />
                                     )}
                                 </div>
                             ))}
@@ -307,6 +432,9 @@ const GenericTableManager = ({
                                                 )
                                             ) : (
                                                 field.display ? field.display(item) : item[field.name]
+                                            )}
+                                            {editingItem && editingItem.originalId === item.id && errors[field.name] && (
+                                                <ErrorAlert message={errors[field.name]} />
                                             )}
                                         </td>
                                     ))}

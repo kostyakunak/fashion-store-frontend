@@ -22,6 +22,7 @@ import InventoryManagement from "./pages/admin/InventoryManagement";
 import OrdersManagement from "./pages/admin/OrdersManagement";
 import AdminOrderDetails from './pages/admin/AdminOrderDetails';
 import AdminAddresses from './pages/admin/AdminAddresses';
+import AdminUsersGeneric from './pages/admin/AdminUsersGeneric';
 
 function App() {
     return (
@@ -49,6 +50,7 @@ function App() {
                     <Route path="/admin/orders-management" element={<OrdersManagement />} />
                     <Route path="/admin/order-details" element={<AdminOrderDetails />} />
                     <Route path="/admin/addresses" element={<AdminAddresses />} />
+                    <Route path="/admin/users-generic" element={<AdminUsersGeneric />} />
                 </Routes>
             </div>
         </Router>

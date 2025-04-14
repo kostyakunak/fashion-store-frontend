@@ -27,6 +27,10 @@ const AdminSpecificTables = () => {
                     <h2>Addresses Table</h2>
                     <p>Manage customer shipping and billing addresses</p>
                 </Link>
+                <Link to="/admin/users-generic" className="table-card">
+                    <h2>Users Table (Generic)</h2>
+                    <p>Manage users using GenericTableManager</p>
+                </Link>
             </div>
         </div>
     );
