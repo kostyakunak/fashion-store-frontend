@@ -23,6 +23,13 @@ import OrdersManagement from "./pages/admin/OrdersManagement";
 import AdminOrderDetails from './pages/admin/AdminOrderDetails';
 import AdminAddresses from './pages/admin/AdminAddresses';
 import AdminUsersGeneric from './pages/admin/AdminUsersGeneric';
+import AdminProductsGeneric from './pages/admin/AdminProductsGeneric';
+import AdminCartGeneric from './pages/admin/AdminCartGeneric';
+import AdminWishlistGeneric from './pages/admin/AdminWishlistGeneric';
+import AdminCategoriesGeneric from './pages/admin/AdminCategoriesGeneric';
+import AdminSizesGeneric from './pages/admin/AdminSizesGeneric';
+import AdminPaymentsGeneric from './pages/admin/AdminPaymentsGeneric';
+import AdminImagesGeneric from './pages/admin/AdminImagesGeneric';
 
 function App() {
     return (
@@ -51,6 +58,13 @@ function App() {
                     <Route path="/admin/order-details" element={<AdminOrderDetails />} />
                     <Route path="/admin/addresses" element={<AdminAddresses />} />
                     <Route path="/admin/users-generic" element={<AdminUsersGeneric />} />
+                    <Route path="/admin/products-generic" element={<AdminProductsGeneric />} />
+                    <Route path="/admin/cart-generic" element={<AdminCartGeneric />} />
+                    <Route path="/admin/wishlist-generic" element={<AdminWishlistGeneric />} />
+                    <Route path="/admin/categories" element={<AdminCategoriesGeneric />} />
+                    <Route path="/admin/sizes" element={<AdminSizesGeneric />} />
+                    <Route path="/admin/payments" element={<AdminPaymentsGeneric />} />
+                    <Route path="/admin/images" element={<AdminImagesGeneric />} />
                 </Routes>
             </div>
         </Router>

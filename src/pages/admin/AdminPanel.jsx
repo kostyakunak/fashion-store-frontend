@@ -11,22 +11,19 @@ const AdminPanel = () => {
                     <h2>Управление товарами</h2>
                     <p>Добавление, редактирование и удаление товаров</p>
                 </Link>
-                <Link to="/admin/add-order-page" className="admin-menu-item">
-                    <h2>Управление заказами</h2>
-                    <p>Просмотр и обработка заказов</p>
-                </Link>
                 <Link to="/admin/add-user-page" className="admin-menu-item">
                     <h2>Управление пользователями</h2>
                     <p>Управление пользователями и их адресами</p>
                 </Link>
-                <Link to="/admin/addresses" className="admin-menu-item">
-                    <h2>Управление адресами</h2>
-                    <p>Управление адресами пользователей</p>
+                <Link to="/admin/add-order-page" className="admin-menu-item">
+                    <h2>Управление заказами</h2>
+                    <p>Просмотр и обработка заказов</p>
                 </Link>
                 <Link to="/admin/specific-tables" className="admin-menu-item">
                     <h2>Специфические таблицы</h2>
-                    <p>Управление ценами, складом и заказами</p>
+                    <p>Доступ к дополнительным таблицам и компонентам управления</p>
                 </Link>
+                <li><Link to="/admin/images">Управление изображениями</Link></li>
             </div>
         </div>
     );

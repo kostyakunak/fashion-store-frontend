@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import '../../styles/AdminTables.css';
 
-// Компонент для стилизованного отображения ошибок
+/**
+ * Компонент для стилизованного отображения ошибок
+ * @param {Object} props - Свойства компонента
+ * @param {string} props.message - Сообщение об ошибке
+ */
 const ErrorAlert = ({ message }) => {
     if (!message) return null;
     return (
@@ -22,6 +26,30 @@ const ErrorAlert = ({ message }) => {
     );
 };
 
+/**
+ * Универсальный компонент для управления данными в таблице (CRUD-операции)
+ * 
+ * @param {Object} props - Свойства компонента
+ * @param {string} props.title - Заголовок таблицы
+ * @param {Object} props.apiClient - Клиент API для работы с данными
+ * @param {Function} props.apiClient.getAll - Функция для получения всех элементов
+ * @param {Function} props.apiClient.create - Функция для создания элемента
+ * @param {Function} props.apiClient.update - Функция для обновления элемента
+ * @param {Function} props.apiClient.delete - Функция для удаления элемента
+ * @param {Array} props.fields - Описание полей для отображения и редактирования
+ * @param {Object} props.customHandlers - Пользовательские обработчики событий
+ * @param {Function} props.customHandlers.onCreate - Пользовательский обработчик создания
+ * @param {Function} props.customHandlers.onUpdate - Пользовательский обработчик обновления
+ * @param {Function} props.customHandlers.onDelete - Пользовательский обработчик удаления
+ * @param {Function} props.customHandlers.onEdit - Пользовательский обработчик начала редактирования
+ * @param {Object} props.validators - Объект с функциями валидации для полей
+ * @param {Object} props.additionalComponents - Дополнительные компоненты для отображения
+ * @param {React.Component} props.additionalComponents.beforeTable - Компонент перед таблицей
+ * @param {React.Component} props.additionalComponents.afterTable - Компонент после таблицы
+ * @param {Object} props.styles - Стили для компонентов
+ * 
+ * @returns {JSX.Element} Компонент для управления данными
+ */
 const GenericTableManager = ({
     title,
     apiClient,
@@ -44,19 +72,31 @@ const GenericTableManager = ({
         fetchItems();
     }, []);
 
+    /**
+     * Получает данные с сервера и обновляет состояние
+     * 
+     * @returns {Promise<void>}
+     */
     const fetchItems = async () => {
         setLoading(true);
         try {
             const data = await apiClient.getAll();
-            setItems(data);
+            // Сортируем элементы по ID по умолчанию, если не указан другой порядок сортировки
+            const sortedData = sortConfig.key ? data : data.sort((a, b) => a.id - b.id);
+            setItems(sortedData);
         } catch (error) {
             console.error("Error fetching items:", error);
-            setErrors({ fetch: error.message });
+            setErrors({ fetch: error.response?.data?.message || error.message });
         } finally {
             setLoading(false);
         }
     };
 
+    /**
+     * Обработчик сортировки по заголовку таблицы
+     * 
+     * @param {string} key - Ключ для сортировки
+     */
     const handleSort = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -85,6 +125,13 @@ const GenericTableManager = ({
         )
     );
 
+    /**
+     * Проверяет значение поля на соответствие правилам валидации
+     * 
+     * @param {string} name - Имя поля
+     * @param {*} value - Значение поля
+     * @returns {boolean} Результат валидации
+     */
     const validateField = (name, value) => {
         if (validators && validators[name]) {
             return validators[name](value);
@@ -92,6 +139,13 @@ const GenericTableManager = ({
         return true;
     };
 
+    /**
+     * Обработчик изменения значения поля ввода
+     * 
+     * @param {string} name - Имя поля
+     * @param {*} value - Новое значение
+     * @param {Object|null} item - Элемент для редактирования или null для нового элемента
+     */
     const handleInputChange = (name, value, item = null) => {
         const targetItem = item || newItem;
         
@@ -131,35 +185,28 @@ const GenericTableManager = ({
         }
     };
 
+    /**
+     * Добавляет новый элемент
+     * 
+     * Примечание: При использовании таблиц с автоинкрементом ID на сервере
+     * необходимо удалять поле id в пользовательском обработчике
+     * 
+     * @returns {Promise<void>}
+     */
     const handleAdd = async () => {
         try {
             // Очистка ошибок перед отправкой
             setErrors({});
             
-            // Проверка ID при сохранении
-            if (!newItem.id || isNaN(newItem.id)) {
-                setErrors({ id: 'ID обязателен и должен быть числом' });
-                return;
-            }
-
-            const id = parseInt(newItem.id);
-            if (id <= 0) {
-                setErrors({ id: 'ID должен быть положительным числом' });
-                return;
-            }
-
-            const existingItem = items.find(item => item.id === id);
-            if (existingItem) {
-                setErrors({ id: 'Этот ID уже существует. Пожалуйста, выберите другой.' });
-                return;
-            }
-
+            // Проверка ID больше не требуется, так как ID генерируется сервером
+            // Поле ID сохраняется для совместимости, но игнорируется сервером
+            
             // Проверка обязательных полей
             let hasErrors = false;
             const newErrors = {};
             
             fields.forEach(field => {
-                if (field.required && !newItem[field.name]) {
+                if (field.required && !newItem[field.name] && field.name !== 'id') { // Исключаем ID из проверки
                     newErrors[field.name] = `Поле ${field.label} обязательно`;
                     hasErrors = true;
                     console.log(`Поле '${field.name}' (${field.label}) не заполнено, текущее значение:`, newItem[field.name]);
@@ -176,7 +223,6 @@ const GenericTableManager = ({
             // Преобразуем все числовые поля
             const itemToSend = {
                 ...newItem,
-                id: id,
                 orderId: newItem.orderId ? parseInt(newItem.orderId) : null,
                 productId: newItem.productId ? parseInt(newItem.productId) : null,
                 sizeId: newItem.sizeId ? parseInt(newItem.sizeId) : null,
@@ -195,6 +241,12 @@ const GenericTableManager = ({
         }
     };
 
+    /**
+     * Открывает форму для добавления нового элемента
+     * 
+     * Примечание: Можно установить значения по умолчанию для полей
+     * путем модификации объекта defaultValues
+     */
     const handleOpenAddForm = () => {
         const nextId = getNextAvailableId();
         console.log('Opening form with next ID:', nextId);
@@ -214,20 +266,38 @@ const GenericTableManager = ({
         setShowAddForm(true);
     };
 
+    /**
+     * Начинает редактирование выбранного элемента
+     * 
+     * Примечание: Для правильной работы со связанными данными (например, товар-категория)
+     * используйте пользовательский обработчик onEdit для преобразования данных
+     * 
+     * @param {Object} item - Элемент для редактирования
+     */
     const handleEdit = (item) => {
         console.log('Начало редактирования элемента:', item);
         
         // Проверяем, есть ли у элемента все необходимые поля
-        const itemWithDefaults = { ...item, originalId: item.id };
+        let itemWithDefaults = { ...item, originalId: item.id };
         
         // Если это пользователь и нет роли, установим её по умолчанию
         if ('role' in item && !item.role) {
             itemWithDefaults.role = 'USER';
         }
         
+        // Если есть пользовательский обработчик onEdit, используем его
+        if (customHandlers?.onEdit) {
+            itemWithDefaults = customHandlers.onEdit(itemWithDefaults);
+        }
+        
         setEditingItem(itemWithDefaults);
     };
 
+    /**
+     * Обновляет существующий элемент
+     * 
+     * @returns {Promise<void>}
+     */
     const handleUpdate = async () => {
         try {
             // Очистка ошибок перед отправкой
@@ -271,6 +341,13 @@ const GenericTableManager = ({
             }
 
             const handler = customHandlers?.onUpdate || apiClient.update;
+            
+            // Проверка наличия обработчика обновления
+            if (!handler) {
+                setErrors({ update: 'Операция обновления не поддерживается' });
+                return;
+            }
+            
             await handler(editingItem.originalId, editingItem);
             await fetchItems();
             setEditingItem(null);
@@ -280,6 +357,12 @@ const GenericTableManager = ({
         }
     };
 
+    /**
+     * Удаляет элемент
+     * 
+     * @param {number|string} id - Идентификатор элемента для удаления
+     * @returns {Promise<void>}
+     */
     const handleDelete = async (id) => {
         try {
             // Очистка ошибок перед отправкой
@@ -294,12 +377,21 @@ const GenericTableManager = ({
         }
     };
 
+    /**
+     * Определяет следующий доступный ID на основе существующих элементов
+     * 
+     * @returns {number} Следующий доступный ID
+     */
     const getNextAvailableId = () => {
         const maxId = Math.max(...items.map(item => item.id), 0);
         return maxId + 1;
     };
 
-    // Функция для получения глобального сообщения об ошибках валидации
+    /**
+     * Возвращает компонент с сообщениями об ошибках валидации
+     * 
+     * @returns {JSX.Element|null} Компонент с ошибками или null, если ошибок нет
+     */
     const getValidationErrorSummary = () => {
         const errorFields = Object.keys(errors).filter(key => 
             key !== 'fetch' && key !== 'add' && key !== 'update' && key !== 'delete'
@@ -371,30 +463,36 @@ const GenericTableManager = ({
                     {showAddForm && (
                         <div className="form-container">
                             <h2>Add New Item</h2>
-                            <p className="next-id-hint">Следующий доступный ID: {getNextAvailableId()}</p>
-                            {fields.map(field => (
-                                <div key={field.name} className="edit-field">
-                                    <label>{field.label}</label>
-                                    {field.render ? (
-                                        field.render(newItem, (name, value) => handleInputChange(name, value))
-                                    ) : (
-                                        <input
-                                            type={field.type || 'text'}
-                                            value={newItem[field.name] || ''}
-                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                            className={errors[field.name] ? 'error' : ''}
-                                        />
-                                    )}
-                                    {errors[field.name] && (
-                                        <ErrorAlert message={errors[field.name]} />
-                                    )}
-                                </div>
-                            ))}
+                {fields.map(field => (
+                                // Скрываем поле ID при создании нового элемента
+                                field.name === 'id' ? null : (
+                                    <div key={field.name} className="edit-field">
+                        <label>{field.label}</label>
+                        {field.render ? (
+                                            field.render(newItem, (name, value) => handleInputChange(name, value))
+                        ) : (
+                            <input
+                                type={field.type || 'text'}
+                                value={newItem[field.name] || ''}
+                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                className={errors[field.name] ? 'error' : ''}
+                            />
+                        )}
+                                        {field.hint && (
+                                            <div className="field-hint" style={{ fontSize: '0.8rem', color: '#666', marginTop: '2px' }}>
+                                                {field.hint}
+                                            </div>
+                        )}
+                        {errors[field.name] && (
+                                            <ErrorAlert message={errors[field.name]} />
+                        )}
+                    </div>
+                                )))}
                             <div className="button-group">
                                 <button onClick={handleAdd}>Save</button>
                                 <button onClick={() => setShowAddForm(false)}>Cancel</button>
                             </div>
-                        </div>
+            </div>
                     )}
 
                     <table className="admin-table">
@@ -433,6 +531,11 @@ const GenericTableManager = ({
                                             ) : (
                                                 field.display ? field.display(item) : item[field.name]
                                             )}
+                                            {editingItem && editingItem.originalId === item.id && field.hint && (
+                                                <div className="field-hint" style={{ fontSize: '0.8rem', color: '#666', marginTop: '2px' }}>
+                                                    {field.hint}
+                                </div>
+                                            )}
                                             {editingItem && editingItem.originalId === item.id && errors[field.name] && (
                                                 <ErrorAlert message={errors[field.name]} />
                                             )}
@@ -446,7 +549,9 @@ const GenericTableManager = ({
                                             </>
                                         ) : (
                                             <>
-                                                <button onClick={() => handleEdit(item)}>Edit</button>
+                                                {apiClient.update !== null && (
+                                                    <button onClick={() => handleEdit(item)}>Edit</button>
+                                                )}
                                                 <button onClick={() => handleDelete(item.id)}>Delete</button>
                                             </>
                                         )}
@@ -479,7 +584,9 @@ GenericTableManager.propTypes = {
     })).isRequired,
     customHandlers: PropTypes.shape({
         onCreate: PropTypes.func,
+        onUpdate: PropTypes.func,
         onDelete: PropTypes.func,
+        onEdit: PropTypes.func,
     }),
     validators: PropTypes.objectOf(PropTypes.func),
     additionalComponents: PropTypes.objectOf(PropTypes.elementType),

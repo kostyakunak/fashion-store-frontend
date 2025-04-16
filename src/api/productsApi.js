@@ -41,10 +41,15 @@ export const updateProduct = async (id, productData) => {
     }
 };
 
-export const deleteProduct = async (id) => {
+export const deleteProduct = async (id, force = false) => {
     try {
-        await axiosInstance.delete(`/${id}`);
+        const response = await axiosInstance.delete(`/${id}?force=${force}`);
+        return response.data;
     } catch (error) {
+        // Если ошибка содержит сообщение от сервера, возвращаем его
+        if (error.response && error.response.data && error.response.data.message) {
+            throw new Error(error.response.data.message);
+        }
         console.error("Ошибка при удалении товара:", error);
         throw error;
     }
