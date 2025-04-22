@@ -1,4 +1,3 @@
-
 :root {
     --background-color: #111722;
     --primary-color: #243047;
@@ -75,4 +74,22 @@
     width: 100%;
     position: center;
     margin-bottom: 6px;
+}
+
+/* Состояния загрузки, ошибки и пустого каталога */
+.catalog .loading,
+.catalog .error,
+.catalog .empty-catalog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    width: 100%;
+    color: #f7f7f7;
+    font-size: 18px;
+    text-align: center;
+}
+
+.catalog .error {
+    color: #ff6b6b;
 }

@@ -1,7 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Navbar from "./components/Navbar";
+import PageWrapper from "./components/PageWrapper";
+
 import Home from "./components/Home";
 import Catalog from "./components/Catalog";
 import Contacts from "./components/Contacts";
@@ -30,44 +31,56 @@ import AdminCategoriesGeneric from './pages/admin/AdminCategoriesGeneric';
 import AdminSizesGeneric from './pages/admin/AdminSizesGeneric';
 import AdminPaymentsGeneric from './pages/admin/AdminPaymentsGeneric';
 import AdminImagesGeneric from './pages/admin/AdminImagesGeneric';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import PrivateRoute from './components/PrivateRoute';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
     return (
-        <Router>
-            <div className="App">
-                <Navbar />
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/catalog" element={<Catalog />} />
-                    <Route path="/contacts" element={<Contacts />} />
-                    <Route path="/my-orders" element={<MyOrders />} />
-                    <Route path="/wishlist" element={<Wishlist />} />
-                    <Route path="/item" element={<Item />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/account" element={<Account />} />
-                    <Route path="/account-details" element={<AccountDetails />} />
-                    <Route path="/order-details" element={<OrderDetails />} />
-                    <Route path="/admin" element={<AdminPanel />} />
-                    <Route path="/admin/add-product-page" element={<AdminProducts />} />
-                    <Route path="/admin/add-order-page" element={<AdminOrders />} />
-                    <Route path="/admin/add-user-page" element={<AdminUsers />} />
-                    <Route path="/admin/specific-tables" element={<AdminSpecificTables />} />
-                    <Route path="/admin/prices-management" element={<PricesManagement />} />
-                    <Route path="/admin/inventory-management" element={<InventoryManagement />} />
-                    <Route path="/admin/orders-management" element={<OrdersManagement />} />
-                    <Route path="/admin/order-details" element={<AdminOrderDetails />} />
-                    <Route path="/admin/addresses" element={<AdminAddresses />} />
-                    <Route path="/admin/users-generic" element={<AdminUsersGeneric />} />
-                    <Route path="/admin/products-generic" element={<AdminProductsGeneric />} />
-                    <Route path="/admin/cart-generic" element={<AdminCartGeneric />} />
-                    <Route path="/admin/wishlist-generic" element={<AdminWishlistGeneric />} />
-                    <Route path="/admin/categories" element={<AdminCategoriesGeneric />} />
-                    <Route path="/admin/sizes" element={<AdminSizesGeneric />} />
-                    <Route path="/admin/payments" element={<AdminPaymentsGeneric />} />
-                    <Route path="/admin/images" element={<AdminImagesGeneric />} />
-                </Routes>
-            </div>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <div className="App">
+                    <Routes>
+                        {/* Публичные маршруты */}
+                        <Route path="/" element={<Home />} />
+                        <Route path="/catalog" element={<PageWrapper><Catalog /></PageWrapper>} />
+                        <Route path="/contacts" element={<PageWrapper><Contacts /></PageWrapper>} />
+                        <Route path="/item" element={<PageWrapper><Item /></PageWrapper>} />
+                        <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
+                        <Route path="/register" element={<PageWrapper><RegisterPage /></PageWrapper>} />
+                        
+                        {/* Защищенные маршруты */}
+                        <Route path="/account" element={<PrivateRoute><PageWrapper><Account /></PageWrapper></PrivateRoute>} />
+                        <Route path="/account/details" element={<PrivateRoute><PageWrapper><AccountDetails /></PageWrapper></PrivateRoute>} />
+                        <Route path="/orders" element={<PrivateRoute><PageWrapper><MyOrders /></PageWrapper></PrivateRoute>} />
+                        <Route path="/wishlist" element={<PrivateRoute><PageWrapper><Wishlist /></PageWrapper></PrivateRoute>} />
+                        <Route path="/cart" element={<PrivateRoute><PageWrapper><Cart /></PageWrapper></PrivateRoute>} />
+                        <Route path="/order/:id" element={<PrivateRoute><PageWrapper><OrderDetails /></PageWrapper></PrivateRoute>} />
+                        
+                        {/* Админ маршруты */}
+                        <Route path="/admin" element={<PrivateRoute><PageWrapper><AdminPanel /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/products" element={<PrivateRoute><PageWrapper><AdminProducts /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/orders" element={<PrivateRoute><PageWrapper><AdminOrders /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/users" element={<PrivateRoute><PageWrapper><AdminUsers /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/specific-tables" element={<PrivateRoute><PageWrapper><AdminSpecificTables /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/prices" element={<PrivateRoute><PageWrapper><PricesManagement /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/inventory" element={<PrivateRoute><PageWrapper><InventoryManagement /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/orders-management" element={<PrivateRoute><PageWrapper><OrdersManagement /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/order/:id" element={<PrivateRoute><PageWrapper><AdminOrderDetails /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/addresses" element={<PrivateRoute><PageWrapper><AdminAddresses /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/users-generic" element={<PrivateRoute><PageWrapper><AdminUsersGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/products-generic" element={<PrivateRoute><PageWrapper><AdminProductsGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/cart-generic" element={<PrivateRoute><PageWrapper><AdminCartGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/wishlist-generic" element={<PrivateRoute><PageWrapper><AdminWishlistGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/categories-generic" element={<PrivateRoute><PageWrapper><AdminCategoriesGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/sizes-generic" element={<PrivateRoute><PageWrapper><AdminSizesGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/payments-generic" element={<PrivateRoute><PageWrapper><AdminPaymentsGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/images-generic" element={<PrivateRoute><PageWrapper><AdminImagesGeneric /></PageWrapper></PrivateRoute>} />
+                    </Routes>
+                </div>
+            </Router>
+        </AuthProvider>
     );
 }
 

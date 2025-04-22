@@ -1,84 +1,193 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../styles/Cart.css";
 import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
-import useCart from "../hooks/useCart"; // Импорт кастомного хука
+import useCart from "../hooks/useCart";
 
 function Cart() {
-    const { cartItems, addToCart, removeFromCart, updateQuantity, total } = useCart(); // Используем хук
+    const { 
+        cartItems, 
+        loading, 
+        error, 
+        removeFromCart, 
+        updateQuantity, 
+        updateSize, 
+        getAvailableSizesForProduct, 
+        total 
+    } = useCart();
 
-    const products = [
-        { title: "Album 1", price: 12.99, image: "Images/image1.png" },
-        { title: "Album 2", price: 14.99, image: "Images/image2.png" },
-        { title: "Album 3", price: 9.99, image: "Images/image3.png" },
-        { title: "Album 4", price: 19.99, image: "Images/image4.png" },
-        { title: "T-Shirt", price: 19.99, image: "Images/image6.png" },
-        { title: "Coffee Cup", price: 6.99, image: "Images/image7.png" },
-    ];
+    // Состояние для хранения сообщений о недоступных размерах
+    const [sizeWarnings, setSizeWarnings] = useState({});
+
+    // Проверяем доступность выбранных размеров при загрузке и изменении корзины
+    useEffect(() => {
+        if (!loading && cartItems.length > 0) {
+            const warnings = {};
+            
+            cartItems.forEach(item => {
+                const availableSizes = getAvailableSizesForProduct(item.productId);
+                const sizeExists = availableSizes.some(size => size.id === item.sizeId);
+                
+                if (!sizeExists) {
+                    warnings[item.id] = true;
+                }
+            });
+            
+            setSizeWarnings(warnings);
+        }
+    }, [cartItems, loading, getAvailableSizesForProduct]);
+
+    // Функция для отображения размеров товара
+    const renderSizeSelect = (item) => {
+        const availableSizes = getAvailableSizesForProduct(item.productId);
+        const currentSizeExists = availableSizes.some(size => size.id === item.sizeId);
+        
+        return (
+            <div className="cart-item-size">
+                {sizeWarnings[item.id] && (
+                    <div className="size-warning">
+                        Выбранный размер недоступен. Пожалуйста, выберите другой размер.
+                    </div>
+                )}
+                
+                <select
+                    value={currentSizeExists ? item.sizeId : ''}
+                    onChange={(e) => updateSize(item.id, parseInt(e.target.value))}
+                    className={`size-select ${sizeWarnings[item.id] ? 'warning' : ''}`}
+                >
+                    {!currentSizeExists && (
+                        <option value="" disabled>
+                            Выберите размер
+                        </option>
+                    )}
+                    {availableSizes.map(size => (
+                        <option key={size.id} value={size.id}>
+                            {size.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+        );
+    };
 
     return (
         <div className="cart">
             <Header />
             <main>
-                {/* Товары */}
-                <section className="container content-section">
-                    <h2 className="section-header">MUSIC & MERCH</h2>
-                    <div className="shop-items">
-                        {products.map((item, index) => (
-                            <div className="shop-item" key={index}>
-                                <span className="shop-item-title">{item.title}</span>
-                                <a href="/item">
-                                    <img className="shop-item-image" src={item.image} alt={item.title} />
-                                </a>
-                                <div className="shop-item-details">
-                                    <span className="shop-item-price">${item.price}</span>
-                                    <button className="btn shop-item-button" onClick={() => addToCart(item)}>
-                                        ADD TO CART
-                                    </button>
-                                </div>
+                <h1>Корзина</h1>
+                
+                {loading ? (
+                    <div className="loading">Загрузка корзины...</div>
+                ) : error ? (
+                    <div className="error">Ошибка: {error}</div>
+                ) : cartItems.length > 0 ? (
+                    <div className="cart-container">
+                        <div className="cart-headers">
+                            <div className="cart-header-item">ТОВАР</div>
+                            <div className="cart-header-price">ЦЕНА</div>
+                            <div className="cart-header-size">РАЗМЕР</div>
+                            <div className="cart-header-quantity">КОЛИЧЕСТВО</div>
+                            <div className="cart-header-subtotal">СУММА</div>
+                            <div className="cart-header-action"></div>
+                        </div>
+                        
+                        <div className="cart-items">
+                            {cartItems.map((item) => {
+                                return (
+                                    <div className="cart-item" key={item.id}>
+                                        <div className="cart-item-info">
+                                            <div className="cart-item-image">
+                                                <Link to={`/item?id=${item.productId}`}>
+                                                    <img 
+                                                        src={item.imageUrl || "https://via.placeholder.com/100"} 
+                                                        alt={item.name} 
+                                                        loading="lazy"
+                                                    />
+                                                </Link>
+                                            </div>
+                                            <div className="cart-item-details">
+                                                <h3>{item.name}</h3>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="cart-item-price">
+                                            {item.price} руб.
+                                        </div>
+                                        
+                                        {renderSizeSelect(item)}
+                                        
+                                        <div className="cart-item-quantity">
+                                            <button 
+                                                className="quantity-btn decrease" 
+                                                onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                                                disabled={item.quantity <= 1}
+                                            >
+                                                -
+                                            </button>
+                                            <input 
+                                                type="number" 
+                                                min="1" 
+                                                value={item.quantity} 
+                                                onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
+                                                className="quantity-input"
+                                            />
+                                            <button 
+                                                className="quantity-btn increase" 
+                                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                        
+                                        <div className="cart-item-subtotal">
+                                            {(item.price * item.quantity).toFixed(2)} руб.
+                                        </div>
+                                        
+                                        <div className="cart-item-remove">
+                                            <button 
+                                                className="remove-btn" 
+                                                onClick={() => removeFromCart(item.id)}
+                                                title="Удалить из корзины"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                                    <path fill="none" d="M0 0h24v24H0z"/>
+                                                    <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        
+                        <div className="cart-summary">
+                            <div className="cart-total">
+                                <h3>Итого:</h3>
+                                <span className="cart-total-price">{total} руб.</span>
                             </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Корзина */}
-                <section className="container content-section">
-                    <h2 className="section-header">CART</h2>
-                    <div className="cart-row">
-                        <span className="cart-item cart-header cart-column">ITEM</span>
-                        <span className="cart-price cart-header cart-column">PRICE</span>
-                        <span className="cart-quantity cart-header cart-column">QUANTITY</span>
-                    </div>
-                    <div className="cart-items">
-                        {cartItems.map((item, index) => (
-                            <div className="cart-row" key={index}>
-                                <div className="cart-item cart-column">
-                                    <a href="/item">
-                                        <img className="cart-item-image" src={item.image} width="100" height="100" alt={item.title} />
-                                    </a>
-                                    <span className="cart-item-title">{item.title}</span>
-                                </div>
-                                <span className="cart-price cart-column">${item.price}</span>
-                                <div className="cart-quantity cart-column">
-                                    <input
-                                        className="cart-quantity-input"
-                                        type="number"
-                                        value={item.quantity}
-                                        onChange={(e) => updateQuantity(item.title, parseInt(e.target.value))}
-                                    />
-                                    <button className="btn btn-danger" onClick={() => removeFromCart(item.title)}>
-                                        REMOVE
-                                    </button>
-                                </div>
+                            <div className="cart-actions">
+                                <Link to="/catalog" className="continue-shopping">
+                                    Продолжить покупки
+                                </Link>
+                                <button 
+                                    className="checkout-btn"
+                                    disabled={Object.keys(sizeWarnings).length > 0}
+                                    title={Object.keys(sizeWarnings).length > 0 ? "Пожалуйста, выберите доступные размеры для всех товаров" : ""}
+                                >
+                                    Оформить заказ
+                                </button>
                             </div>
-                        ))}
+                        </div>
                     </div>
-                    <div className="cart-total">
-                        <strong className="cart-total-title">Total</strong>
-                        <span className="cart-total-price">${total}</span>
+                ) : (
+                    <div className="cart-empty">
+                        <p>Ваша корзина пуста</p>
+                        <Link to="/catalog" className="continue-shopping">
+                            Перейти в каталог
+                        </Link>
                     </div>
-                    <button className="btn btn-purchase">PURCHASE</button>
-                </section>
+                )}
             </main>
             <Footer />
         </div>

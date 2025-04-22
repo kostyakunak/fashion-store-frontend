@@ -5,54 +5,76 @@ import "../styles/Home.css";
 
 function Home() {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        setLoading(true);
         fetch("http://localhost:8080/products")
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ошибка! Статус: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log("Полученные данные о продуктах:", data);
                 if (Array.isArray(data) && data.length > 0) {
-                    const shuffled = data.sort(() => 0.5 - Math.random()).slice(0, 6);
+                    // Перемешиваем и берем первые 6 товаров
+                    const shuffled = [...data].sort(() => 0.5 - Math.random()).slice(0, 6);
                     setProducts(shuffled);
                 } else {
-                    console.error("Ошибка: сервер вернул некорректные данные", data);
+                    console.error("Сервер вернул пустой массив или некорректные данные", data);
                     setProducts([]);
                 }
+                setLoading(false);
             })
-            .catch(error => console.error("Ошибка загрузки товаров:", error));
+            .catch(error => {
+                console.error("Ошибка загрузки товаров:", error);
+                setError(error.message);
+                setLoading(false);
+            });
     }, []);
 
     return (
         <div className="home">
             <main>
-                <h1>Welcome to our store. Pablo</h1>
+                <h1>Добро пожаловать в наш магазин</h1>
                 <nav>
                     <ul>
-                        <li><Link to="/catalog">Catalog</Link></li>
-                        <li><Link to="/account">My account</Link></li>
-                        <li><Link to="/cart">Cart</Link></li>
-                        <li><Link to="/wishlist">Wishlist</Link></li>
-                        <li><Link to="/contacts">Contacts</Link></li>
-                        <li><Link to="/admin">Admin Panel</Link></li>
+                        <li><Link to="/catalog">Каталог</Link></li>
+                        <li><Link to="/account">Личный кабинет</Link></li>
+                        <li><Link to="/cart">Корзина</Link></li>
+                        <li><Link to="/wishlist">Избранное</Link></li>
+                        <li><Link to="/contacts">Контакты</Link></li>
+                        <li><Link to="/admin">Панель администратора</Link></li>
                     </ul>
                 </nav>
 
-                <h2>Some products</h2>
+                <h2>Рекомендуемые товары</h2>
                 <div className="product-grid">
-                    {products.length > 0 ? (
+                    {loading ? (
+                        <p>Загрузка товаров...</p>
+                    ) : error ? (
+                        <p>Ошибка: {error}</p>
+                    ) : products.length > 0 ? (
                         products.map(product => (
                             <div key={product.id} className="product-card">
-                                <a href={`/item/${product.id}`}>
+                                <Link to={`/item?id=${product.id}`}>
                                     <img
                                         className="image-source"
-                                        src={product.images?.[0]?.imageUrl || "https://via.placeholder.com/150"}
+                                        src={product.images && product.images.length > 0 
+                                            ? product.images[0].imageUrl 
+                                            : "https://via.placeholder.com/150"}
                                         alt={product.name}
                                     />
-                                </a>
-                                <h3>{product.name}</h3>
+                                    <h3>{product.name}</h3>
+                                    <p className="price">{product.price} руб.</p>
+                                </Link>
                             </div>
                         ))
                     ) : (
-                        <p>Loading products...</p>
+                        <p>Товары не найдены</p>
                     )}
                 </div>
             </main>

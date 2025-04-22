@@ -1,0 +1,11 @@
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-with-navbar {
+    margin-top: 4rem;
+    padding: 2rem;
+    flex: 1;
+} 
