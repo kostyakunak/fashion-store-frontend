@@ -14,7 +14,13 @@ const axiosInstance = axios.create({
 // Получить корзину текущего пользователя
 export const getCurrentUserCart = async () => {
     try {
-        const response = await axiosInstance.get("");
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            console.error("User ID not found in localStorage");
+            return [];
+        }
+        
+        const response = await axiosInstance.get(`/user/${userId}`);
         return response.data;
     } catch (error) {
         console.error("Ошибка при получении корзины пользователя:", error);

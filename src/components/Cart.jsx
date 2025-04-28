@@ -4,25 +4,61 @@ import "../styles/Cart.css";
 import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
 import useCart from "../hooks/useCart";
+import { debugAuth, fixAuthIssues } from "../utils/authDebugger";
 
 function Cart() {
-    const { 
-        cartItems, 
-        loading, 
-        error, 
-        removeFromCart, 
-        updateQuantity, 
-        updateSize, 
-        getAvailableSizesForProduct, 
-        total 
+    const {
+        cartItems,
+        loading,
+        error,
+        removeFromCart,
+        updateQuantity,
+        updateSize,
+        getAvailableSizesForProduct,
+        total,
+        loadCart,
+        authStatus
     } = useCart();
 
     // Состояние для хранения сообщений о недоступных размерах
     const [sizeWarnings, setSizeWarnings] = useState({});
 
+    // Загружаем корзину при монтировании компонента и при изменении состояния
+    useEffect(() => {
+        console.log("=== МОНТИРОВАНИЕ КОМПОНЕНТА КОРЗИНЫ ===");
+        
+        // Используем утилиту отладки для проверки авторизации
+        const authState = debugAuth();
+        console.log("Полное состояние авторизации:", authState);
+        
+        // Пытаемся исправить проблемы с авторизацией
+        const fixed = fixAuthIssues();
+        if (fixed) {
+            console.log("Были исправлены проблемы с авторизацией, повторная проверка:");
+            debugAuth();
+        }
+        
+        loadCart();
+        
+        // Добавляем слушатель для обновления корзины при изменении localStorage
+        const handleStorageChange = (e) => {
+            if (e.key === 'cartItems' || e.key === 'token' || e.key === 'userId' || e.key === 'user') {
+                console.log(`Обнаружено изменение в localStorage: ${e.key}, обновляем корзину`);
+                loadCart();
+            }
+        };
+        
+        window.addEventListener('storage', handleStorageChange);
+        
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
     // Проверяем доступность выбранных размеров при загрузке и изменении корзины
     useEffect(() => {
         if (!loading && cartItems.length > 0) {
+            console.log("Проверка доступности размеров для товаров в корзине");
             const warnings = {};
             
             cartItems.forEach(item => {
@@ -30,6 +66,7 @@ function Cart() {
                 const sizeExists = availableSizes.some(size => size.id === item.sizeId);
                 
                 if (!sizeExists) {
+                    console.log(`Размер недоступен для товара ${item.productId}`);
                     warnings[item.id] = true;
                 }
             });
@@ -53,7 +90,10 @@ function Cart() {
                 
                 <select
                     value={currentSizeExists ? item.sizeId : ''}
-                    onChange={(e) => updateSize(item.id, parseInt(e.target.value))}
+                    onChange={(e) => {
+                        console.log(`Изменение размера для товара ${item.id} на ${e.target.value}`);
+                        updateSize(item.id, parseInt(e.target.value));
+                    }}
                     className={`size-select ${sizeWarnings[item.id] ? 'warning' : ''}`}
                 >
                     {!currentSizeExists && (
@@ -71,6 +111,11 @@ function Cart() {
         );
     };
 
+    // Добавляем эффект для логирования изменений в authStatus
+    useEffect(() => {
+        console.log("Изменение статуса авторизации в Cart.jsx:", authStatus);
+    }, [authStatus]);
+
     return (
         <div className="cart">
             <Header />
@@ -78,9 +123,46 @@ function Cart() {
                 <h1>Корзина</h1>
                 
                 {loading ? (
-                    <div className="loading">Загрузка корзины...</div>
+                    <div className="loading">
+                        <div className="loading-spinner"></div>
+                        <p>Загрузка корзины...</p>
+                    </div>
                 ) : error ? (
-                    <div className="error">Ошибка: {error}</div>
+                    <div className="error">
+                        <p>Ошибка: {error}</p>
+                        <button onClick={loadCart} className="retry-button">
+                            Повторить попытку
+                        </button>
+                    </div>
+                ) : !authStatus?.isAuthenticated ? (
+                    <div className="cart-empty">
+                        <p>Для просмотра корзины необходимо авторизоваться</p>
+                        <div className="auth-status-debug">
+                            <p>Отладочная информация:</p>
+                            <pre>{JSON.stringify(authStatus, null, 2)}</pre>
+                            <p>localStorage:</p>
+                            <pre>token: {localStorage.getItem('token') ? 'присутствует' : 'отсутствует'}</pre>
+                            <pre>userId: {localStorage.getItem('userId')}</pre>
+                            <pre>user: {localStorage.getItem('user') ? 'присутствует' : 'отсутствует'}</pre>
+                            <button
+                                onClick={() => {
+                                    const fixed = fixAuthIssues();
+                                    if (fixed) {
+                                        alert("Исправлены проблемы с авторизацией. Перезагрузка корзины...");
+                                        loadCart();
+                                    } else {
+                                        alert("Проблемы с авторизацией не обнаружены или не могут быть исправлены автоматически.");
+                                    }
+                                }}
+                                className="retry-button"
+                            >
+                                Попытаться исправить авторизацию
+                            </button>
+                        </div>
+                        <Link to="/login" className="continue-shopping">
+                            Войти в аккаунт
+                        </Link>
+                    </div>
                 ) : cartItems.length > 0 ? (
                     <div className="cart-container">
                         <div className="cart-headers">
@@ -94,13 +176,14 @@ function Cart() {
                         
                         <div className="cart-items">
                             {cartItems.map((item) => {
+                                console.log("Рендеринг товара в корзине:", item);
                                 return (
                                     <div className="cart-item" key={item.id}>
                                         <div className="cart-item-info">
                                             <div className="cart-item-image">
-                                                <Link to={`/item?id=${item.productId}`}>
+                                                <Link to={`/item?id=${item.product.id}`}>
                                                     <img 
-                                                        src={item.imageUrl || "https://via.placeholder.com/100"} 
+                                                        src={item.imageUrl} 
                                                         alt={item.name} 
                                                         loading="lazy"
                                                     />
@@ -108,6 +191,8 @@ function Cart() {
                                             </div>
                                             <div className="cart-item-details">
                                                 <h3>{item.name}</h3>
+                                                <p>Размер: {item.sizeId}</p>
+                                                <p>Количество: {item.quantity}</p>
                                             </div>
                                         </div>
                                         
@@ -117,43 +202,15 @@ function Cart() {
                                         
                                         {renderSizeSelect(item)}
                                         
-                                        <div className="cart-item-quantity">
+                                        <div className="cart-item-actions">
                                             <button 
-                                                className="quantity-btn decrease" 
-                                                onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                                                disabled={item.quantity <= 1}
+                                                onClick={() => {
+                                                    console.log(`Удаление товара ${item.id} из корзины`);
+                                                    removeFromCart(item.id);
+                                                }}
+                                                className="remove-button"
                                             >
-                                                -
-                                            </button>
-                                            <input 
-                                                type="number" 
-                                                min="1" 
-                                                value={item.quantity} 
-                                                onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
-                                                className="quantity-input"
-                                            />
-                                            <button 
-                                                className="quantity-btn increase" 
-                                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                            >
-                                                +
-                                            </button>
-                                        </div>
-                                        
-                                        <div className="cart-item-subtotal">
-                                            {(item.price * item.quantity).toFixed(2)} руб.
-                                        </div>
-                                        
-                                        <div className="cart-item-remove">
-                                            <button 
-                                                className="remove-btn" 
-                                                onClick={() => removeFromCart(item.id)}
-                                                title="Удалить из корзины"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                                    <path fill="none" d="M0 0h24v24H0z"/>
-                                                    <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                                </svg>
+                                                Удалить
                                             </button>
                                         </div>
                                     </div>
