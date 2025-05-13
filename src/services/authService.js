@@ -26,12 +26,9 @@ const handleError = (error) => {
 const setAuthData = (data) => {
     if (data.token) {
         localStorage.setItem('token', data.token);
-        // Сохраняем данные пользователя без токена
-        const { token, ...userData } = data;
-        localStorage.setItem('user', JSON.stringify(userData));
         
         // Устанавливаем заголовок авторизации для всех последующих запросов
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     }
 };
 
@@ -75,18 +72,51 @@ export const authService = {
         } catch (error) {
             console.error('Ошибка при выходе:', error);
         } finally {
-            // Удаляем токен и данные пользователя
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            
-            // Удаляем заголовок авторизации
-            delete axios.defaults.headers.common['Authorization'];
+            // Очищаем данные аутентификации
+            this.clearAuthData();
         }
+    },
+    
+    clearAuthData() {
+        // Удаляем токен
+        localStorage.removeItem('token');
+        
+        // Удаляем заголовок авторизации
+        delete axios.defaults.headers.common['Authorization'];
     },
 
     getCurrentUser() {
-        const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : null;
+        const token = localStorage.getItem('token');
+        if (!token || !isTokenValid(token)) {
+            return null;
+        }
+        
+        try {
+            const decoded = jwtDecode(token);
+            return {
+                id: decoded.sub,   // User ID is stored in the 'sub' claim
+                email: decoded.email,
+                roles: decoded.roles || []
+            };
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            return null;
+        }
+    },
+    
+    getUserId() {
+        const token = localStorage.getItem('token');
+        if (!token || !isTokenValid(token)) {
+            return null;
+        }
+        
+        try {
+            const decoded = jwtDecode(token);
+            return decoded.sub; // User ID is stored in the 'sub' claim
+        } catch (error) {
+            console.error('Error getting user ID from token:', error);
+            return null;
+        }
     },
 
     isAuthenticated() {

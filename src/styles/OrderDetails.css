@@ -1,168 +1,234 @@
-/* Глобальные стили */
-:root {
-    --background-color: #111722;
-    --primary-color: #243047;
-    --secondary-color: white;
-    --font-family: 'Inter', 'Noto Sans', sans-serif;
-    --border-color: rgba(36, 48, 71, 0.6);
-    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.order_details {
-    font-family: var(--font-family);
-    background-color: var(--background-color);
-    color: var(--secondary-color);
-    margin: 0;
-    padding: 0;
-    line-height: 1.5;
-
-}
-
-
-.order_details .status {
+.order-details {
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
 }
 
-.order_details .status h3,
-.order_details .status p {
-    margin: 3px;
-    padding: 0;
-}
-
-.order_details .status .cost {
-    margin-top: 10px;
-    text-align: center;
-}
-
-/* Контейнер изображений */
-.order_details .item-images img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 5 / 10;
-    object-fit: cover;
-    box-shadow: var(--box-shadow);
-    border-radius: 5px;
-}
-
-/* Контейнер адреса доставки */
-.order_details .delivery-item-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-}
-
-/* Адрес доставки */
-.order_details .delivery-address {
-    text-align: right;
-    margin-top: 20px;
-}
-
-.order_details .buttonclass {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--box-shadow);
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-/* Контейнер изображений */
-.order_details .item-images {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    justify-content: center;
-}
-
-/* Ссылки */
-.order_details a {
-    text-decoration: none;
-    color: var(--secondary-color);
-}
-
-.order_details a:hover {
-    text-decoration: underline;
+.order-details main {
+    flex: 1;
+    padding: 2rem 0;
 }
 
 .order-details-container {
-    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.order-details-container h2 {
-    margin-bottom: 20px;
+.back-link {
+    margin-bottom: 1.5rem;
+}
+
+.back-link a {
+    display: inline-flex;
+    align-items: center;
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.back-link a:hover {
+    color: #357abd;
+}
+
+.order-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.order-details-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
     color: #333;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.awaiting_payment {
+    background-color: #ffe082;
+    color: #9e6900;
 }
 
-th {
-    background-color: #f8f9fa;
-    font-weight: bold;
+.paid {
+    background-color: #81c784;
+    color: #2e7031;
 }
 
-tr:hover {
-    background-color: #f5f5f5;
+.shipped {
+    background-color: #90caf9;
+    color: #0d47a1;
 }
 
-select, input {
-    padding: 8px;
-    border: 1px solid #ddd;
+.delivered {
+    background-color: #80deea;
+    color: #00838f;
+}
+
+.cancelled {
+    background-color: #ef9a9a;
+    color: #c62828;
+}
+
+.order-info {
+    margin-bottom: 2rem;
+}
+
+.order-info-section {
+    margin-bottom: 1.5rem;
+}
+
+.order-info-section:last-child {
+    margin-bottom: 0;
+}
+
+.order-info-section h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: #333;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-info-section p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: #666;
+}
+
+.order-items-section {
+    margin-bottom: 2rem;
+}
+
+.order-items-section h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: #333;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.order-item-detail {
+    display: flex;
+    padding: 1rem;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+}
+
+.item-image {
+    flex-shrink: 0;
+    margin-right: 1.5rem;
+}
+
+.item-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
     border-radius: 4px;
-    width: 100%;
 }
 
-button {
-    padding: 8px 16px;
-    margin-right: 8px;
+.item-info {
+    flex: 1;
+}
+
+.item-info h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.item-info p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.order-summary {
+    border-top: 1px solid #eaeaea;
+    padding-top: 1.5rem;
+}
+
+.order-summary h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.total-price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 1.5rem 0;
+}
+
+.order-actions {
+    margin-top: 1.5rem;
+}
+
+.cancel-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #e57373;
+    color: white;
     border: none;
     border-radius: 4px;
+    font-weight: 600;
     cursor: pointer;
-    background-color: #007bff;
-    color: white;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #0056b3;
+.cancel-button:hover {
+    background-color: #d32f2f;
 }
 
-button:last-child {
-    margin-right: 0;
+.loading, .error {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
 }
 
-button[onClick*="Delete"] {
-    background-color: #dc3545;
+.error {
+    color: #d32f2f;
 }
 
-button[onClick*="Delete"]:hover {
-    background-color: #c82333;
-}
-
-button[onClick*="Cancel"] {
-    background-color: #6c757d;
-}
-
-button[onClick*="Cancel"]:hover {
-    background-color: #5a6268;
+@media (max-width: 768px) {
+    .order-details-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .order-item-detail {
+        flex-direction: column;
+    }
+    
+    .item-image {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .item-image img {
+        width: 100%;
+        height: auto;
+    }
 }

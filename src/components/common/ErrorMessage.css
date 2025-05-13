@@ -1,0 +1,111 @@
+/* Error Message Component Styles */
+.message-container {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Message types */
+.message-container.error {
+  background-color: #fff0f0;
+  border-left: 4px solid #e74c3c;
+  color: #c0392b;
+}
+
+.message-container.warning {
+  background-color: #fffaeb;
+  border-left: 4px solid #f39c12;
+  color: #d35400;
+}
+
+.message-container.info {
+  background-color: #e6f5ff;
+  border-left: 4px solid #3498db;
+  color: #2980b9;
+}
+
+.message-container.success {
+  background-color: #efffef;
+  border-left: 4px solid #2ecc71;
+  color: #27ae60;
+}
+
+/* Message icon */
+.message-icon {
+  margin-right: 12px;
+  font-size: 1.2rem;
+  padding-top: 2px;
+}
+
+/* Message content */
+.message-content {
+  flex: 1;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* Close button */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.message-container.error .close-button {
+  color: #c0392b;
+}
+
+.message-container.warning .close-button {
+  color: #d35400;
+}
+
+.message-container.info .close-button {
+  color: #2980b9;
+}
+
+.message-container.success .close-button {
+  color: #27ae60;
+}
+
+.close-button:hover {
+  opacity: 1;
+}
+
+/* Focus styles for accessibility */
+.close-button:focus {
+  outline: 2px dotted rgba(0,0,0,0.3);
+  outline-offset: 2px;
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+  .message-container {
+    padding: 12px;
+  }
+  
+  .message-content {
+    font-size: 0.9rem;
+  }
+  
+  .close-button {
+    font-size: 1.3rem;
+  }
+}

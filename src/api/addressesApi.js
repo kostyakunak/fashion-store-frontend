@@ -1,72 +1,99 @@
-import axios from 'axios';
+import { createAdminApiClient, handleApiError } from '../utils/apiUtils';
 
-const API_URL = 'http://localhost:8080/api/admin/addresses';
+// Create API client for addresses
+const addressesClient = createAdminApiClient(
+  { baseURL: 'http://localhost:8080/api/admin' },
+  (error) => console.error('Address API Auth Error:', error)
+);
 
-// Получение всех адресов
+/**
+ * Fetches all addresses
+ * @returns {Promise<Array>} List of addresses
+ */
 export const getAddresses = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await addressesClient.get('/addresses');
     return response.data;
   } catch (error) {
     console.error('Ошибка при получении адресов:', error);
-    throw error;
+    throw new Error(handleApiError(error, 'Не удалось загрузить адреса'));
   }
 };
 
-// Получение всех пользователей для селектора
+/**
+ * Fetches all users for the selector
+ * @returns {Promise<Array>} List of users
+ */
 export const getUsers = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/api/admin/users');
+    const response = await addressesClient.get('/users');
     return response.data;
   } catch (error) {
     console.error('Ошибка при получении пользователей:', error);
-    throw error;
+    throw new Error(handleApiError(error, 'Не удалось загрузить список пользователей'));
   }
 };
 
-// Получение адресов пользователя
+/**
+ * Fetches addresses for a specific user
+ * @param {number} userId - User ID
+ * @returns {Promise<Array>} List of addresses for the user
+ */
 export const getAddressesByUser = async (userId) => {
   try {
-    const response = await axios.get(`${API_URL}/${userId}`);
+    const response = await addressesClient.get(`/addresses/user/${userId}`);
     return response.data;
   } catch (error) {
     console.error(`Ошибка при получении адресов пользователя ${userId}:`, error);
-    throw error;
+    throw new Error(handleApiError(error, `Не удалось загрузить адреса пользователя`));
   }
 };
 
-// Создание нового адреса
+/**
+ * Creates a new address
+ * @param {Object} addressData - Address data
+ * @returns {Promise<Object>} Created address
+ */
 export const createAddress = async (addressData) => {
   try {
-    // Удаляем id из данных, чтобы серверная автогенерация работала корректно
+    // Remove ID for auto-generation on server
     const { id, ...dataWithoutId } = addressData;
     
-    const response = await axios.post(API_URL, dataWithoutId);
+    const response = await addressesClient.post('/addresses', dataWithoutId);
     return response.data;
   } catch (error) {
     console.error('Ошибка при создании адреса:', error);
-    throw error;
+    throw new Error(handleApiError(error, 'Не удалось создать новый адрес'));
   }
 };
 
-// Обновление адреса
+/**
+ * Updates an existing address
+ * @param {number} id - Address ID
+ * @param {Object} addressData - Updated address data
+ * @returns {Promise<Object>} Updated address
+ */
 export const updateAddress = async (id, addressData) => {
   try {
-    const response = await axios.put(`${API_URL}/${id}`, addressData);
+    const response = await addressesClient.put(`/addresses/${id}`, addressData);
     return response.data;
   } catch (error) {
     console.error(`Ошибка при обновлении адреса ${id}:`, error);
-    throw error;
+    throw new Error(handleApiError(error, 'Не удалось обновить адрес'));
   }
 };
 
-// Удаление адреса
+/**
+ * Deletes an address
+ * @param {number} id - Address ID to delete
+ * @returns {Promise<boolean>} Success indicator
+ */
 export const deleteAddress = async (id) => {
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    await addressesClient.delete(`/addresses/${id}`);
     return true;
   } catch (error) {
     console.error(`Ошибка при удалении адреса ${id}:`, error);
-    throw error;
+    throw new Error(handleApiError(error, 'Не удалось удалить адрес'));
   }
-}; 
+};

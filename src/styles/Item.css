@@ -189,6 +189,31 @@
     background-color: #1e2433;
 }
 
+.item .size-selection-container {
+    margin-bottom: 20px;
+}
+
+.item .size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.item .size-chart-button {
+    background-color: transparent;
+    color: #ff6f61;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.item .size-chart-button:hover {
+    color: #ffcc70;
+}
+
 .item .size-buttons {
     display: flex;
     justify-content: space-between;
@@ -257,5 +282,77 @@
     background-size: 200% 200%;
     pointer-events: none;
     z-index: 1100;
+}
+
+/* Size Chart Modal */
+.size-chart-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.size-chart-modal {
+    background-color: #2f3950;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.size-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #4a5568;
+}
+
+.size-chart-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #ffffff;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.size-chart-content {
+    padding: 20px;
+}
+
+.size-chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #f7f7f7;
+}
+
+.size-chart-table th, .size-chart-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #4a5568;
+}
+
+.size-chart-table th {
+    background-color: #1e2433;
+    font-weight: bold;
+}
+
+.size-chart-table tr:nth-child(even) {
+    background-color: #394358;
 }
 

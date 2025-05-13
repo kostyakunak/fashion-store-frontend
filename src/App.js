@@ -31,6 +31,7 @@ import AdminCategoriesGeneric from './pages/admin/AdminCategoriesGeneric';
 import AdminSizesGeneric from './pages/admin/AdminSizesGeneric';
 import AdminPaymentsGeneric from './pages/admin/AdminPaymentsGeneric';
 import AdminImagesGeneric from './pages/admin/AdminImagesGeneric';
+import AdminDebugger from './pages/admin/AdminDebugger';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PrivateRoute from './components/PrivateRoute';
@@ -50,33 +51,34 @@ function App() {
                         <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
                         <Route path="/register" element={<PageWrapper><RegisterPage /></PageWrapper>} />
                         
-                        {/* Защищенные маршруты */}
+                        {/* Защищенные маршруты пользователя */}
                         <Route path="/account" element={<PrivateRoute><PageWrapper><Account /></PageWrapper></PrivateRoute>} />
                         <Route path="/account/details" element={<PrivateRoute><PageWrapper><AccountDetails /></PageWrapper></PrivateRoute>} />
                         <Route path="/orders" element={<PrivateRoute><PageWrapper><MyOrders /></PageWrapper></PrivateRoute>} />
                         <Route path="/wishlist" element={<PrivateRoute><PageWrapper><Wishlist /></PageWrapper></PrivateRoute>} />
                         <Route path="/cart" element={<PrivateRoute><PageWrapper><Cart /></PageWrapper></PrivateRoute>} />
-                        <Route path="/order/:id" element={<PrivateRoute><PageWrapper><OrderDetails /></PageWrapper></PrivateRoute>} />
+                        <Route path="/orders/:orderId" element={<PrivateRoute><PageWrapper><OrderDetails /></PageWrapper></PrivateRoute>} />
                         
-                        {/* Админ маршруты */}
-                        <Route path="/admin" element={<PrivateRoute><PageWrapper><AdminPanel /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/products" element={<PrivateRoute><PageWrapper><AdminProducts /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/orders" element={<PrivateRoute><PageWrapper><AdminOrders /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/users" element={<PrivateRoute><PageWrapper><AdminUsers /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/specific-tables" element={<PrivateRoute><PageWrapper><AdminSpecificTables /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/prices" element={<PrivateRoute><PageWrapper><PricesManagement /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/inventory" element={<PrivateRoute><PageWrapper><InventoryManagement /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/orders-management" element={<PrivateRoute><PageWrapper><OrdersManagement /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/order/:id" element={<PrivateRoute><PageWrapper><AdminOrderDetails /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/addresses" element={<PrivateRoute><PageWrapper><AdminAddresses /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/users-generic" element={<PrivateRoute><PageWrapper><AdminUsersGeneric /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/products-generic" element={<PrivateRoute><PageWrapper><AdminProductsGeneric /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/cart-generic" element={<PrivateRoute><PageWrapper><AdminCartGeneric /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/wishlist-generic" element={<PrivateRoute><PageWrapper><AdminWishlistGeneric /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/categories-generic" element={<PrivateRoute><PageWrapper><AdminCategoriesGeneric /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/sizes-generic" element={<PrivateRoute><PageWrapper><AdminSizesGeneric /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/payments-generic" element={<PrivateRoute><PageWrapper><AdminPaymentsGeneric /></PageWrapper></PrivateRoute>} />
-                        <Route path="/admin/images-generic" element={<PrivateRoute><PageWrapper><AdminImagesGeneric /></PageWrapper></PrivateRoute>} />
+                        {/* Админ маршруты с проверкой роли ADMIN */}
+                        <Route path="/admin" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminPanel /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/products" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminProducts /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/orders" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminOrders /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/users" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminUsers /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/specific-tables" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminSpecificTables /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/prices" element={<PrivateRoute requireAdmin={true}><PageWrapper><PricesManagement /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/inventory" element={<PrivateRoute requireAdmin={true}><PageWrapper><InventoryManagement /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/orders-management" element={<PrivateRoute requireAdmin={true}><PageWrapper><OrdersManagement /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/order/:id" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminOrderDetails /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/addresses" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminAddresses /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/users-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminUsersGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/products-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminProductsGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/cart-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminCartGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/wishlist-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminWishlistGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/categories-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminCategoriesGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/sizes-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminSizesGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/payments-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminPaymentsGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/images-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminImagesGeneric /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/debug" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminDebugger /></PageWrapper></PrivateRoute>} />
                     </Routes>
                 </div>
             </Router>

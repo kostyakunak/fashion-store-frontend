@@ -1,5 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getProductSizes } from "../api/productApi";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { AuthContext } from "../context/AuthContext";
+
+const API_URL = "http://localhost:8080/api/cart";
 
 export default function useCart() {
     const [cartItems, setCartItems] = useState([]);
@@ -16,11 +21,14 @@ export default function useCart() {
     ]);
     // Словарь доступных размеров для каждого товара
     const [productSizes, setProductSizes] = useState({});
+    
+    // Используем AuthContext для получения данных о пользователе
+    const auth = useContext(AuthContext);
 
-    // Загрузка корзины при первом рендере
+    // Загрузка корзины при первом рендере или изменении статуса аутентификации
     useEffect(() => {
         loadCart();
-    }, []);
+    }, [auth.isAuthenticated()]);
 
     // Загрузка размеров для товаров после загрузки корзины
     useEffect(() => {
@@ -69,27 +77,24 @@ export default function useCart() {
     // Загрузка корзины
     const loadCart = () => {
         setLoading(true);
-        const userId = localStorage.getItem("userId");
         
-        if (userId) {
+        if (auth.isAuthenticated()) {
             // Если пользователь авторизован, загружаем корзину с сервера
-            fetch(`http://localhost:8080/cart/user/${userId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP ошибка! Статус: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Данные корзины:", data);
-                    setCartItems(data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.error("Ошибка загрузки корзины:", error);
-                    setError(error.message);
-                    setLoading(false);
-                });
+            axios.get(`${API_URL}/my`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => {
+                console.log("Данные корзины:", response.data);
+                setCartItems(response.data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Ошибка загрузки корзины:", error);
+                setError(error.response?.data?.message || error.message);
+                setLoading(false);
+            });
         } else {
             // Если пользователь не авторизован, загружаем из localStorage
             const localCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
@@ -105,6 +110,33 @@ export default function useCart() {
             setLoading(false);
         }
     };
+    
+    // Функция для объединения корзины после входа в систему
+    const mergeCart = async () => {
+        if (!auth.isAuthenticated()) return;
+        
+        const localCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
+        if (localCart.length === 0) return;
+        
+        try {
+            await axios.post(`${API_URL}/merge`, {
+                guestCart: localCart
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            
+            // После успешного объединения очищаем локальную корзину
+            localStorage.removeItem("cartItems");
+            
+            // Перезагружаем корзину с сервера
+            loadCart();
+        } catch (error) {
+            console.error("Ошибка при объединении корзины:", error);
+            setError(error.response?.data?.message || error.message);
+        }
+    };
 
     // Обновление суммы при изменении корзины
     useEffect(() => {
@@ -113,36 +145,25 @@ export default function useCart() {
 
     // Добавить в корзину
     const addToCart = (item) => {
-        const userId = localStorage.getItem("userId");
-        
-        if (userId) {
+        if (auth.isAuthenticated()) {
             // Если пользователь авторизован, отправляем запрос на сервер
-            fetch("http://localhost:8080/cart", {
-                method: "POST",
+            axios.post(API_URL, {
+                productId: item.productId || item.id,
+                sizeId: item.sizeId || 1, // Размер по умолчанию если не указан
+                quantity: 1
+            }, {
                 headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    userId: userId,
-                    productId: item.productId || item.id,
-                    sizeId: item.sizeId || 1, // Размер по умолчанию если не указан
-                    quantity: 1
-                })
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка! Статус: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Товар добавлен в корзину:", data);
+                console.log("Товар добавлен в корзину:", response.data);
                 // Обновляем корзину после добавления
                 loadCart();
             })
             .catch(error => {
                 console.error("Ошибка добавления в корзину:", error);
-                alert(`Ошибка: ${error.message}`);
+                setError(error.response?.data?.message || error.message);
             });
         } else {
             // Если пользователь не авторизован, сохраняем в localStorage
@@ -180,27 +201,21 @@ export default function useCart() {
 
     // Удалить из корзины
     const removeFromCart = (itemId) => {
-        const userId = localStorage.getItem("userId");
-        
-        if (userId) {
+        if (auth.isAuthenticated()) {
             // Если пользователь авторизован, удаляем с сервера
-            fetch(`http://localhost:8080/cart/${itemId}`, {
-                method: "DELETE"
+            axios.delete(`${API_URL}/${itemId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка! Статус: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Товар удален из корзины:", data);
+                console.log("Товар удален из корзины:", response.data);
                 // Обновляем состояние, исключая удаленный элемент
                 setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
             })
             .catch(error => {
                 console.error("Ошибка удаления из корзины:", error);
-                alert(`Ошибка: ${error.message}`);
+                setError(error.response?.data?.message || error.message);
             });
         } else {
             // Если пользователь не авторизован, удаляем из localStorage
@@ -216,27 +231,17 @@ export default function useCart() {
     const updateQuantity = (itemId, quantity) => {
         if (quantity < 1) return; // Не допускаем отрицательное количество
         
-        const userId = localStorage.getItem("userId");
-        
-        if (userId) {
+        if (auth.isAuthenticated()) {
             // Если пользователь авторизован, обновляем на сервере
-            fetch(`http://localhost:8080/cart/${itemId}`, {
-                method: "PUT",
+            axios.put(`${API_URL}/${itemId}`, {
+                quantity: quantity
+            }, {
                 headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    quantity: quantity
-                })
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка! Статус: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Количество товара обновлено:", data);
+                console.log("Количество товара обновлено:", response.data);
                 // Обновляем состояние
                 setCartItems(prevItems =>
                     prevItems.map(item => item.id === itemId ? {...item, quantity: quantity} : item)
@@ -244,12 +249,12 @@ export default function useCart() {
             })
             .catch(error => {
                 console.error("Ошибка обновления количества:", error);
-                alert(`Ошибка: ${error.message}`);
+                setError(error.response?.data?.message || error.message);
             });
         } else {
             // Если пользователь не авторизован, обновляем в localStorage
             const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
-            const updatedCart = cartItems.map(item => 
+            const updatedCart = cartItems.map(item =>
                 item.id === itemId ? {...item, quantity: quantity} : item
             );
             
@@ -260,27 +265,17 @@ export default function useCart() {
 
     // Обновить размер товара
     const updateSize = (itemId, sizeId) => {
-        const userId = localStorage.getItem("userId");
-        
-        if (userId) {
+        if (auth.isAuthenticated()) {
             // Если пользователь авторизован, обновляем на сервере
-            fetch(`http://localhost:8080/cart/${itemId}/size`, {
-                method: "PUT",
+            axios.put(`${API_URL}/${itemId}/size`, {
+                sizeId: sizeId
+            }, {
                 headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    sizeId: sizeId
-                })
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ошибка! Статус: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Размер товара обновлен:", data);
+                console.log("Размер товара обновлен:", response.data);
                 // Обновляем состояние
                 setCartItems(prevItems =>
                     prevItems.map(item => item.id === itemId ? {...item, sizeId: sizeId} : item)
@@ -288,12 +283,12 @@ export default function useCart() {
             })
             .catch(error => {
                 console.error("Ошибка обновления размера:", error);
-                alert(`Ошибка: ${error.message}`);
+                setError(error.response?.data?.message || error.message);
             });
         } else {
             // Если пользователь не авторизован, обновляем в localStorage
             const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
-            const updatedCart = cartItems.map(item => 
+            const updatedCart = cartItems.map(item =>
                 item.id === itemId ? {...item, sizeId: sizeId} : item
             );
             
@@ -301,32 +296,42 @@ export default function useCart() {
             setCartItems(updatedCart);
         }
     };
+    
+    // Очистить корзину при выходе из системы
+    const clearCart = () => {
+        setCartItems([]);
+        setError(null);
+    };
 
     // Получить доступные размеры для конкретного товара
     const getAvailableSizesForProduct = (productId) => {
         // Если размеры для продукта загружены, возвращаем их
         if (productSizes[productId]) {
-            // Фильтруем только те размеры, которые доступны на складе
-            return productSizes[productId].filter(size => 
-                size.inStock === true || (size.quantity != null && size.quantity > 0)
-            );
+            // Возвращаем все размеры с правильным статусом доступности
+            return productSizes[productId].map(size => ({
+                ...size,
+                // Используем фактическую доступность размера из базы данных
+                inStock: size.inStock !== undefined ? size.inStock : (size.quantity > 0)
+            }));
         }
         
         // В случае, если размеры еще не загружены, возвращаем временные данные
         return availableSizes;
     };
 
-    return { 
-        cartItems, 
-        loading, 
-        error, 
-        addToCart, 
-        removeFromCart, 
-        updateQuantity, 
-        updateSize, 
+    return {
+        cartItems,
+        loading,
+        error,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        updateSize,
         availableSizes,
         getAvailableSizesForProduct,
-        total, 
-        loadCart 
+        total,
+        loadCart,
+        mergeCart,
+        clearCart
     };
 }

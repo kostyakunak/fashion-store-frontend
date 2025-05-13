@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Cart.css";
 import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
 import useCart from "../hooks/useCart";
+import { AuthContext } from "../context/AuthContext";
 
 function Cart() {
-    const { 
-        cartItems, 
-        loading, 
-        error, 
-        removeFromCart, 
-        updateQuantity, 
-        updateSize, 
-        getAvailableSizesForProduct, 
-        total 
+    const {
+        cartItems,
+        loading,
+        error,
+        removeFromCart,
+        updateQuantity,
+        updateSize,
+        getAvailableSizesForProduct,
+        total,
+        mergeCart
     } = useCart();
+    
+    // Используем контекст аутентификации
+    const auth = useContext(AuthContext);
 
     // Состояние для хранения сообщений о недоступных размерах
     const [sizeWarnings, setSizeWarnings] = useState({});
@@ -37,6 +42,13 @@ function Cart() {
             setSizeWarnings(warnings);
         }
     }, [cartItems, loading, getAvailableSizesForProduct]);
+    
+    // Объединяем корзину при входе пользователя в систему
+    useEffect(() => {
+        if (auth.isAuthenticated()) {
+            mergeCart();
+        }
+    }, [auth.isAuthenticated()]);
 
     // Функция для отображения размеров товара
     const renderSizeSelect = (item) => {

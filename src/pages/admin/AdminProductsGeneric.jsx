@@ -1,23 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import GenericTableManager from '../../components/generic/GenericTableManager';
+import ErrorMessage from '../../components/common/ErrorMessage';
+import LoadingIndicator from '../../components/common/LoadingIndicator';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../api/productsApi';
 import { getCategories } from '../../api/categoriesApi';
+import { AuthContext } from '../../context/AuthContext';
+import useAdmin from '../../hooks/useAdmin';
+import { handleApiError } from '../../utils/apiUtils';
 
+/**
+ * Admin Products Management Component
+ * Provides CRUD operations for products with category selection
+ */
 const AdminProductsGeneric = () => {
     const [categories, setCategories] = useState([]);
+    const [categoryLoading, setCategoryLoading] = useState(false);
+    const [categoryError, setCategoryError] = useState(null);
+    const navigate = useNavigate();
+    const { isAdmin, isAuthenticated } = useContext(AuthContext);
+    
+    // Use our custom admin hook for product operations
+    const {
+        loading, 
+        error, 
+        apiClient: productApiClient, 
+        clearError
+    } = useAdmin({
+        fetchAll: getProducts,
+        createEntity: createProduct,
+        updateEntity: updateProduct,
+        deleteEntity: deleteProduct,
+        entityName: 'product'
+    });
 
+    // Authentication & authorization check
     useEffect(() => {
-        // Загрузка категорий при монтировании компонента
+        if (!isAuthenticated()) {
+            navigate('/login', { state: { message: 'Please login to access admin pages' } });
+            return;
+        }
+        
+        if (!isAdmin()) {
+            setCategoryError('You do not have permission to access this page');
+            setTimeout(() => navigate('/'), 2000);
+            return;
+        }
+        
+        // Clear errors when component mounts
+        clearError();
+        setCategoryError(null);
+        
+        // Load categories when component mounts
         const loadCategories = async () => {
-            const categoriesData = await getCategories();
-            setCategories(categoriesData);
+            setCategoryLoading(true);
+            try {
+                const categoriesData = await getCategories();
+                setCategories(categoriesData);
+            } catch (err) {
+                const errorMessage = handleApiError(err, 'Failed to load categories');
+                setCategoryError(errorMessage);
+                console.error('Error loading categories:', err);
+            } finally {
+                setCategoryLoading(false);
+            }
         };
         loadCategories();
-    }, []);
+    }, [isAdmin, isAuthenticated, navigate, clearError]);
 
-    // Обработчик для преобразования данных при редактировании
+    // Handler for transforming data during editing
     const handleOnEdit = (item) => {
-        // Если у элемента есть категория, добавляем categoryId для работы с формой
+        // If item has a category, add categoryId for form handling
         if (item.category && item.category.id) {
             return {
                 ...item,
@@ -27,63 +80,76 @@ const AdminProductsGeneric = () => {
         return item;
     };
 
-    const apiClient = {
-        getAll: getProducts,
-        create: (data) => {
-            // Валидация перед отправкой на сервер
-            if (!data.name || !data.categoryId) {
-                throw new Error('Поля "Название" и "Категория" обязательны для заполнения');
-            }
-            
-            // Проверка на существование категории
-            const categoryExists = categories.some(cat => cat.id === parseInt(data.categoryId));
-            if (!categoryExists) {
-                throw new Error('Выбранная категория не существует');
-            }
-            
-            // Создаем правильный объект для отправки
-            const productToSend = {
-                ...data,
-                category: {
-                    id: parseInt(data.categoryId)
+    // Create a wrapped API client that handles category relationships
+    const wrappedApiClient = {
+        getAll: productApiClient.getAll,
+        create: async (data) => {
+            try {
+                // Validation before sending to server
+                if (!data.name || !data.categoryId) {
+                    throw new Error('Name and Category fields are required');
                 }
-            };
-            
-            // Удаляем временное поле categoryId из отправляемых данных
-            delete productToSend.categoryId;
-            
-            // Удаляем поле id при создании нового продукта, 
-            // т.к. на сервере используется автоинкремент
-            delete productToSend.id;
-            
-            return createProduct(productToSend);
-        },
-        update: (id, data) => {
-            // Валидация перед отправкой на сервер
-            if (!data.name || !data.categoryId) {
-                throw new Error('Поля "Название" и "Категория" обязательны для заполнения');
-            }
-            
-            // Проверка на существование категории
-            const categoryExists = categories.some(cat => cat.id === parseInt(data.categoryId));
-            if (!categoryExists) {
-                throw new Error('Выбранная категория не существует');
-            }
-            
-            // Создаем правильный объект для отправки
-            const productToSend = {
-                ...data,
-                category: {
-                    id: parseInt(data.categoryId)
+                
+                // Check that category exists
+                const categoryExists = categories.some(cat => cat.id === parseInt(data.categoryId));
+                if (!categoryExists) {
+                    throw new Error('Selected category does not exist');
                 }
-            };
-            
-            // Удаляем временное поле categoryId из отправляемых данных
-            delete productToSend.categoryId;
-            
-            return updateProduct(id, productToSend);
+                
+                // Create proper object for submission
+                const productToSend = {
+                    ...data,
+                    category: {
+                        id: parseInt(data.categoryId)
+                    }
+                };
+                
+                // Remove temporary categoryId field from submitted data
+                delete productToSend.categoryId;
+                
+                // Remove id when creating new product,
+                // since server uses auto-increment
+                delete productToSend.id;
+                
+                return await productApiClient.create(productToSend);
+            } catch (err) {
+                const errorMessage = handleApiError(err, 'Failed to create product');
+                console.error('Error creating product:', err);
+                throw new Error(errorMessage);
+            }
         },
-        delete: deleteProduct
+        update: async (id, data) => {
+            try {
+                // Validation before sending to server
+                if (!data.name || !data.categoryId) {
+                    throw new Error('Name and Category fields are required');
+                }
+                
+                // Check that category exists
+                const categoryExists = categories.some(cat => cat.id === parseInt(data.categoryId));
+                if (!categoryExists) {
+                    throw new Error('Selected category does not exist');
+                }
+                
+                // Create proper object for submission
+                const productToSend = {
+                    ...data,
+                    category: {
+                        id: parseInt(data.categoryId)
+                    }
+                };
+                
+                // Remove temporary categoryId field from submitted data
+                delete productToSend.categoryId;
+                
+                return await productApiClient.update(id, productToSend);
+            } catch (err) {
+                const errorMessage = handleApiError(err, 'Failed to update product');
+                console.error('Error updating product:', err);
+                throw new Error(errorMessage);
+            }
+        },
+        delete: productApiClient.delete
     };
 
     const fields = [
@@ -96,13 +162,14 @@ const AdminProductsGeneric = () => {
         },
         {
             name: 'name',
-            label: 'Название',
+            label: 'Name',
             type: 'text',
-            required: true
+            required: true,
+            hint: 'Enter a unique product name'
         },
         {
             name: 'productDetails',
-            label: 'Описание',
+            label: 'Description',
             type: 'textarea',
             render: (item, onChange) => (
                 <textarea
@@ -115,19 +182,21 @@ const AdminProductsGeneric = () => {
         },
         {
             name: 'measurements',
-            label: 'Размеры',
-            type: 'text'
+            label: 'Measurements',
+            type: 'text',
+            hint: 'Size specification (e.g., S, M, L, XL)'
         },
         {
             name: 'categoryId',
-            label: 'Категория',
+            label: 'Category',
             required: true,
             render: (item, onChange) => (
                 <select
                     value={item.categoryId || (item.category ? item.category.id : '')}
                     onChange={(e) => onChange('categoryId', e.target.value)}
+                    disabled={categoryLoading}
                 >
-                    <option value="">Выберите категорию</option>
+                    <option value="">Select category</option>
                     {categories.map(category => (
                         <option key={category.id} value={category.id}>
                             {category.name}
@@ -138,37 +207,77 @@ const AdminProductsGeneric = () => {
             display: (item) => {
                 if (!item.category) return '';
                 const category = categories.find(c => c.id === item.category.id);
-                return category ? category.name : `Категория ${item.category.id}`;
+                return category ? category.name : `Category ${item.category.id}`;
             }
         }
     ];
 
-    // Отключаем валидацию "на лету" - она будет происходить только при отправке
     const validators = {
-        name: () => true,
+        name: (value) => {
+            if (!value || value.trim().length === 0) {
+                return "Product name is required";
+            }
+            if (value.trim().length < 2) {
+                return "Product name must be at least 2 characters";
+            }
+            return true;
+        },
+        categoryId: (value) => {
+            if (!value) {
+                return "Category is required";
+            }
+            return true;
+        },
         productDetails: () => true,
-        measurements: () => true,
-        categoryId: () => true
+        measurements: () => true
     };
 
+    // Admin panel specific styles
+    const styles = {
+        container: {
+            padding: '20px',
+            maxWidth: '1200px',
+            margin: '0 auto'
+        },
+        header: {
+            marginBottom: '20px'
+        },
+        footer: {
+            marginTop: '20px',
+            fontSize: '0.8rem',
+            color: '#666'
+        }
+    };
+
+    const isLoadingAny = loading || categoryLoading;
+    const displayError = error || categoryError;
+
     return (
-        <GenericTableManager
-            title="Управление товарами"
-            apiClient={apiClient}
-            fields={fields}
-            validators={validators}
-            customHandlers={{
-                onEdit: handleOnEdit
-            }}
-            styles={{
-                container: {
-                    padding: '20px',
-                    maxWidth: '1200px',
-                    margin: '0 auto'
-                }
-            }}
-        />
+        <div className="admin-products-container">
+            {displayError && <ErrorMessage message={displayError} />}
+            <LoadingIndicator isLoading={isLoadingAny} />
+            
+            <div style={styles.header}>
+                <h1>Product Management</h1>
+                <p>Create, update, and delete products</p>
+            </div>
+            
+            <GenericTableManager
+                title="Products"
+                apiClient={wrappedApiClient}
+                fields={fields}
+                validators={validators}
+                customHandlers={{
+                    onEdit: handleOnEdit
+                }}
+                styles={styles}
+            />
+            
+            <div style={styles.footer}>
+                <p>Note: Product images can be managed through the Images section.</p>
+            </div>
+        </div>
     );
 };
 
-export default AdminProductsGeneric; 
+export default AdminProductsGeneric;

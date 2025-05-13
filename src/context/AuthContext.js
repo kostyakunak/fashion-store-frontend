@@ -7,23 +7,47 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
 
   // Проверка наличия токена при загрузке
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
     
-    if (token && userData) {
+    if (token) {
       // Проверяем, не истек ли токен
       if (isTokenValid(token)) {
-        // Устанавливаем данные пользователя из localStorage
-        setUser(JSON.parse(userData));
-        
-        // Настраиваем axios для отправки токена в заголовках
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        
-        // Настраиваем перехватчик для обработки ошибок авторизации
-        setupAuthInterceptor();
+        // Декодируем токен для получения данных пользователя
+        try {
+          const decoded = jwtDecode(token);
+          
+          // Получаем роли из токена
+          let roles = [];
+          if (decoded.roles) {
+            if (typeof decoded.roles === 'string') {
+              roles = decoded.roles.split(',');
+            } else if (Array.isArray(decoded.roles)) {
+              roles = decoded.roles;
+            }
+          }
+          
+          setUser({
+            id: decoded.sub,
+            email: decoded.email || decoded.sub,
+            firstName: decoded.firstName,
+            lastName: decoded.lastName,
+            roles: roles,
+            role: decoded.role || (roles.length > 0 ? roles[0].replace('ROLE_', '') : 'USER')
+          });
+          
+          // Настраиваем axios для отправки токена в заголовках
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          
+          // Настраиваем перехватчик для обработки ошибок авторизации
+          setupAuthInterceptor();
+        } catch (error) {
+          console.error("Ошибка при декодировании токена:", error);
+          handleLogout();
+        }
       } else {
         // Если токен истек, выполняем выход
         handleLogout();
@@ -51,8 +75,9 @@ export const AuthProvider = ({ children }) => {
     axios.interceptors.response.use(
       (response) => response,
       (error) => {
-        // Если сервер вернул ошибку 401 (Unauthorized), выполняем выход
-        if (error.response && error.response.status === 401) {
+        // Если сервер вернул ошибку 401 (Unauthorized) или 403 (Forbidden), выполняем выход
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          setAuthError(error.response.data.message || "Authentication error");
           handleLogout();
         }
         return Promise.reject(error);
@@ -63,28 +88,60 @@ export const AuthProvider = ({ children }) => {
   // Функция для входа
   const login = async (email, password) => {
     try {
+      setAuthError(null);
       const response = await axios.post('http://localhost:8080/api/auth/login', {
         email,
         password
       });
       
-      const { token, ...userData } = response.data;
+      const { token, firstName, lastName, role, roles } = response.data;
       
-      // Сохраняем токен и данные пользователя
+      // Сохраняем токен
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
       
       // Устанавливаем токен для всех последующих запросов
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
-      // Обновляем состояние
-      setUser(userData);
-      
-      return { success: true };
+      // Декодируем токен и устанавливаем пользователя
+      try {
+        const decoded = jwtDecode(token);
+        
+        // Обрабатываем роли из ответа сервера или из токена
+        let userRoles = roles || [];
+        if (decoded.roles) {
+          if (typeof decoded.roles === 'string') {
+            userRoles = decoded.roles.split(',');
+          } else if (Array.isArray(decoded.roles)) {
+            userRoles = decoded.roles;
+          }
+        }
+        
+        const userData = {
+          id: decoded.sub,
+          email: email || decoded.email || decoded.sub,
+          firstName: firstName || decoded.firstName,
+          lastName: lastName || decoded.lastName,
+          roles: userRoles,
+          role: role || (userRoles.length > 0 ? userRoles[0].replace('ROLE_', '') : 'USER')
+        };
+        
+        // Обновляем состояние
+        setUser(userData);
+        
+        return { success: true };
+      } catch (error) {
+        console.error("Ошибка при декодировании токена:", error);
+        return {
+          success: false,
+          message: 'Ошибка при обработке данных пользователя'
+        };
+      }
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data || 'Ошибка при входе в систему' 
+      const errorMessage = error.response?.data?.message || 'Ошибка при входе в систему';
+      setAuthError(errorMessage);
+      return {
+        success: false,
+        message: errorMessage
       };
     }
   };
@@ -103,9 +160,8 @@ export const AuthProvider = ({ children }) => {
   
   // Обработка выхода из системы
   const handleLogout = () => {
-    // Удаляем токен и данные пользователя
+    // Удаляем токен
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     
     // Удаляем заголовок авторизации
     delete axios.defaults.headers.common['Authorization'];
@@ -117,18 +173,33 @@ export const AuthProvider = ({ children }) => {
   // Проверка авторизации пользователя
   const isAuthenticated = () => {
     const token = localStorage.getItem('token');
-    return !!user && !!token && isTokenValid(token);
+    return !!token && isTokenValid(token);
+  };
+  
+  // Проверка наличия роли администратора
+  const isAdmin = () => {
+    if (!user || !user.roles) return false;
+    return user.roles.includes('ROLE_ADMIN') || user.role === 'ADMIN';
+  };
+  
+  // Получение ID пользователя
+  const getUserId = () => {
+    if (!user) return null;
+    return user.id;
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      login, 
-      logout, 
-      isAuthenticated 
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      logout,
+      isAuthenticated,
+      isAdmin,
+      getUserId,
+      authError
     }}>
       {children}
     </AuthContext.Provider>
   );
-}; 
+};

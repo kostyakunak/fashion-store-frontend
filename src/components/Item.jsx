@@ -4,8 +4,10 @@ import "../styles/Item.css";
 import "../styles/image-modal.css";
 import ImageRoller from "../hooks/ImageRoller";
 import useImageModal from "../hooks/useImageModal";
+import useWishlist from "../hooks/useWishlist";
 import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
+import ProductWishlistButton from "./ProductWishlistButton";
 
 function Item() {
     const [product, setProduct] = useState(null);
@@ -14,6 +16,8 @@ function Item() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [availableSizes, setAvailableSizes] = useState([]);
+    const [showSizeChart, setShowSizeChart] = useState(false);
+    const { toggleWishlistItem } = useWishlist();
     
     const location = useLocation();
     const navigate = useNavigate();
@@ -180,66 +184,10 @@ function Item() {
         });
     };
 
-    // Функция добавления товара в избранное
-    const addToWishlist = () => {
+    // Использовать функцию из хука useWishlist для работы с избранным
+    const handleToggleWishlist = () => {
         if (!product) return;
-        
-        // Получаем userId из localStorage (предполагаем что пользователь авторизован)
-        const userId = localStorage.getItem("userId");
-        if (!userId) {
-            // Если пользователь не авторизован, сохраняем в localStorage
-            const wishlistItems = JSON.parse(localStorage.getItem("wishlistItems") || "[]");
-            const wishlistItem = {
-                productId: product.id,
-                addedAt: new Date().toISOString()
-            };
-            
-            // Проверяем, есть ли уже такой товар в избранном
-            const existingItemIndex = wishlistItems.findIndex(
-                item => item.productId === product.id
-            );
-            
-            if (existingItemIndex !== -1) {
-                alert("Товар уже есть в избранном");
-                return;
-            }
-            
-            // Добавляем товар в избранное
-            wishlistItems.push(wishlistItem);
-            localStorage.setItem("wishlistItems", JSON.stringify(wishlistItems));
-            alert("Товар добавлен в избранное");
-            return;
-        }
-        
-        // Если пользователь авторизован, отправляем запрос на сервер
-        fetch("http://localhost:8080/wishlist", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                userId: userId,
-                productId: product.id
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP ошибка! Статус: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Ответ сервера:", data);
-            if (data.success) {
-                alert(data.message);
-            } else {
-                alert("Ошибка при добавлении товара в избранное");
-            }
-        })
-        .catch(error => {
-            console.error("Ошибка добавления в избранное:", error);
-            alert(`Ошибка: ${error.message}`);
-        });
+        toggleWishlistItem(product);
     };
 
     // После useEffect, который загружает данные о товаре, добавляем функцию для фильтрации размеров
@@ -318,7 +266,7 @@ function Item() {
 
                             <div className="price-wishlist-container">
                                 <div className="cost">{product.price} руб.</div>
-                                <button className="wishlist-button" onClick={addToWishlist}>♥</button>
+                                <ProductWishlistButton product={product} size="md" />
                             </div>
 
                             <div className="details-container">
@@ -343,25 +291,93 @@ function Item() {
                                     <button onClick={() => setQuantity(quantity + 1)}>+</button>
                                 </div>
                                 
-                                <div className="size-buttons">
-                                    {availableSizes.map(size => {
-                                        // Проверяем наличие товара по полю inStock или quantity
-                                        const isAvailable = size.inStock === true || (size.quantity != null && size.quantity > 0);
-                                        
-                                        return (
-                                            <button 
-                                                key={size.id}
-                                                className={`size-button ${selectedSize === size.id ? "active" : ""} ${!isAvailable ? "disabled" : ""}`}
-                                                onClick={() => isAvailable && setSelectedSize(size.id)}
-                                                disabled={!isAvailable}
-                                                title={!isAvailable ? "Размер отсутствует на складе" : ""}
-                                            >
-                                                {size.name}
-                                                {!isAvailable && <span className="out-of-stock-label">❌</span>}
-                                            </button>
-                                        );
-                                    })}
+                                <div className="size-selection-container">
+                                    <div className="size-header">
+                                        <h3>Выберите размер</h3>
+                                        <button
+                                            className="size-chart-button"
+                                            onClick={() => setShowSizeChart(true)}
+                                        >
+                                            Таблица размеров
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="size-buttons">
+                                        {availableSizes.map(size => {
+                                            // Проверяем наличие товара по полю inStock или quantity
+                                            const isAvailable = size.inStock === true || (size.quantity != null && size.quantity > 0);
+                                            
+                                            return (
+                                                <button
+                                                    key={size.id}
+                                                    className={`size-button ${selectedSize === size.id ? "active" : ""} ${!isAvailable ? "disabled" : ""}`}
+                                                    onClick={() => isAvailable && setSelectedSize(size.id)}
+                                                    disabled={!isAvailable}
+                                                    title={!isAvailable ? "Размер отсутствует на складе" : ""}
+                                                >
+                                                    {size.name}
+                                                    {!isAvailable && <span className="out-of-stock-label">❌</span>}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
+                                
+                                {/* Size Chart Modal */}
+                                {showSizeChart && (
+                                    <div className="size-chart-modal-overlay" onClick={() => setShowSizeChart(false)}>
+                                        <div className="size-chart-modal" onClick={(e) => e.stopPropagation()}>
+                                            <div className="size-chart-header">
+                                                <h2>Таблица размеров</h2>
+                                                <button className="close-button" onClick={() => setShowSizeChart(false)}>×</button>
+                                            </div>
+                                            <div className="size-chart-content">
+                                                <table className="size-chart-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Размер</th>
+                                                            <th>Грудь (см)</th>
+                                                            <th>Талия (см)</th>
+                                                            <th>Бёдра (см)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>XS</td>
+                                                            <td>82-85</td>
+                                                            <td>65-68</td>
+                                                            <td>89-92</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>S</td>
+                                                            <td>86-89</td>
+                                                            <td>69-72</td>
+                                                            <td>93-96</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>M</td>
+                                                            <td>90-93</td>
+                                                            <td>73-76</td>
+                                                            <td>97-100</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>L</td>
+                                                            <td>94-97</td>
+                                                            <td>77-81</td>
+                                                            <td>101-104</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>XL</td>
+                                                            <td>98-103</td>
+                                                            <td>82-87</td>
+                                                            <td>105-110</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                                 <button className="add-to-bag" onClick={addToCart}>
                                     Добавить в корзину
                                 </button>

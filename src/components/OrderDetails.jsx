@@ -1,182 +1,160 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { AuthContext } from '../context/AuthContext';
+import useOrders from '../hooks/useOrders';
 import "../styles/OrderDetails.css";
 import { Footer } from "../scripts/Footer";
 import { Header } from "../scripts/Header";
-import axios from "axios";
 
 function OrderDetails() {
-    const [orderDetails, setOrderDetails] = useState([]);
-    const [products, setProducts] = useState([]);
-    const [sizes, setSizes] = useState([]);
-    const [orders, setOrders] = useState([]);
-    const [editingItem, setEditingItem] = useState(null);
-    const [selectedProduct, setSelectedProduct] = useState("");
-    const [selectedSize, setSelectedSize] = useState("");
-    const [quantity, setQuantity] = useState(1);
+    const { orderId } = useParams();
+    const navigate = useNavigate();
+    const { isAuthenticated } = useContext(AuthContext);
+    const { 
+        selectedOrder, 
+        orderDetails, 
+        loading, 
+        error, 
+        loadOrderById, 
+        cancelOrder, 
+        canBeCancelled 
+    } = useOrders();
 
     useEffect(() => {
-        fetchOrderDetails();
-        fetchProducts();
-        fetchSizes();
-        fetchOrders();
-    }, []);
+        // Redirect if not authenticated
+        if (!isAuthenticated()) {
+            navigate('/login');
+            return;
+        }
 
-    const fetchOrderDetails = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/api/order-details");
-            setOrderDetails(response.data);
-        } catch (error) {
-            console.error("Error fetching order details:", error);
+        // Load order details when component mounts or orderId changes
+        if (orderId) {
+            loadOrderById(orderId);
+        }
+    }, [isAuthenticated, navigate, orderId, loadOrderById]);
+
+    const handleCancelOrder = async () => {
+        if (window.confirm('Вы уверены, что хотите отменить этот заказ?')) {
+            const success = await cancelOrder(orderId);
+            if (success) {
+                // Order was successfully cancelled
+                // Reload the order to show updated status
+                loadOrderById(orderId);
+            }
         }
     };
 
-    const fetchOrders = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/api/orders");
-            setOrders(response.data);
-        } catch (error) {
-            console.error("Error fetching orders:", error);
-        }
+    // Map status codes to readable Russian text
+    const getStatusText = (status) => {
+        const statusMap = {
+            'AWAITING_PAYMENT': 'Ожидает оплаты',
+            'PAID': 'Оплачен',
+            'SHIPPED': 'Отправлен',
+            'DELIVERED': 'Доставлен',
+            'CANCELLED': 'Отменен'
+        };
+        return statusMap[status] || status;
     };
 
-    const fetchProducts = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/api/products");
-            setProducts(response.data);
-        } catch (error) {
-            console.error("Error fetching products:", error);
-        }
-    };
+    if (loading) {
+        return (
+            <div className="order-details">
+                <Header />
+                <main>
+                    <div className="loading">Загрузка...</div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
-    const fetchSizes = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/api/sizes");
-            setSizes(response.data);
-        } catch (error) {
-            console.error("Error fetching sizes:", error);
-        }
-    };
+    if (error) {
+        return (
+            <div className="order-details">
+                <Header />
+                <main>
+                    <div className="error">{error}</div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
-    const handleEdit = (item) => {
-        setEditingItem(item);
-        setSelectedProduct(item.product_id);
-        setSelectedSize(item.size_id);
-        setQuantity(item.quantity);
-    };
-
-    const handleSave = async () => {
-        try {
-            await axios.put(`http://localhost:8080/api/order-details/${editingItem.id}`, {
-                product_id: selectedProduct,
-                size_id: selectedSize,
-                quantity: quantity
-            });
-            setEditingItem(null);
-            fetchOrderDetails();
-        } catch (error) {
-            console.error("Error updating order detail:", error);
-        }
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            await axios.delete(`http://localhost:8080/api/order-details/${id}`);
-            fetchOrderDetails();
-        } catch (error) {
-            console.error("Error deleting order detail:", error);
-        }
-    };
+    if (!selectedOrder) {
+        return (
+            <div className="order-details">
+                <Header />
+                <main>
+                    <div className="error">Заказ не найден</div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
-        <div className="order_details">
+        <div className="order-details">
             <Header />
             <main>
                 <div className="order-details-container">
-                    <h2>Order Details</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Order ID</th>
-                                <th>Product</th>
-                                <th>Size</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {orderDetails.map((item) => {
-                                const order = orders.find(o => o.id === item.order_id);
-                                return (
-                                    <tr key={item.id}>
-                                        <td>{item.id}</td>
-                                        <td>{order ? order.id : 'N/A'}</td>
-                                        <td>
-                                            {editingItem?.id === item.id ? (
-                                                <select
-                                                    value={selectedProduct}
-                                                    onChange={(e) => setSelectedProduct(e.target.value)}
-                                                >
-                                                    <option value="">Select Product</option>
-                                                    {products.map((product) => (
-                                                        <option key={product.id} value={product.id}>
-                                                            {product.name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            ) : (
-                                                products.find(p => p.id === item.product_id)?.name
-                                            )}
-                                        </td>
-                                        <td>
-                                            {editingItem?.id === item.id ? (
-                                                <select
-                                                    value={selectedSize}
-                                                    onChange={(e) => setSelectedSize(e.target.value)}
-                                                >
-                                                    <option value="">Select Size</option>
-                                                    {sizes.map((size) => (
-                                                        <option key={size.id} value={size.id}>
-                                                            {size.name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            ) : (
-                                                sizes.find(s => s.id === item.size_id)?.name
-                                            )}
-                                        </td>
-                                        <td>
-                                            {editingItem?.id === item.id ? (
-                                                <input
-                                                    type="number"
-                                                    value={quantity}
-                                                    onChange={(e) => setQuantity(parseInt(e.target.value))}
-                                                    min="1"
-                                                />
-                                            ) : (
-                                                item.quantity
-                                            )}
-                                        </td>
-                                        <td>${item.price_at_purchase}</td>
-                                        <td>
-                                            {editingItem?.id === item.id ? (
-                                                <>
-                                                    <button onClick={handleSave}>Save</button>
-                                                    <button onClick={() => setEditingItem(null)}>Cancel</button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <button onClick={() => handleEdit(item)}>Edit</button>
-                                                    <button onClick={() => handleDelete(item.id)}>Delete</button>
-                                                </>
-                                            )}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                    <div className="back-link">
+                        <Link to="/orders">← Вернуться к списку заказов</Link>
+                    </div>
+                    
+                    <div className="order-details-header">
+                        <h2>Детали заказа #{selectedOrder.id}</h2>
+                        <span className={`status-badge ${selectedOrder.status.toLowerCase()}`}>
+                            {getStatusText(selectedOrder.status)}
+                        </span>
+                    </div>
+                    
+                    <div className="order-info">
+                        <div className="order-info-section">
+                            <h3>Информация о заказе</h3>
+                            <p><strong>Дата создания:</strong> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                            <p><strong>Статус:</strong> {getStatusText(selectedOrder.status)}</p>
+                            <p><strong>Сумма заказа:</strong> ${selectedOrder.totalPrice}</p>
+                        </div>
+                    </div>
+                    
+                    <div className="order-items-section">
+                        <h3>Товары в заказе</h3>
+                        <div className="order-items-list">
+                            {orderDetails.map((item) => (
+                                <div key={item.id} className="order-item-detail">
+                                    <div className="item-image">
+                                        <img 
+                                            src={item.product.imageUrl || "Images/default-product.png"} 
+                                            alt={item.product.name} 
+                                        />
+                                    </div>
+                                    <div className="item-info">
+                                        <h4>{item.product.name}</h4>
+                                        <p>Размер: {item.size.name}</p>
+                                        <p>Количество: {item.quantity}</p>
+                                        <p>Цена за единицу: ${item.priceAtPurchase}</p>
+                                        <p>Итого: ${(item.priceAtPurchase * item.quantity).toFixed(2)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <div className="order-summary">
+                        <h3>Итого</h3>
+                        <p className="total-price">${selectedOrder.totalPrice}</p>
+                        
+                        {canBeCancelled(selectedOrder) && (
+                            <div className="order-actions">
+                                <button 
+                                    className="cancel-button" 
+                                    onClick={handleCancelOrder}
+                                >
+                                    Отменить заказ
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </main>
             <Footer />

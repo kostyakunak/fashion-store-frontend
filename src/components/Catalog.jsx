@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "../styles/Catalog.css";
 import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
+import ProductWishlistButton from "./ProductWishlistButton";
 
 function Catalog() {
     const [products, setProducts] = useState([]);
@@ -101,14 +102,19 @@ function Catalog() {
                     <div className="product-card column-1">
                         {column1Products.map(product => (
                             <div key={product.id} className="card-sizing-type-1">
-                                <Link to={`/item?id=${product.id}`}>
-                                    <img 
-                                        className="image-source" 
-                                        src={getImageSrc(product)} 
-                                        alt={product.name} 
-                                        loading="lazy"
-                                    />
-                                </Link>
+                                <div className="product-card-content">
+                                    <Link to={`/item?id=${product.id}`}>
+                                        <img
+                                            className="image-source"
+                                            src={getImageSrc(product)}
+                                            alt={product.name}
+                                            loading="lazy"
+                                        />
+                                    </Link>
+                                    <div className="product-card-actions">
+                                        <ProductWishlistButton product={product} />
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -116,14 +122,19 @@ function Catalog() {
                     <div className="product-card column-2">
                         {column2Products.map(product => (
                             <div key={product.id} className="card-sizing-type-2">
-                                <Link to={`/item?id=${product.id}`}>
-                                    <img 
-                                        className="image-source" 
-                                        src={getImageSrc(product)} 
-                                        alt={product.name} 
-                                        loading="lazy"
-                                    />
-                                </Link>
+                                <div className="product-card-content">
+                                    <Link to={`/item?id=${product.id}`}>
+                                        <img
+                                            className="image-source"
+                                            src={getImageSrc(product)}
+                                            alt={product.name}
+                                            loading="lazy"
+                                        />
+                                    </Link>
+                                    <div className="product-card-actions">
+                                        <ProductWishlistButton product={product} />
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -131,14 +142,19 @@ function Catalog() {
                     <div className="product-card column-3">
                         {column3Products.map(product => (
                             <div key={product.id} className="card-sizing-type-3">
-                                <Link to={`/item?id=${product.id}`}>
-                                    <img 
-                                        className="image-source" 
-                                        src={getImageSrc(product)} 
-                                        alt={product.name} 
-                                        loading="lazy"
-                                    />
-                                </Link>
+                                <div className="product-card-content">
+                                    <Link to={`/item?id=${product.id}`}>
+                                        <img
+                                            className="image-source"
+                                            src={getImageSrc(product)}
+                                            alt={product.name}
+                                            loading="lazy"
+                                        />
+                                    </Link>
+                                    <div className="product-card-actions">
+                                        <ProductWishlistButton product={product} />
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
