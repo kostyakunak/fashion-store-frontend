@@ -513,8 +513,8 @@ const GenericTableManager = ({
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredItems.map(item => (
-                                <tr key={item.id}>
+                            {filteredItems.map((item, idx) => (
+                                <tr key={`${item.id}-${idx}`}>
                                     {fields.map(field => (
                                         <td key={`${item.id}-${field.name}`}>
                                             {editingItem && editingItem.originalId === item.id ? (

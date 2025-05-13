@@ -36,6 +36,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
+import AdminOrdersGeneric from './pages/admin/AdminOrdersGeneric';
 
 function App() {
     return (
@@ -79,6 +80,7 @@ function App() {
                         <Route path="/admin/payments-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminPaymentsGeneric /></PageWrapper></PrivateRoute>} />
                         <Route path="/admin/images-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminImagesGeneric /></PageWrapper></PrivateRoute>} />
                         <Route path="/admin/debug" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminDebugger /></PageWrapper></PrivateRoute>} />
+                        <Route path="/admin/orders-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminOrdersGeneric /></PageWrapper></PrivateRoute>} />
                     </Routes>
                 </div>
             </Router>

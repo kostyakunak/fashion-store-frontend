@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GenericTableManager from '../../components/generic/GenericTableManager';
 import ErrorMessage from '../../components/common/ErrorMessage';
@@ -34,39 +34,34 @@ const AdminProductsGeneric = () => {
         entityName: 'product'
     });
 
-    // Authentication & authorization check
+    const loadCategories = useCallback(async () => {
+        setCategoryLoading(true);
+        try {
+            const categoriesData = await getCategories();
+            setCategories(categoriesData);
+        } catch (err) {
+            const errorMessage = handleApiError(err, 'Failed to load categories');
+            setCategoryError(errorMessage);
+            console.error('Error loading categories:', err);
+        } finally {
+            setCategoryLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         if (!isAuthenticated()) {
             navigate('/login', { state: { message: 'Please login to access admin pages' } });
             return;
         }
-        
         if (!isAdmin()) {
             setCategoryError('You do not have permission to access this page');
             setTimeout(() => navigate('/'), 2000);
             return;
         }
-        
-        // Clear errors when component mounts
         clearError();
         setCategoryError(null);
-        
-        // Load categories when component mounts
-        const loadCategories = async () => {
-            setCategoryLoading(true);
-            try {
-                const categoriesData = await getCategories();
-                setCategories(categoriesData);
-            } catch (err) {
-                const errorMessage = handleApiError(err, 'Failed to load categories');
-                setCategoryError(errorMessage);
-                console.error('Error loading categories:', err);
-            } finally {
-                setCategoryLoading(false);
-            }
-        };
         loadCategories();
-    }, [isAdmin, isAuthenticated, navigate, clearError]);
+    }, [navigate]);
 
     // Handler for transforming data during editing
     const handleOnEdit = (item) => {

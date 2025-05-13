@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import GenericTableManager from '../../components/generic/GenericTableManager';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
-import createApiClient from '../../utils/apiUtils';
+import { createAdminApiClient } from '../../utils/apiUtils';
 
-// Create API client for orders
+// Создаём API-клиент для заказов
 const API_URL = "http://localhost:8080/api/admin/orders";
-const apiClient = createApiClient(API_URL);
+const apiClient = createAdminApiClient({ baseURL: API_URL });
 
 const AdminOrdersGeneric = () => {
     const [loading, setLoading] = useState(false);
@@ -23,7 +23,8 @@ const AdminOrdersGeneric = () => {
         const loadUsers = async () => {
             setLoading(true);
             try {
-                const usersClient = createApiClient("http://localhost:8080/api/admin/users");
+                // Создаём API-клиент для пользователей
+                const usersClient = createAdminApiClient({ baseURL: "http://localhost:8080/api/admin/users" });
                 const response = await usersClient.get("");
                 setUsers(response.data);
             } catch (err) {
@@ -235,6 +236,14 @@ const AdminOrdersGeneric = () => {
             }, 2000);
         }
     }, [error, navigate]);
+
+    // Временный вывод заказов для диагностики
+    useEffect(() => {
+        (async () => {
+            const orders = await orderApiClient.getAll();
+            console.log('orders from API:', orders);
+        })();
+    }, []);
 
     return (
         <div className="admin-orders-container">
