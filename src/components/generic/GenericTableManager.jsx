@@ -9,19 +9,32 @@ import '../../styles/AdminTables.css';
  */
 const ErrorAlert = ({ message }) => {
     if (!message) return null;
+    
+    // Преобразуем сообщение об ошибке в более понятный формат
+    let displayMessage = message;
+    if (typeof message === 'string') {
+        if (message.startsWith('Invalid') || message.startsWith('Неверное значение поля')) {
+            const fieldName = message.split(' ').pop();
+            displayMessage = `Пожалуйста, проверьте поле "${fieldName}"`;
+        }
+    }
+    
     return (
         <div style={{
             backgroundColor: '#ffebee',
             border: '1px solid #f44336',
             color: '#d32f2f',
             borderRadius: '4px',
-            padding: '10px 16px',
-            margin: '10px 0',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            boxShadow: '0 0 5px rgba(0,0,0,0.1)'
+            padding: '8px 12px',
+            margin: '4px 0',
+            fontSize: '13px',
+            lineHeight: '1.4',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
         }}>
-            {message}
+            <span style={{ fontSize: '16px' }}>⚠️</span>
+            {displayMessage}
         </div>
     );
 };
@@ -165,23 +178,34 @@ const GenericTableManager = ({
             processedValue = value === '' ? null : parseInt(value);
         }
         
-        const isValid = validateField(name, processedValue);
-        
-        if (!isValid) {
-            setErrors(prev => ({ ...prev, [name]: `Invalid ${name}` }));
-            return;
-        }
-
-        setErrors(prev => {
-            const newErrors = { ...prev };
-            delete newErrors[name];
-            return newErrors;
-        });
-
+        // Обновляем значение поля
         if (item) {
             setEditingItem(prev => ({ ...prev, [name]: processedValue }));
         } else {
             setNewItem({ ...targetItem, [name]: processedValue });
+        }
+
+        // Проверяем валидность после обновления значения
+        const isValid = validateField(name, processedValue);
+        
+        // Находим поле для получения его метки
+        const field = fields.find(f => f.name === name);
+        const fieldLabel = field ? field.label : name;
+        
+        if (!isValid) {
+            let errorMessage = `Пожалуйста, проверьте поле "${fieldLabel}"`;
+            if (!processedValue || processedValue.trim().length === 0) {
+                errorMessage = `Поле "${fieldLabel}" не может быть пустым`;
+            } else if (processedValue.trim().length < 2) {
+                errorMessage = `Поле "${fieldLabel}" должно содержать минимум 2 символа`;
+            }
+            setErrors(prev => ({ ...prev, [name]: errorMessage }));
+        } else {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
         }
     };
 

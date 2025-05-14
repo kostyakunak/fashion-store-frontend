@@ -13,7 +13,12 @@ const axiosInstance = axios.create({
 
 export const getUsers = async () => {
     try {
-        const response = await axiosInstance.get("");
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get("", {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Ошибка при получении пользователей:", error);
@@ -23,7 +28,12 @@ export const getUsers = async () => {
 
 export const createUser = async (userData) => {
     try {
-        const response = await axiosInstance.post("", userData);
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.post("", userData, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Ошибка при создании пользователя:", error);
@@ -33,7 +43,12 @@ export const createUser = async (userData) => {
 
 export const updateUser = async (id, userData) => {
     try {
-        const response = await axiosInstance.put(`/${id}`, userData);
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.put(`/${id}`, userData, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Ошибка при обновлении пользователя:", error);
@@ -43,7 +58,12 @@ export const updateUser = async (id, userData) => {
 
 export const deleteUser = async (id) => {
     try {
-        await axiosInstance.delete(`/${id}`);
+        const token = localStorage.getItem('token');
+        await axiosInstance.delete(`/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
     } catch (error) {
         console.error("Ошибка при удалении пользователя:", error);
         throw error;

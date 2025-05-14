@@ -42,9 +42,9 @@ const AdminCategoriesGeneric = () => {
                 const data = await getCategories();
                 return data;
             } catch (error) {
-                const errorMessage = handleApiError(error, 'Failed to load categories');
+                const errorMessage = handleApiError(error, 'Не удалось загрузить категории');
                 setError(errorMessage);
-                console.error('Error fetching categories:', error);
+                console.error('Ошибка при загрузке категорий:', error);
                 return [];
             } finally {
                 setLoading(false);
@@ -54,15 +54,34 @@ const AdminCategoriesGeneric = () => {
             setLoading(true);
             setError(null);
             try {
-                // Remove id from data to allow server-side auto-generation
+                // Проверяем, что имя не пустое и имеет минимальную длину
+                if (!data.name || data.name.trim().length < 2) {
+                    throw new Error('Название категории должно содержать минимум 2 символа');
+                }
+
+                // Проверяем уникальность имени
+                const existingCategories = await getCategories();
+                const isDuplicate = existingCategories.some(
+                    category => category.name.toLowerCase() === data.name.trim().toLowerCase()
+                );
+                if (isDuplicate) {
+                    throw new Error('Категория с таким названием уже существует');
+                }
+
+                // Удаляем id для автогенерации на сервере
                 const { id, ...dataWithoutId } = data;
-                const result = await createCategory(dataWithoutId);
+                
+                // Отправляем данные с очищенным именем
+                const cleanData = {
+                    ...dataWithoutId,
+                    name: data.name.trim()
+                };
+                
+                const result = await createCategory(cleanData);
                 return result;
             } catch (error) {
-                const errorMessage = handleApiError(error, 'Failed to create category');
-                setError(errorMessage);
-                console.error('Error creating category:', error);
-                throw error;
+                const errorMessage = handleApiError(error, 'Не удалось создать категорию');
+                throw new Error(errorMessage);
             } finally {
                 setLoading(false);
             }
@@ -71,13 +90,32 @@ const AdminCategoriesGeneric = () => {
             setLoading(true);
             setError(null);
             try {
-                const result = await updateCategory(id, data);
+                // Проверяем, что имя не пустое и имеет минимальную длину
+                if (!data.name || data.name.trim().length < 2) {
+                    throw new Error('Название категории должно содержать минимум 2 символа');
+                }
+
+                // Проверяем уникальность имени
+                const existingCategories = await getCategories();
+                const isDuplicate = existingCategories.some(
+                    category => category.id !== id && 
+                    category.name.toLowerCase() === data.name.trim().toLowerCase()
+                );
+                if (isDuplicate) {
+                    throw new Error('Категория с таким названием уже существует');
+                }
+
+                // Отправляем данные с очищенным именем
+                const cleanData = {
+                    ...data,
+                    name: data.name.trim()
+                };
+
+                const result = await updateCategory(id, cleanData);
                 return result;
             } catch (error) {
-                const errorMessage = handleApiError(error, 'Failed to update category');
-                setError(errorMessage);
-                console.error('Error updating category:', error);
-                throw error;
+                const errorMessage = handleApiError(error, 'Не удалось обновить категорию');
+                throw new Error(errorMessage);
             } finally {
                 setLoading(false);
             }
@@ -89,10 +127,8 @@ const AdminCategoriesGeneric = () => {
                 await deleteCategory(id);
                 return true;
             } catch (error) {
-                const errorMessage = handleApiError(error, 'Failed to delete category');
-                setError(errorMessage);
-                console.error('Error deleting category:', error);
-                throw error;
+                const errorMessage = handleApiError(error, 'Не удалось удалить категорию');
+                throw new Error(errorMessage);
             } finally {
                 setLoading(false);
             }
@@ -108,10 +144,10 @@ const AdminCategoriesGeneric = () => {
         },
         {
             name: "name",
-            label: "Category Name",
+            label: "Название категории",
             type: "text",
             required: true,
-            hint: "Enter a unique category name"
+            hint: "Введите уникальное название категории (минимум 2 символа)"
         }
     ];
 
@@ -150,12 +186,12 @@ const AdminCategoriesGeneric = () => {
             <LoadingIndicator isLoading={loading} />
             
             <div style={styles.header}>
-                <h1>Category Management</h1>
-                <p>Create, update, and delete product categories</p>
+                <h1>Управление категориями</h1>
+                <p>Создание, редактирование и удаление категорий товаров</p>
             </div>
             
             <GenericTableManager
-                title="Categories"
+                title="Категории"
                 apiClient={apiClient}
                 fields={fields}
                 validators={validators}
@@ -163,7 +199,7 @@ const AdminCategoriesGeneric = () => {
             />
             
             <div style={styles.footer}>
-                <p>Note: Deleting categories may affect products that belong to those categories.</p>
+                <p>Подсказка: Название категории должно быть уникальным и содержать минимум 2 символа</p>
             </div>
         </div>
     );
