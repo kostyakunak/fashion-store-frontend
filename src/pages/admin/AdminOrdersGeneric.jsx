@@ -4,6 +4,7 @@ import GenericTableManager from '../../components/generic/GenericTableManager';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import { createAdminApiClient } from '../../utils/apiUtils';
+import { getAddressesByUser } from '../../api/addressesApi';
 
 // Создаём API-клиент для заказов
 const API_URL = "http://localhost:8080/api/admin/orders";
@@ -13,6 +14,8 @@ const AdminOrdersGeneric = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [users, setUsers] = useState([]);
+    const [addresses, setAddresses] = useState([]);
+    const [selectedUserId, setSelectedUserId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,6 +40,20 @@ const AdminOrdersGeneric = () => {
         loadUsers();
     }, []);
 
+    // Загружаем адреса при изменении пользователя
+    useEffect(() => {
+        if (selectedUserId) {
+            getAddressesByUser(selectedUserId)
+                .then(setAddresses)
+                .catch((err) => {
+                    setAddresses([]);
+                    setError('Не удалось загрузить адреса пользователя');
+                });
+        } else {
+            setAddresses([]);
+        }
+    }, [selectedUserId]);
+
     const orderApiClient = {
         getAll: async () => {
             setLoading(true);
@@ -56,18 +73,14 @@ const AdminOrdersGeneric = () => {
             setLoading(true);
             setError(null);
             try {
-                // Remove id to allow server-side auto-generation
-                const { id, ...dataWithoutId } = data;
-                
-                // Ensure user is properly formatted
+                // Не отправляем id и totalAmount
+                const { id, totalAmount, user, ...dataWithoutId } = data;
                 const orderData = {
                     ...dataWithoutId,
-                    user: { id: parseInt(data.userId) }
+                    userId: parseInt(data.userId),
+                    addressId: parseInt(data.addressId)
                 };
-                
-                // Remove the temporary userId field
-                delete orderData.userId;
-                
+                delete orderData.user;
                 const response = await apiClient.post("", orderData);
                 return response.data;
             } catch (err) {
@@ -82,15 +95,14 @@ const AdminOrdersGeneric = () => {
             setLoading(true);
             setError(null);
             try {
-                // Ensure user is properly formatted
+                // Не отправляем totalAmount
+                const { totalAmount, user, ...dataWithoutTotal } = data;
                 const orderData = {
-                    ...data,
-                    user: { id: parseInt(data.userId) }
+                    ...dataWithoutTotal,
+                    userId: parseInt(data.userId),
+                    addressId: parseInt(data.addressId)
                 };
-                
-                // Remove the temporary userId field
-                delete orderData.userId;
-                
+                delete orderData.user;
                 const response = await apiClient.put(`/${id}`, orderData);
                 return response.data;
             } catch (err) {
@@ -119,13 +131,17 @@ const AdminOrdersGeneric = () => {
 
     // Handler for transforming data during editing
     const handleOnEdit = (item) => {
-        if (item.user && item.user.id) {
-            return {
-                ...item,
-                userId: item.user.id.toString()
-            };
-        }
-        return item;
+        const userId = item.user ? String(item.user.id) : (item.userId ? String(item.userId) : '');
+        if (userId && userId !== selectedUserId) setSelectedUserId(userId);
+        return {
+            ...item,
+            userId,
+            addressId: item.address ? String(item.address.id) : (item.addressId ? String(item.addressId) : ''),
+            orderDate: item.orderDate
+                ? new Date(item.orderDate).toISOString().slice(0, 10)
+                : (item.createdAt ? new Date(item.createdAt).toISOString().slice(0, 10) : ''),
+            status: item.status || ''
+        };
     };
 
     const fields = [
@@ -141,12 +157,15 @@ const AdminOrdersGeneric = () => {
             required: true,
             render: (item, onChange) => (
                 <select
-                    value={item.userId || (item.user ? item.user.id : '')}
-                    onChange={(e) => onChange('userId', e.target.value)}
+                    value={item.userId || ''}
+                    onChange={(e) => {
+                        onChange('userId', e.target.value);
+                        setSelectedUserId(e.target.value);
+                    }}
                 >
                     <option value="">Select customer</option>
                     {users.map(user => (
-                        <option key={user.id} value={user.id}>
+                        <option key={user.id} value={String(user.id)}>
                             {user.firstName} {user.lastName} ({user.email})
                         </option>
                     ))}
@@ -159,12 +178,45 @@ const AdminOrdersGeneric = () => {
             }
         },
         {
+            name: "addressId",
+            label: "Адрес доставки",
+            required: true,
+            render: (item, onChange) => (
+                <select
+                    value={item.addressId || ''}
+                    onChange={(e) => onChange('addressId', e.target.value)}
+                    disabled={!selectedUserId || addresses.length === 0}
+                >
+                    <option value="">Выберите адрес</option>
+                    {addresses.map(addr => (
+                        <option key={addr.id} value={String(addr.id)}>
+                            {addr.recipientFirstName} {addr.recipientLastName}, {addr.street}, {addr.city}
+                        </option>
+                    ))}
+                </select>
+            ),
+            display: (item) => {
+                return item.address && item.address.city ? item.address.city : '';
+            }
+        },
+        {
             name: "orderDate",
             label: "Order Date",
             type: "date",
+            render: (item, onChange) => {
+                const dateValue = item.orderDate || (item.createdAt ? new Date(item.createdAt).toISOString().slice(0, 10) : '');
+                return (
+                    <input
+                        type="date"
+                        value={dateValue}
+                        onChange={(e) => onChange('orderDate', e.target.value)}
+                    />
+                );
+            },
             display: (item) => {
-                if (!item.orderDate) return '';
-                return new Date(item.orderDate).toLocaleDateString();
+                const dateValue = item.orderDate || item.createdAt;
+                if (!dateValue) return '';
+                return new Date(dateValue).toLocaleDateString();
             }
         },
         {
@@ -177,10 +229,10 @@ const AdminOrdersGeneric = () => {
                 >
                     <option value="">Select status</option>
                     <option value="PENDING">Pending</option>
-                    <option value="PROCESSING">Processing</option>
                     <option value="SHIPPED">Shipped</option>
                     <option value="DELIVERED">Delivered</option>
                     <option value="CANCELLED">Cancelled</option>
+                    <option value="AWAITING_PAYMENT">Awaiting Payment</option>
                 </select>
             )
         },
@@ -188,28 +240,10 @@ const AdminOrdersGeneric = () => {
             name: "totalAmount",
             label: "Total Amount",
             type: "number",
-            step: "0.01"
-        },
-        {
-            name: "shippingAddress",
-            label: "Shipping Address",
-            type: "text"
-        },
-        {
-            name: "paymentMethod",
-            label: "Payment Method",
-            render: (item, onChange) => (
-                <select
-                    value={item.paymentMethod || ''}
-                    onChange={(e) => onChange('paymentMethod', e.target.value)}
-                >
-                    <option value="">Select payment method</option>
-                    <option value="CREDIT_CARD">Credit Card</option>
-                    <option value="PAYPAL">PayPal</option>
-                    <option value="BANK_TRANSFER">Bank Transfer</option>
-                    <option value="CASH_ON_DELIVERY">Cash on Delivery</option>
-                </select>
-            )
+            step: "0.01",
+            readOnly: true,
+            hideInForm: true,
+            display: (item) => item.totalAmount
         }
     ];
 

@@ -39,6 +39,10 @@ export const createApiClient = (options = {}) => {
         if (token) {
           config.headers['Authorization'] = `Bearer ${token}`;
         }
+        // Логируем токен и заголовки для диагностики
+        console.log('[apiUtils] Отправка запроса:', config.method?.toUpperCase(), config.url);
+        console.log('[apiUtils] Токен:', token);
+        console.log('[apiUtils] Заголовки:', config.headers);
       }
       return config;
     },
