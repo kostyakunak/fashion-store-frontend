@@ -1,20 +1,12 @@
-import axios from "axios";
+import { createAdminApiClient } from "../utils/apiUtils";
 
-const API_URL = "http://localhost:8080/api/admin/sizes";
-const DB_API_URL = "http://localhost:8080/api/admin/db"; // Эндпоинт для прямых запросов к БД
-
-const axiosInstance = axios.create({
-    baseURL: API_URL,
-    withCredentials: true,
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
+const apiClient = createAdminApiClient({
+  baseURL: "http://localhost:8080/api/admin/sizes"
 });
 
 export const getSizes = async () => {
     try {
-        const response = await axiosInstance.get("");
+        const response = await apiClient.get("");
         return response.data;
     } catch (error) {
         console.error("Ошибка при получении списка размеров:", error);
@@ -27,7 +19,7 @@ export const getAllSizes = getSizes;
 
 export const createSize = async (sizeData) => {
     try {
-        const response = await axiosInstance.post("", sizeData);
+        const response = await apiClient.post("", sizeData);
         return response.data;
     } catch (error) {
         console.error("Ошибка при создании размера:", error);
@@ -38,7 +30,7 @@ export const createSize = async (sizeData) => {
 // Стандартный метод обновления через PUT запрос
 export const updateSize = async (id, sizeData) => {
     try {
-        const response = await axiosInstance.put(`${id}`, sizeData);
+        const response = await apiClient.put(`${id}`, sizeData);
         return response.data;
     } catch (error) {
         console.error(`Ошибка при обновлении размера с ID ${id}:`, error);
@@ -48,7 +40,7 @@ export const updateSize = async (id, sizeData) => {
 
 export const deleteSize = async (id) => {
     try {
-        await axiosInstance.delete(`/${id}`);
+        await apiClient.delete(`/${id}`);
         return true;
     } catch (error) {
         console.error(`Ошибка при удалении размера с ID ${id}:`, error);

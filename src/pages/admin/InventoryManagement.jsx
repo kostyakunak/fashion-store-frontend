@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/AdminTables.css";
+import { getWarehouse } from "../../api/warehouseApi";
+import { getProducts } from "../../api/productsApi";
+import { getSizes } from "../../api/sizesApi";
 
 const InventoryManagement = () => {
     const [inventory, setInventory] = useState([]);
@@ -34,12 +37,7 @@ const InventoryManagement = () => {
 
     const fetchInventory = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/admin/warehouse");
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Failed to fetch inventory: ${errorText}`);
-            }
-            const data = await response.json();
+            const data = await getWarehouse();
             setInventory(data);
         } catch (error) {
             console.error("Error fetching inventory:", error);
@@ -49,11 +47,7 @@ const InventoryManagement = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/admin/products");
-            if (!response.ok) {
-                throw new Error('Failed to fetch products');
-            }
-            const data = await response.json();
+            const data = await getProducts();
             setProducts(data);
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -63,11 +57,7 @@ const InventoryManagement = () => {
 
     const fetchSizes = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/admin/sizes");
-            if (!response.ok) {
-                throw new Error('Failed to fetch sizes');
-            }
-            const data = await response.json();
+            const data = await getSizes();
             setSizes(data);
         } catch (error) {
             console.error("Error fetching sizes:", error);
@@ -100,20 +90,19 @@ const InventoryManagement = () => {
             if (field === 'quantity' && value < 0) {
                 throw new Error('Количество не может быть отрицательным');
             }
-
+            const token = localStorage.getItem('token');
             const response = await fetch(`http://localhost:8080/api/admin/warehouse/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ [field]: value }),
             });
-
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`Ошибка обновления: ${errorText}`);
             }
-
             const updatedItem = await response.json();
             setInventory(inventory.map(item => 
                 item.id === id ? updatedItem : item
@@ -135,17 +124,18 @@ const InventoryManagement = () => {
         if (!window.confirm('Вы уверены, что хотите удалить эту запись?')) {
             return;
         }
-
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch(`http://localhost:8080/api/admin/warehouse/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
-
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`Failed to delete item: ${errorText}`);
             }
-
             setInventory(inventory.filter(item => item.id !== id));
         } catch (error) {
             console.error("Error deleting item:", error);
@@ -158,20 +148,19 @@ const InventoryManagement = () => {
             if (newItem.quantity < 0) {
                 throw new Error('Количество не может быть отрицательным');
             }
-
+            const token = localStorage.getItem('token');
             const response = await fetch("http://localhost:8080/api/admin/warehouse", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(newItem),
             });
-            
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`Ошибка добавления: ${errorText}`);
             }
-            
             await fetchInventory();
             setShowAddForm(false);
             setNewItem({
