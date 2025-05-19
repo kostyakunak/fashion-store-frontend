@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { getUserOrders, getOrderById, getOrderDetails, cancelOrder } from "../api/userOrderApi";
 import { AuthContext } from "../context/AuthContext";
 
@@ -25,7 +25,7 @@ export default function useOrders() {
     }, [auth.isAuthenticated()]);
 
     // Load all orders for the authenticated user
-    const loadOrders = async () => {
+    const loadOrders = useCallback(async () => {
         if (!auth.isAuthenticated()) {
             setError("You must be logged in to view orders");
             setLoading(false);
@@ -40,10 +40,15 @@ export default function useOrders() {
             setOrders(data);
             setLoading(false);
         } catch (err) {
+            if (err.response && err.response.status === 401) {
+                setError("Ошибка авторизации (401). Токен не принят сервером. Проверь Network и консоль.\n" + (err.response?.data?.error || ''));
+                setLoading(false);
+                return;
+            }
             setError("Error loading orders: " + (err.response?.data?.message || err.message));
             setLoading(false);
         }
-    };
+    }, [auth]);
 
     // Load a specific order by ID
     const loadOrderById = async (orderId) => {
@@ -64,6 +69,11 @@ export default function useOrders() {
             
             setLoading(false);
         } catch (err) {
+            if (err.response && err.response.status === 401) {
+                setError("Ошибка авторизации (401). Токен не принят сервером. Проверь Network и консоль.\n" + (err.response?.data?.error || ''));
+                setLoading(false);
+                return;
+            }
             setError("Error loading order: " + (err.response?.data?.message || err.message));
             setLoading(false);
         }
@@ -84,6 +94,11 @@ export default function useOrders() {
             setOrderDetails(data);
             setLoading(false);
         } catch (err) {
+            if (err.response && err.response.status === 401) {
+                setError("Ошибка авторизации (401). Токен не принят сервером. Проверь Network и консоль.\n" + (err.response?.data?.error || ''));
+                setLoading(false);
+                return;
+            }
             setError("Error loading order details: " + (err.response?.data?.message || err.message));
             setLoading(false);
         }
@@ -115,6 +130,10 @@ export default function useOrders() {
             
             return true;
         } catch (err) {
+            if (err.response && err.response.status === 401) {
+                setError("Ошибка авторизации (401). Токен не принят сервером. Проверь Network и консоль.\n" + (err.response?.data?.error || ''));
+                return false;
+            }
             setError("Error cancelling order: " + (err.response?.data?.message || err.message));
             return false;
         }

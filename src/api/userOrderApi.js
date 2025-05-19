@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
 // Get authenticated user's orders
 export const getUserOrders = async () => {
     try {
-        const response = await axiosInstance.get("", {
+        const response = await axiosInstance.get("/my", {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }

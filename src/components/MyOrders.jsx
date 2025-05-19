@@ -25,10 +25,9 @@ function MyOrders() {
             navigate('/login');
             return;
         }
-        
         // Load orders on component mount
         loadOrders();
-    }, [isAuthenticated, navigate, loadOrders]);
+    }, [isAuthenticated, navigate]);
 
     const handleCancelOrder = async (orderId) => {
         if (window.confirm('Вы уверены, что хотите отменить этот заказ?')) {
@@ -124,11 +123,15 @@ function MyOrders() {
                                                 <div key={index} className="order-item-details">
                                                     <img 
                                                         className="order-image" 
-                                                        src={item.product.imageUrl || "Images/default-product.png"} 
-                                                        alt={item.product.name} 
+                                                        src={
+                                                            (item.productMap && item.productMap.mainImageUrl) ||
+                                                            (item.product && item.product.imageUrl) ||
+                                                            "Images/default-product.png"
+                                                        } 
+                                                        alt={item.productMap?.name || item.product?.name || "Товар"} 
                                                     />
                                                     <div className="order-details">
-                                                        <h4>{item.product.name}</h4>
+                                                        <h4>{item.productMap?.name || item.product?.name}</h4>
                                                         <p>Размер: {item.size.name}</p>
                                                         <p>Количество: {item.quantity}</p>
                                                         <p>Цена: ${item.priceAtPurchase}</p>
@@ -142,13 +145,6 @@ function MyOrders() {
                                                 <strong>Итого: ${order.totalPrice}</strong>
                                             </div>
                                             <div className="order-actions">
-                                                <Link 
-                                                    to={`/orders/${order.id}`} 
-                                                    className="view-details-button"
-                                                >
-                                                    Детали
-                                                </Link>
-                                                
                                                 {canBeCancelled(order) && (
                                                     <button 
                                                         className="cancel-button"
