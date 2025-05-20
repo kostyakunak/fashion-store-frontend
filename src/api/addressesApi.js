@@ -1,10 +1,20 @@
 import { createAdminApiClient, handleApiError } from '../utils/apiUtils';
+import axios from 'axios';
 
 // Create API client for addresses
 const addressesClient = createAdminApiClient(
   { baseURL: 'http://localhost:8080/api/admin' },
   (error) => console.error('Address API Auth Error:', error)
 );
+
+// Добавляю интерцептор для подстановки токена в addressesClient
+addressesClient.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
 
 /**
  * Fetches all addresses
@@ -41,7 +51,12 @@ export const getUsers = async () => {
  */
 export const getAddressesByUser = async (userId) => {
   try {
-    const response = await addressesClient.get(`/addresses/user/${userId}`);
+    const token = localStorage.getItem('token');
+    const response = await addressesClient.get(`/addresses/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data;
   } catch (error) {
     console.error(`Ошибка при получении адресов пользователя ${userId}:`, error);
@@ -51,20 +66,27 @@ export const getAddressesByUser = async (userId) => {
 
 /**
  * Creates a new address
- * @param {Object} addressData - Address data
+ * @param {Object} address - Address data
  * @returns {Promise<Object>} Created address
  */
-export const createAddress = async (addressData) => {
-  try {
-    // Remove ID for auto-generation on server
-    const { id, ...dataWithoutId } = addressData;
-    
-    const response = await addressesClient.post('/addresses', dataWithoutId);
-    return response.data;
-  } catch (error) {
-    console.error('Ошибка при создании адреса:', error);
-    throw new Error(handleApiError(error, 'Не удалось создать новый адрес'));
+export const createAddress = async (address) => {
+  const token = localStorage.getItem('token');
+  if (!address.userId) {
+    console.error('[createAddress] userId отсутствует!', address);
+    throw new Error('Не определён пользователь для адреса');
   }
+  console.log('[createAddress] userId:', address.userId, 'payload:', address);
+  const response = await axios.post(
+    'http://localhost:8080/api/admin/addresses',
+    address,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  return response.data;
 };
 
 /**

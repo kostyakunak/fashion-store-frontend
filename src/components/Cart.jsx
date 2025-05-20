@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Cart.css";
 import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
@@ -24,6 +24,8 @@ function Cart() {
 
     // Состояние для хранения сообщений о недоступных размерах
     const [sizeWarnings, setSizeWarnings] = useState({});
+
+    const navigate = useNavigate();
 
     // Проверяем доступность выбранных размеров при загрузке и изменении корзины
     useEffect(() => {
@@ -186,6 +188,7 @@ function Cart() {
                                     className="checkout-btn"
                                     disabled={Object.keys(sizeWarnings).length > 0}
                                     title={Object.keys(sizeWarnings).length > 0 ? "Пожалуйста, выберите доступные размеры для всех товаров" : ""}
+                                    onClick={() => navigate('/checkout')}
                                 >
                                     Оформить заказ
                                 </button>

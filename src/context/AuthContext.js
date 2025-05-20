@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { getUserByEmail } from '../utils/userApi';
 
 export const AuthContext = createContext();
 
@@ -19,8 +20,7 @@ export const AuthProvider = ({ children }) => {
         // Декодируем токен для получения данных пользователя
         try {
           const decoded = jwtDecode(token);
-          
-          // Получаем роли из токена
+          console.log('decoded token:', decoded);
           let roles = [];
           if (decoded.roles) {
             if (typeof decoded.roles === 'string') {
@@ -29,15 +29,39 @@ export const AuthProvider = ({ children }) => {
               roles = decoded.roles;
             }
           }
-          
+          // user.id — число, если sub число, иначе null
+          const isSubNumber = !isNaN(Number(decoded.sub));
           setUser({
-            id: decoded.sub,
+            id: isSubNumber ? Number(decoded.sub) : null,
             email: decoded.email || decoded.sub,
             firstName: decoded.firstName,
             lastName: decoded.lastName,
             roles: roles,
             role: decoded.role || (roles.length > 0 ? roles[0].replace('ROLE_', '') : 'USER')
           });
+          // Если id не число, пробуем получить id по email или sub
+          const email = decoded.email || decoded.sub;
+          if (!isSubNumber && email) {
+            console.log('Вызов getUserByEmail с email:', email);
+            try {
+              getUserByEmail(email).then(userData => {
+                console.log('userData from getUserByEmail:', userData);
+                if (userData && userData.id && !isNaN(Number(userData.id))) {
+                  setUser(prev => ({
+                    ...prev,
+                    id: Number(userData.id)
+                  }));
+                  console.log('AuthContext setUser (by email):', userData);
+                } else {
+                  console.error('Не удалось получить числовой id по email:', userData);
+                }
+              }).catch(err => {
+                console.error('Ошибка при получении id по email (then):', err);
+              });
+            } catch (err) {
+              console.error('Ошибка при вызове getUserByEmail (try):', err);
+            }
+          }
           
           // Настраиваем axios для отправки токена в заголовках
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -185,8 +209,15 @@ export const AuthProvider = ({ children }) => {
   // Получение ID пользователя
   const getUserId = () => {
     if (!user) return null;
-    return user.id;
+    // Используем числовой id, если есть, иначе null
+    if (user.id && !isNaN(Number(user.id))) return Number(user.id);
+    if (user.userId && !isNaN(Number(user.userId))) return Number(user.userId);
+    return null;
   };
+
+  useEffect(() => {
+    console.log('AuthContext user:', user);
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{

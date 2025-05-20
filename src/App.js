@@ -37,6 +37,7 @@ import RegisterPage from './pages/RegisterPage';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
 import AdminOrdersGeneric from './pages/admin/AdminOrdersGeneric';
+import Checkout from "./components/Checkout";
 
 function App() {
     return (
@@ -60,6 +61,7 @@ function App() {
                         <Route path="/wishlist" element={<PrivateRoute><PageWrapper><Wishlist /></PageWrapper></PrivateRoute>} />
                         <Route path="/cart" element={<PrivateRoute><PageWrapper><Cart /></PageWrapper></PrivateRoute>} />
                         <Route path="/orders/:orderId" element={<PrivateRoute><PageWrapper><OrderDetails /></PageWrapper></PrivateRoute>} />
+                        <Route path="/checkout" element={<PrivateRoute><PageWrapper><Checkout /></PageWrapper></PrivateRoute>} />
                         
                         {/* Админ маршруты с проверкой роли ADMIN */}
                         <Route path="/admin" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminPanel /></PageWrapper></PrivateRoute>} />

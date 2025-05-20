@@ -133,8 +133,8 @@ const AdminOrdersGeneric = () => {
     const handleOnEdit = (item) => {
         const userId = item.user ? String(item.user.id) : (item.userId ? String(item.userId) : '');
         if (userId && userId !== selectedUserId) setSelectedUserId(userId);
-        return {
-            ...item,
+            return {
+                ...item,
             userId,
             addressId: item.address ? String(item.address.id) : (item.addressId ? String(item.addressId) : ''),
             orderDate: item.orderDate

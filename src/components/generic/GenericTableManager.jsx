@@ -522,33 +522,33 @@ const GenericTableManager = ({
                         <div className="form-container">
                             <h2>Add New Item</h2>
                             {fields.filter(field => !field.readOnly && !field.hideInForm && field.name !== 'id').map(field => (
-                                <div key={field.name} className="edit-field">
-                                    <label>{field.label}</label>
-                                    {field.render ? (
-                                        field.render(newItem, (name, value) => handleInputChange(name, value))
-                                    ) : (
-                                        <input
-                                            type={field.type || 'text'}
-                                            value={newItem[field.name] || ''}
-                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                            className={errors[field.name] ? 'error' : ''}
-                                        />
-                                    )}
-                                    {field.hint && (
-                                        <div className="field-hint" style={{ fontSize: '0.8rem', color: '#666', marginTop: '2px' }}>
-                                            {field.hint}
-                                        </div>
-                                    )}
-                                    {errors[field.name] && (
-                                        <ErrorAlert message={errors[field.name]} />
-                                    )}
-                                </div>
+                                    <div key={field.name} className="edit-field">
+                        <label>{field.label}</label>
+                        {field.render ? (
+                                            field.render(newItem, (name, value) => handleInputChange(name, value))
+                        ) : (
+                            <input
+                                type={field.type || 'text'}
+                                value={newItem[field.name] || ''}
+                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                className={errors[field.name] ? 'error' : ''}
+                            />
+                        )}
+                                        {field.hint && (
+                                            <div className="field-hint" style={{ fontSize: '0.8rem', color: '#666', marginTop: '2px' }}>
+                                                {field.hint}
+                                            </div>
+                        )}
+                        {errors[field.name] && (
+                                            <ErrorAlert message={errors[field.name]} />
+                        )}
+                    </div>
                             ))}
                             <div className="button-group">
                                 <button onClick={handleAdd}>Save</button>
                                 <button onClick={() => setShowAddForm(false)}>Cancel</button>
                             </div>
-                        </div>
+            </div>
                     )}
 
                     <table className="admin-table">
@@ -575,26 +575,26 @@ const GenericTableManager = ({
                                         const isEditableField = !field.readOnly && !field.hideInForm && field.name !== 'id';
                                         if (editingItem && editingItem.originalId === item.id && isEditableField) {
                                             return (
-                                                <td key={`${item.id}-${field.name}`}>
+                                        <td key={`${item.id}-${field.name}`}>
                                                     {field.render ? (
-                                                        field.render(editingItem, (name, value) => handleInputChange(name, value, editingItem))
-                                                    ) : (
-                                                        <input
-                                                            type={field.type || 'text'}
+                                                    field.render(editingItem, (name, value) => handleInputChange(name, value, editingItem))
+                                                ) : (
+                                                    <input
+                                                        type={field.type || 'text'}
                                                             value={field.type === 'date' ? (editingItem[field.name] ? formatDate(editingItem[field.name]) : '') : (editingItem[field.name] || '')}
-                                                            onChange={(e) => handleInputChange(field.name, e.target.value, editingItem)}
-                                                            className={errors[field.name] ? 'error' : ''}
-                                                        />
-                                                    )}
+                                                        onChange={(e) => handleInputChange(field.name, e.target.value, editingItem)}
+                                                        className={errors[field.name] ? 'error' : ''}
+                                                    />
+                                            )}
                                                     {field.hint && (
-                                                        <div className="field-hint" style={{ fontSize: '0.8rem', color: '#666', marginTop: '2px' }}>
-                                                            {field.hint}
-                                                        </div>
-                                                    )}
+                                                <div className="field-hint" style={{ fontSize: '0.8rem', color: '#666', marginTop: '2px' }}>
+                                                    {field.hint}
+                                </div>
+                                            )}
                                                     {errors[field.name] && (
-                                                        <ErrorAlert message={errors[field.name]} />
-                                                    )}
-                                                </td>
+                                                <ErrorAlert message={errors[field.name]} />
+                                            )}
+                                        </td>
                                             );
                                         } else if (editingItem && editingItem.originalId === item.id && !isEditableField) {
                                             return null;
