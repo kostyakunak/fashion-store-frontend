@@ -23,31 +23,8 @@ const styles = {
     borderRadius: '50%',
     animation: 'spinner-border .75s linear infinite',
   },
-  row: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    marginRight: '-15px',
-    marginLeft: '-15px',
-  },
-  col: {
-    position: 'relative',
-    width: '100%',
-    padding: '0 15px',
-    flex: '0 0 100%',
-    maxWidth: '100%',
-  },
-  colMd6: {
-    '@media (min-width: 768px)': {
-      flex: '0 0 50%',
-      maxWidth: '50%',
-    }
-  },
-  colLg4: {
-    '@media (min-width: 992px)': {
-      flex: '0 0 33.333333%',
-      maxWidth: '33.333333%',
-    }
-  },
+  row: undefined,
+  col: undefined,
   card: {
     position: 'relative',
     display: 'flex',
@@ -177,14 +154,9 @@ function Wishlist() {
         <div style={{...styles.container, marginTop: '3rem'}} className="wishlist-container">
             <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>Мой список желаний</h2>
             
-            <div style={styles.row}>
+            <div className="wishlist-row">
                 {wishlistItems.map(item => (
-                    <div key={item.id} style={{
-                        ...styles.col,
-                        ...styles.colMd6,
-                        ...styles.colLg4,
-                        marginBottom: '1.5rem'
-                    }}>
+                    <div key={item.id} className="wishlist-col">
                         <div style={{...styles.card, height: '100%'}} className="wishlist-item">
                             <div className="image-container">
                                 <Link to={`/product/${item.productId}`}>

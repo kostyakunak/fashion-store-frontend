@@ -63,8 +63,8 @@ function Item() {
                 console.log("Данные о товаре:", data);
                 setProduct(data);
                 
-                // Загружаем доступные размеры для товара
-                return fetch(`http://localhost:8080/warehouse/product/${productId}/sizes`);
+                // Загружаем доступные размеры для товара (теперь публичный endpoint)
+                return fetch(`http://localhost:8080/api/public/warehouse/product/${productId}/sizes`);
             })
             .then(response => {
                 if (!response.ok) {
