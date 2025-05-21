@@ -21,58 +21,67 @@ export default function useCart() {
     ]);
     // Словарь доступных размеров для каждого товара
     const [productSizes, setProductSizes] = useState({});
+    const [sizesLoading, setSizesLoading] = useState(false);
     
     // Используем AuthContext для получения данных о пользователе
     const auth = useContext(AuthContext);
+
+    // Устанавливаем токен в axios при инициализации (один раз)
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+    }, []);
 
     // Загрузка корзины при первом рендере или изменении статуса аутентификации
     useEffect(() => {
         loadCart();
     }, [auth.isAuthenticated()]);
 
-    // Загрузка размеров для товаров после загрузки корзины
+    // Оптимизированная загрузка размеров для товаров
     useEffect(() => {
-        if (cartItems.length > 0 && !loading) {
-            const productIds = [...new Set(cartItems.map(item => item.productId))];
-            const shouldLoadSizes = productIds.some(id => !productSizes[id]);
-            
-            if (shouldLoadSizes) {
-                loadProductSizes();
-            }
-        }
-    }, [cartItems, loading]);
+        if (sizesLoading || loading || cartItems.length === 0) return;
 
-    // Загрузка доступных размеров для товаров
-    const loadProductSizes = async () => {
-        const productIds = [...new Set(cartItems.map(item => item.productId))];
-        
-        try {
-            const sizePromises = productIds.map(productId => 
+        // Получаем id товаров, для которых еще нет размеров
+        const productIdsToLoad = [...new Set(
+            cartItems
+                .map(item => item.productId)
+        )];
+
+        setSizesLoading(true);
+
+        // Загружаем размеры только для новых товаров
+        setProductSizes(prevProductSizes => {
+            const idsToFetch = productIdsToLoad.filter(productId => !prevProductSizes[productId]);
+            if (idsToFetch.length === 0) {
+                setSizesLoading(false);
+                return prevProductSizes;
+            }
+            Promise.all(idsToFetch.map(productId =>
                 getProductSizes(productId)
                     .then(sizes => ({ productId, sizes }))
                     .catch(error => {
                         console.error(`Ошибка при запросе размеров для продукта ${productId}:`, error);
                         return null;
                     })
-            );
-
-            const results = await Promise.all(sizePromises);
-            const newProductSizes = {};
-            
-            results.forEach(result => {
-                if (result && result.sizes) {
-                    newProductSizes[result.productId] = result.sizes;
-                } else if (result) {
-                    // Если не получили размеры с сервера, используем стандартные
-                    newProductSizes[result.productId] = availableSizes;
+            )).then(results => {
+                let updated = false;
+                const newProductSizes = { ...prevProductSizes };
+                results.forEach(result => {
+                    if (result && result.sizes) {
+                        newProductSizes[result.productId] = result.sizes;
+                        updated = true;
+                    }
+                });
+                if (updated) {
+                    setProductSizes(newProductSizes);
                 }
+                setSizesLoading(false);
             });
-            
-            setProductSizes(newProductSizes);
-        } catch (error) {
-            console.error("Ошибка загрузки размеров:", error);
-        }
-    };
+            return prevProductSizes;
+        });
+    }, [cartItems, loading]); // productSizes и sizesLoading не в зависимостях
 
     // Загрузка корзины
     const loadCart = () => {

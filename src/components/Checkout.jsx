@@ -46,7 +46,7 @@ const Checkout = () => {
                 }))
             };
             const token = localStorage.getItem('token');
-            const response = await axios.post("http://localhost:8080/api/orders", payload, {
+            await axios.post("http://localhost:8080/api/orders", payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             clearCart();

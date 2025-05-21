@@ -31,31 +31,39 @@ function Cart() {
     useEffect(() => {
         if (!loading && cartItems.length > 0) {
             const warnings = {};
-            
             cartItems.forEach(item => {
+                // getAvailableSizesForProduct — только чистая функция, не вызывает setState!
                 const availableSizes = getAvailableSizesForProduct(item.productId);
                 const sizeExists = availableSizes.some(size => size.id === item.sizeId);
-                
                 if (!sizeExists) {
                     warnings[item.id] = true;
                 }
             });
-            
             setSizeWarnings(warnings);
         }
-    }, [cartItems, loading, getAvailableSizesForProduct]);
+    }, [cartItems, loading]); // убираем getAvailableSizesForProduct из зависимостей
     
     // Объединяем корзину при входе пользователя в систему
     useEffect(() => {
         if (auth.isAuthenticated()) {
             mergeCart();
         }
-    }, [auth.isAuthenticated()]);
+    }, [auth.isAuthenticated, mergeCart]);
 
     // Функция для отображения размеров товара
     const renderSizeSelect = (item) => {
         const availableSizes = getAvailableSizesForProduct(item.productId);
-        const currentSizeExists = availableSizes.some(size => size.id === item.sizeId);
+        // Фильтруем дубликаты по id-name
+        const uniqueSizes = [];
+        const seen = new Set();
+        for (const size of availableSizes) {
+            const key = `${size.id}-${size.name}`;
+            if (!seen.has(key)) {
+                uniqueSizes.push(size);
+                seen.add(key);
+            }
+        }
+        const currentSizeExists = uniqueSizes.some(size => size.id === item.sizeId);
         
         return (
             <div className="cart-item-size">
@@ -75,8 +83,8 @@ function Cart() {
                             Выберите размер
                         </option>
                     )}
-                    {availableSizes.map(size => (
-                        <option key={size.id} value={size.id}>
+                    {uniqueSizes.map(size => (
+                        <option key={`${size.id}-${size.name}`} value={size.id}>
                             {size.name}
                         </option>
                     ))}
@@ -109,7 +117,7 @@ function Cart() {
                         <div className="cart-items">
                             {cartItems.map((item) => {
                                 return (
-                                    <div className="cart-item" key={item.id}>
+                                    <div className="cart-item" key={`${item.id}-${item.sizeId}`}>
                                         <div className="cart-item-info">
                                             <div className="cart-item-image">
                                                 <Link to={`/item?id=${item.productId}`}>

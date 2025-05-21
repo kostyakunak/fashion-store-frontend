@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 export const getProductSizes = async (productId) => {
     try {
-        const response = await axiosInstance.get(`/warehouse/product/${productId}/sizes`);
+        const response = await axiosInstance.get(`/public/warehouse/product/${productId}/sizes`);
         return response.data;
     } catch (error) {
         console.error(`Ошибка при получении размеров для продукта ${productId}:`, error);
