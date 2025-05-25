@@ -26,12 +26,13 @@ const buttonStyles = {
   }
 };
 
-const ProductWishlistButton = ({ product, size = 'sm', className = '' }) => {
+const ProductWishlistButton = ({ product, size = 'md', className = '' }) => {
     const { isInWishlist, toggleWishlistItem } = useWishlist();
     const auth = useContext(AuthContext);
     const navigate = useNavigate();
     
-    const inWishlist = isInWishlist(product.id);
+    const productId = product.productId || product.id;
+    const inWishlist = isInWishlist(productId);
     
     const handleWishlistClick = (e) => {
         e.preventDefault();
@@ -46,52 +47,16 @@ const ProductWishlistButton = ({ product, size = 'sm', className = '' }) => {
         toggleWishlistItem(product);
     };
     
-    const getButtonStyle = () => {
-      const baseStyle = {
-        ...buttonStyles[size],
-        cursor: 'pointer',
-        display: 'inline-block',
-        fontWeight: '400',
-        textAlign: 'center',
-        verticalAlign: 'middle',
-        userSelect: 'none',
-        border: '1px solid transparent',
-        transition: 'color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
-      };
-      
-      if (inWishlist) {
-        // Danger style (red)
-        return {
-          ...baseStyle,
-          color: '#fff',
-          backgroundColor: '#dc3545',
-          borderColor: '#dc3545'
-        };
-      } else {
-        // Outline danger style
-        return {
-          ...baseStyle,
-          color: '#dc3545',
-          backgroundColor: 'transparent',
-          borderColor: '#dc3545'
-        };
-      }
-    };
-    
     return (
         <button
-            style={getButtonStyle()}
-            className={`wishlist-button ${className}`}
+            className={`wishlist-button${inWishlist ? ' in-wishlist' : ''} ${className}`}
             onClick={handleWishlistClick}
-            aria-label={inWishlist ? "Удалить из списка желаний" : "Добавить в список желаний"}
+            aria-label={inWishlist ? "Удалить из избранного" : "Добавить в избранное"}
+            type="button"
         >
-            {/* Heart symbol instead of FontAwesome icon */}
-            ♥
-            {size !== 'sm' && (
-                <span style={{ marginLeft: '0.5rem' }}>
-                    {inWishlist ? 'В списке желаний' : 'В список желаний'}
-                </span>
-            )}
+            <span className="wishlist-heart" aria-hidden="true">
+                ♥
+            </span>
         </button>
     );
 };

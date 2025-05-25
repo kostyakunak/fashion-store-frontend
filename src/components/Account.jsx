@@ -16,7 +16,7 @@ function Account() {
 
                 <a href="/cart" className="nav-button">My Cart</a>
                 <a href="/my-orders" className="nav-button">My Orders</a>
-                <a href="/account-details" className="nav-button">Account Details</a>
+                <a href="/account/details" className="nav-button">Account Details</a>
                 <a href="/contacts" className="nav-button">Contacts</a>
             </div>
 

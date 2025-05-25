@@ -68,14 +68,14 @@ export default function useCart() {
             )).then(results => {
                 let updated = false;
                 const newProductSizes = { ...prevProductSizes };
-                results.forEach(result => {
-                    if (result && result.sizes) {
-                        newProductSizes[result.productId] = result.sizes;
+            results.forEach(result => {
+                if (result && result.sizes) {
+                    newProductSizes[result.productId] = result.sizes;
                         updated = true;
-                    }
-                });
+                }
+            });
                 if (updated) {
-                    setProductSizes(newProductSizes);
+            setProductSizes(newProductSizes);
                 }
                 setSizesLoading(false);
             });

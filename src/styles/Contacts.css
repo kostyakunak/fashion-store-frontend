@@ -1,3 +1,10 @@
+html, body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
 :root {
     --background-color: #111722;
     --primary-color: #243047;
@@ -8,40 +15,35 @@
 }
 
 .contacts {
-    background-color: #111722;
-    font-family: 'Inter', sans-serif;
-    color: white;
-    margin: 0;
     display: flex;
-    justify-content: center; /* Центрируем контент по горизонтали */
-    align-items: center; /* Центрируем по вертикали */
     min-height: 100vh;
-    width: 100%;
-    padding: 20px;
+    width: 100vw;
+    background: var(--background-color);
+    font-family: var(--font-family);
+    color: var(--secondary-color);
+    margin: 0;
 }
 
 .contacts .content {
     width: 33.33%;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Центрируем содержимое */
-    align-items: center; /* Центрируем текст */
+    justify-content: center;
+    align-items: center;
     text-align: center;
     padding: 20px;
     border-radius: 8px;
+    box-sizing: border-box;
 }
 
 .contacts .image-container {
     width: 66.66%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.contacts .image-container img {
-    width: 100%;
     height: 100vh;
-    object-fit: cover;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    overflow: hidden;
+    background: var(--primary-color);
 }
 
 .contacts p {

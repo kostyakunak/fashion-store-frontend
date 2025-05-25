@@ -199,3 +199,11 @@
     margin-top: 20px; /* Отступ сверху, чтобы футер не прилипал к контенту */
     position: relative; /* Футер теперь будет относительным */
 }
+
+.home {
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* height: 100vh; убрано */
+    /* overflow: hidden; убрано */
+    /* другие стили без overflow: hidden */
+}

@@ -5,7 +5,9 @@
 }
 
 .content-with-navbar {
-    margin-top: 4rem;
-    padding: 2rem;
+    padding-top: 5.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 2rem;
     flex: 1;
 } 

@@ -5,6 +5,15 @@ import { getUserByEmail } from '../utils/userApi';
 
 export const AuthContext = createContext();
 
+function mapUserApiToClient(user) {
+  if (!user) return user;
+  return {
+    ...user,
+    firstName: user.firstName || user.first_name || "",
+    lastName: user.lastName || user.last_name || "",
+  };
+}
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -49,7 +58,7 @@ export const AuthProvider = ({ children }) => {
                 if (userData && userData.id && !isNaN(Number(userData.id))) {
                   setUser(prev => ({
                     ...prev,
-                    id: Number(userData.id)
+                    ...mapUserApiToClient(userData)
                   }));
                   console.log('AuthContext setUser (by email):', userData);
                 } else {
@@ -150,7 +159,7 @@ export const AuthProvider = ({ children }) => {
         };
         
         // Обновляем состояние
-        setUser(userData);
+        setUser(mapUserApiToClient(userData));
         
         return { success: true };
       } catch (error) {

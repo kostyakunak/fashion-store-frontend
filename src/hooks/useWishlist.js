@@ -48,7 +48,7 @@ export default function useWishlist() {
 
     // Проверка, находится ли продукт в списке желаний
     const isInWishlist = (productId) => {
-        return wishlistItems.some(item => item.productId === productId);
+        return wishlistItems.some(item => String(item.productId) === String(productId));
     };
 
     // Добавить в список желаний
@@ -102,7 +102,8 @@ export default function useWishlist() {
     // Удалить из списка желаний по ID продукта
     const removeProductFromWishlistHandler = (productId) => {
         if (auth.isAuthenticated()) {
-            // Если пользователь авторизован, удаляем с сервера
+            // Оптимистично убираем из локального стейта
+            setWishlistItems(prevItems => prevItems.filter(item => item.productId !== productId));
             axios.delete(`${API_URL}/product/${productId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -110,12 +111,13 @@ export default function useWishlist() {
             })
             .then(response => {
                 console.log("Продукт удален из списка желаний:", response.data);
-                // Обновляем состояние, исключая удаленный элемент
-                setWishlistItems(prevItems => prevItems.filter(item => item.productId !== productId));
+                // Серверный ответ — ничего не делаем, локальный стейт уже обновлён
             })
             .catch(error => {
                 console.error("Ошибка удаления из списка желаний:", error);
                 setError(error.response?.data?.message || error.message);
+                // (опционально) вернуть товар обратно, если ошибка
+                // setWishlistItems(prevItems => [...prevItems, ...???]);
             });
         }
     };
@@ -139,15 +141,9 @@ export default function useWishlist() {
     const toggleWishlistItem = (product) => {
         const productId = product.productId || product.id;
         if (isInWishlist(productId)) {
-            // Если продукт уже в списке желаний, удаляем его
-            const item = wishlistItems.find(item => item.productId === productId);
-            if (item) {
-                removeFromWishlistHandler(item.id);
-            } else {
+            // Всегда удаляем по productId для надёжности
                 removeProductFromWishlistHandler(productId);
-            }
         } else {
-            // Если продукта нет в списке желаний, добавляем его
             addToWishlistHandler(product);
         }
     };

@@ -35,10 +35,10 @@ const Navbar = () => {
                 </div>
                 
                 <div className="navbar-links">
-                    <Link to="/catalog">Каталог</Link>
-                    <Link to="/contacts">Контакты</Link>
+                    {/* <Link to="/catalog">Каталог</Link> */}
                 </div>
 
+                <div className="navbar-actions">
                 <div 
                     className="navbar-account"
                     onMouseEnter={handleMouseEnter}
@@ -56,10 +56,9 @@ const Navbar = () => {
                                         <p className="user-email">{user.email}</p>
                                     </div>
                                     <div className="dropdown-links">
-                                        <Link to="/account">Мой аккаунт</Link>
                                         <Link to="/orders">Мои заказы</Link>
-                                        <Link to="/wishlist">Избранное</Link>
-                                        <Link to="/cart">Корзина</Link>
+                                            <Link to="/account/details">Детали аккаунта</Link>
+                                            <Link to="/contacts">Контакты</Link>
                                         <button onClick={handleLogout}>Выйти</button>
                                     </div>
                                 </>
@@ -71,6 +70,13 @@ const Navbar = () => {
                             )}
                         </div>
                     )}
+                    </div>
+                    <Link to="/wishlist" className="navbar-icon-link" aria-label="Избранное">
+                        <i className="fas fa-heart navbar-icon"></i>
+                    </Link>
+                    <Link to="/cart" className="navbar-icon-link" aria-label="Корзина">
+                        <i className="fas fa-shopping-cart navbar-icon"></i>
+                    </Link>
                 </div>
             </div>
         </nav>

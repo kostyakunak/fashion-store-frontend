@@ -267,6 +267,7 @@ function Item() {
 
                             <div className="price-wishlist-container">
                                 <div className="cost">{product.price} руб.</div>
+                                {console.log('Product для wishlist:', product)}
                                 <ProductWishlistButton product={product} size="md" />
                             </div>
 

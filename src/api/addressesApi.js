@@ -71,11 +71,11 @@ export const getAddressesByUser = async (userId) => {
  */
 export const createAddress = async (address) => {
   const token = localStorage.getItem('token');
-  if (!address.userId) {
-    console.error('[createAddress] userId отсутствует!', address);
+  if (!address.user || !address.user.id) {
+    console.error('[createAddress] user.id отсутствует!', address);
     throw new Error('Не определён пользователь для адреса');
   }
-  console.log('[createAddress] userId:', address.userId, 'payload:', address);
+  console.log('[createAddress] user.id:', address.user.id, 'payload:', address);
   const response = await axios.post(
     'http://localhost:8080/api/admin/addresses',
     address,

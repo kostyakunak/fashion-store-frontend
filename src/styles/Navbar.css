@@ -10,12 +10,12 @@
 }
 
 .navbar-container {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
     padding: 0 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .navbar-logo a {
@@ -52,6 +52,11 @@
     padding: 0.5rem;
     border-radius: 50%;
     transition: background-color 0.3s ease;
+    font-size: 1.2rem;
+    color: #222;
+    transition: none;
+    display: flex;
+    align-items: center;
 }
 
 .account-icon:hover {
@@ -110,11 +115,12 @@
 }
 
 .dropdown-links button {
+    display: block;
+    margin: 16px auto 0 auto;
+    text-align: center;
     background: none;
     border: none;
     color: #333;
-    text-align: left;
-    padding: 0.5rem;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s ease;
@@ -122,4 +128,37 @@
 
 .dropdown-links button:hover {
     background-color: #f5f5f5;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-left: auto;
+}
+
+.navbar-icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #222;
+    font-size: 1.2rem;
+    transition: none;
+}
+
+.navbar-icon-link:hover .navbar-icon {
+    color: #222;
+}
+
+.navbar-icon {
+    font-size: 1.2rem;
+    color: #222;
+    transition: none;
+    display: flex;
+    align-items: center;
+}
+
+.account-icon:hover {
+    color: #243047;
 }

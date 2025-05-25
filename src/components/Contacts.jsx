@@ -41,11 +41,6 @@ function Contacts() {
                     </p>
                 </div>
             </div>
-            <div className="image-container">
-                <a href="/item">
-                    <img src={randomImage || "images/placeholder.png"} alt="random item" />
-                </a>
-            </div>
         </div>
     );
 }

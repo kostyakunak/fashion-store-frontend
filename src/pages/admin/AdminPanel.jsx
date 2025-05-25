@@ -135,19 +135,15 @@ const AdminPanel = () => {
       icon: '📊',
       path: AdminRoutes.INVENTORY || '/admin/inventory',
       color: '#607d8b'
-    },
-    {
-      id: 'debugger',
-      title: 'Admin Debugger',
-      description: 'Troubleshoot admin permissions and test API endpoints',
-      icon: '🪲',
-      path: '/admin/debug',
-      color: '#f44336'  // Red color to highlight it's a troubleshooting tool
     }
   ];
 
   // Get status indicator for a module
   const getModuleStatus = (moduleId) => {
+    // Для images всегда возвращаем зелёную галочку
+    if (moduleId === 'images') {
+      return <span className="status-indicator ok">✅</span>;
+    }
     if (!moduleStatus[moduleId]) {
       return <span className="status-indicator warning">⚠️</span>;
     }
@@ -158,21 +154,6 @@ const AdminPanel = () => {
     <div className="admin-panel-container">
       {error && <ErrorMessage message={error} onClose={() => setError(null)} />}
       <LoadingIndicator isLoading={loading} />
-
-      <header className="admin-panel-header">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome, {user?.firstName || 'Admin'}! Manage your online store with these administrative tools.</p>
-        
-        <div className="admin-stats">
-          <button 
-            onClick={checkModuleStatus} 
-            className="refresh-button"
-            disabled={loading}
-          >
-            {loading ? 'Checking...' : 'Check System Status'}
-          </button>
-        </div>
-      </header>
 
       <div className="admin-modules-grid">
         {adminModules.map(module => (

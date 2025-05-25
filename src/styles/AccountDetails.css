@@ -1,3 +1,51 @@
+:root {
+  --color-bg-main: #181f2a;
+  --color-bg-secondary: #222b3a;
+  --color-bg-block: #2c394a;
+  --color-accent: #ff5a5f;
+  --color-accent-hover: #e04848;
+  --color-text-main: #fff;
+  --color-text-secondary: #b0b8c1;
+  --color-btn-disabled: #e0e4ea;
+  --color-btn-danger: #e04848;
+}
+
+/* Пример использования переменных */
+body, .account-details {
+  background: var(--color-bg-main);
+  color: var(--color-text-main);
+}
+
+.layout-container {
+  background: var(--color-bg-secondary);
+}
+
+.account-section {
+  background: transparent;
+  border-radius: 0;
+}
+
+h2, .title-container h2 {
+  color: var(--color-text-main);
+}
+
+.field label {
+  color: var(--color-text-secondary);
+}
+
+.button-primary, .main-address-btn {
+  background: var(--color-accent);
+  color: var(--color-text-main);
+}
+.button-primary:hover, .main-address-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.button-primary:disabled, .main-address-btn:disabled {
+  background: var(--color-btn-disabled);
+  color: var(--color-bg-block);
+}
+
 .account-details {
     display: flex;
     flex-direction: column;
@@ -31,9 +79,34 @@
 /* Контейнер заголовка */
 .account-details .title-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.delivery-title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.delivery-title-spacer {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.delivery-title-container h2 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+}
+
+.delivery-title-container button {
+    width: 80px;
+    flex-shrink: 0;
+    margin-left: 0;
+    text-align: right;
 }
 
 /* Поля ввода */
@@ -55,4 +128,62 @@
 
 .account-details .editable:focus {
     outline: none;
+}
+
+.title-container h2 {
+    width: 100%;
+    text-align: center;
+}
+
+/* Delivery Details edit UX */
+.delivery-edit-block {
+    padding: 18px 16px 8px 16px;
+    background: transparent;
+    border-radius: 0;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.delivery-edit-block.delivery-edit-hoverable:hover {
+    background: #25324a;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.18);
+    border-radius: 8px;
+}
+.delivery-edit-block.delivery-edit-hoverable {
+    cursor: pointer;
+}
+
+.address-arrows-container {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    width: 100%;
+}
+.address-arrow-btn {
+    width: 40px;
+    min-width: 40px;
+    background: transparent;
+    border: none;
+    color: #7faaff;
+    opacity: 0.1;
+    transition: background 0.2s, opacity 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    z-index: 2;
+    border-radius: 8px;
+    padding: 0;
+    height: auto;
+}
+.address-arrow-btn.left {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+.address-arrow-btn.right {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.address-arrow-btn:hover {
+    background: rgba(127,170,255,0.08);
+    opacity: 1;
 }

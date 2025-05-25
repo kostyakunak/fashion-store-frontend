@@ -16,7 +16,7 @@
     align-items: center;
     background-color: var(--background-color);
     padding: 15px 40px;
-    border-bottom: 1px solid var(--border-color);
+    /* border-bottom: 1px solid var(--border-color); */
     box-shadow: var(--box-shadow);
 }
 
