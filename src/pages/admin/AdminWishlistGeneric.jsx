@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GenericTableManager from '../../components/generic/GenericTableManager';
-import { getAllWishlists, getWishlistForUser, createWishlistItem, deleteWishlistItem, updateWishlistItem } from '../../api/wishlistApi';
+import { getAllWishlists, createWishlistItem, deleteWishlistItem, updateWishlistItem } from '../../api/wishlistApi';
 import { getUsers } from '../../api/usersApi';
 import { getProducts } from '../../api/productsApi';
 

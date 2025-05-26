@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext, useCallback } from "react";
-import { getMyWishlist, addToWishlist, removeFromWishlist, removeProductFromWishlist } from "../api/wishlistApi";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 

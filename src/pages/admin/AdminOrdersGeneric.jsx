@@ -12,7 +12,6 @@ const apiClient = createAdminApiClient({ baseURL: API_URL });
 
 const AdminOrdersGeneric = () => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [users, setUsers] = useState([]);
     const [addresses, setAddresses] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);

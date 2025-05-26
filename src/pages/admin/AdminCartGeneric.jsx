@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import GenericTableManager from '../../components/generic/GenericTableManager';
-import { getAllCarts, getCartForUser, createCart, updateCart, deleteCart } from '../../api/cartApi';
+import { getAllCarts, createCart, updateCart, deleteCart } from '../../api/cartApi';
 import { getUsers } from '../../api/usersApi';
 import { getProducts } from '../../api/productsApi';
 
 const AdminCartGeneric = () => {
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
-    const [carts, setCarts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -29,7 +28,6 @@ const AdminCartGeneric = () => {
                     // Затем получаем корзины для всех пользователей
                     const userIds = usersData.map(user => user.id);
                     const cartsData = await getAllCarts(userIds);
-                    setCarts(cartsData);
                 }
                 
                 setLoading(false);

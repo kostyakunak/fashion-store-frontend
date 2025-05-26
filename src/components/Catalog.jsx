@@ -9,7 +9,6 @@ import useWishlist from "../hooks/useWishlist";
 const CARDS_PER_PAGE = 28;
 const LEFT_COUNT = 4; // 2x2
 const MIDDLE_COUNT = 14; // 7x2
-const RIGHT_COUNT = 10; // 5x2
 
 function Catalog() {
     const [products, setProducts] = useState([]);

@@ -415,47 +415,6 @@ const AdminProducts = () => {
         }
     };
 
-    // Устанавливает изображение с указанным ID как основное (перемещает на позицию 0)
-    const setAsMainImage = async (imageId) => {
-        if (!selectedProduct) return;
-        
-        try {
-            const productId = selectedProduct.id;
-            const images = [...productImages[productId]];
-            
-            // Находим изображение, которое нужно сделать основным
-            const imageToMakeMain = images.find(img => img.id === imageId);
-            if (!imageToMakeMain) return;
-            
-            // Если это уже основное изображение (sortOrder=0), ничего не делаем
-            if (imageToMakeMain.sortOrder === 0) return;
-            
-            // Находим текущее основное изображение
-            const currentMainImage = images.find(img => img.sortOrder === 0);
-            
-            // Обновляем порядковые номера
-            if (currentMainImage) {
-                await updateImage(currentMainImage.id, { 
-                    ...currentMainImage, 
-                    sortOrder: imageToMakeMain.sortOrder 
-                });
-            }
-            
-            await updateImage(imageToMakeMain.id, { 
-                ...imageToMakeMain, 
-                sortOrder: 0 
-            });
-            
-            // Перенумеруем все изображения для обеспечения последовательности
-            await reorderImages(productId);
-            
-            alert("Основное изображение изменено!");
-        } catch (error) {
-            console.error("Ошибка при изменении основного изображения:", error);
-            alert("Ошибка при изменении основного изображения: " + error.message);
-        }
-    };
-
     // Функции для drag-and-drop
     const handleDragStart = (e, image) => {
         // Предотвращаем стандартное поведение, которое может мешать

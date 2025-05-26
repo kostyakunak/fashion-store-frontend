@@ -23,7 +23,6 @@ const AdminUsers = () => {
         postalCode: "",
         country: ""
     });
-    const [selectedUserId, setSelectedUserId] = useState(null);
 
     useEffect(() => {
         fetchUsers();
@@ -69,7 +68,6 @@ const AdminUsers = () => {
             });
             setNewAddress({
                 recipientFirstName: "",
-
                 recipientLastName: "",
                 street: "",
                 city: "",

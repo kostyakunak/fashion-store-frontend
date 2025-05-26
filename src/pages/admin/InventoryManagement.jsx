@@ -65,10 +65,6 @@ const InventoryManagement = () => {
         }
     };
 
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
-    };
-
     const handleEdit = (item) => {
         setShowAddForm(false);
         setEditingItem({
@@ -213,22 +209,6 @@ const InventoryManagement = () => {
         }
         return sortableItems;
     }, [inventory, sortConfig]);
-
-    const filteredInventory = sortedInventory.filter(item => {
-        const searchLower = searchTerm.toLowerCase();
-        switch (searchField) {
-            case 'id':
-                return item.id.toString().includes(searchLower);
-            case 'product':
-                return item.product.name.toLowerCase().includes(searchLower);
-            case 'size':
-                return item.size.name.toLowerCase().includes(searchLower);
-            case 'quantity':
-                return item.quantity.toString().includes(searchLower);
-            default:
-                return true;
-        }
-    });
 
     return (
         <div className="admin-page">

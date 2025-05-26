@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { getProductSizes } from "../api/productApi";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import { AuthContext } from "../context/AuthContext";
 
 const API_URL = "http://localhost:8080/api/cart";

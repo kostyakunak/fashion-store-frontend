@@ -136,11 +136,6 @@ const AdminOrders = () => {
         }
     };
 
-    const handleDeleteOrder = async (id) => {
-        await deleteOrder(id);
-        fetchOrders();
-    };
-
     return (
         <div>
             <h2>Админка - Заказы</h2>

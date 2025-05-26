@@ -22,15 +22,6 @@ const OrdersManagement = () => {
         { value: 'totalPrice', label: 'Total Price' }
     ];
 
-    const statusOptions = [
-        { value: '', label: 'Все статусы' },
-        { value: 'AWAITING_PAYMENT', label: 'Ожидает оплаты' },
-        { value: 'PENDING', label: 'В обработке' },
-        { value: 'SHIPPED', label: 'Отправлен' },
-        { value: 'DELIVERED', label: 'Доставлен' },
-        { value: 'CANCELLED', label: 'Отменен' }
-    ];
-
     useEffect(() => {
         fetchOrders();
         fetchUsers();

@@ -185,19 +185,6 @@ function Item() {
         });
     };
 
-    // Использовать функцию из хука useWishlist для работы с избранным
-    const handleToggleWishlist = () => {
-        if (!product) return;
-        toggleWishlistItem(product);
-    };
-
-    // После useEffect, который загружает данные о товаре, добавляем функцию для фильтрации размеров
-    const getAvailableSizes = () => {
-        if (!availableSizes) return [];
-        // Фильтруем только те размеры, которые доступны на складе
-        return availableSizes.filter(size => size.inStock || size.quantity > 0);
-    };
-
     return (
         <div className="item">
             <Header />

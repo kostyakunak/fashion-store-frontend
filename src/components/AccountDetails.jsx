@@ -27,7 +27,6 @@ const AccountDetails = () => {
     });
     const [saving, setSaving] = useState(false);
     const [saveError, setSaveError] = useState(null);
-    const [saveSuccess, setSaveSuccess] = useState(false);
     const [mainAddressIndex, setMainAddressIndex] = useState(null);
 
     // Загружаем все адреса пользователя
@@ -110,28 +109,28 @@ const AccountDetails = () => {
     const isAddressFieldsValid = () => {
         return details.deliveryFirstName && details.deliveryLastName && details.country && details.city && details.street && details.postalCode;
     };
-    const handleSaveNewAddress = async () => {
+    const handleSaveEditAddress = async () => {
         if (!isAddressFieldsValid()) return;
         setSaving(true);
         setSaveError(null);
-        setSaveSuccess(false);
         try {
-            const newAddr = await createAddress({
+            const addr = addresses[currentAddressIndex];
+            const updated = await updateAddress(addr.id, {
+                ...addr,
                 recipientFirstName: details.deliveryFirstName,
                 recipientLastName: details.deliveryLastName,
                 country: details.country,
                 city: details.city,
                 street: details.street,
                 postalCode: details.postalCode,
-                user: { id: userId },
-                isMain: false
+                user: { id: userId }
             });
-            setAddresses(prev => [...prev, newAddr]);
-            setCurrentAddressIndex(addresses.length); // новый адрес последний
+            const updatedAddresses = addresses.slice();
+            updatedAddresses[currentAddressIndex] = updated;
+            setAddresses(updatedAddresses);
             setMode('view');
-            setSaveSuccess(true);
         } catch (err) {
-            setSaveError("Ошибка при добавлении адреса");
+            setSaveError("Ошибка при сохранении изменений адреса");
         } finally {
             setSaving(false);
         }
@@ -143,7 +142,6 @@ const AccountDetails = () => {
         if (!window.confirm("Удалить этот адрес?")) return;
         setSaving(true);
         setSaveError(null);
-        setSaveSuccess(false);
         try {
             const addr = addresses[currentAddressIndex];
             const wasMain = addr.isMain;
@@ -156,7 +154,6 @@ const AccountDetails = () => {
             setAddresses(fresh);
             setCurrentAddressIndex(0);
             setMode('view');
-            setSaveSuccess(true);
         } catch (err) {
             if (err.message && err.message.includes('foreign key constraint fails')) {
                 setSaveError('Этот адрес нельзя удалить, так как он используется в одном или нескольких заказах.');
@@ -175,7 +172,6 @@ const AccountDetails = () => {
     const handleSetMain = async () => {
         setSaving(true);
         setSaveError(null);
-        setSaveSuccess(false);
         try {
             // Сначала снимаем isMain со всех адресов
             await Promise.all(addresses.map(addr =>
@@ -189,7 +185,6 @@ const AccountDetails = () => {
             const mainIdx = updated.findIndex(a => a.isMain);
             setCurrentAddressIndex(mainIdx >= 0 ? mainIdx : 0);
             setMode('view');
-            setSaveSuccess(true);
         } catch (err) {
             setSaveError("Ошибка при установке адреса по умолчанию");
         } finally {
@@ -198,40 +193,9 @@ const AccountDetails = () => {
     };
 
     // Сохранение изменений при редактировании адреса
-    const handleSaveEditAddress = async () => {
-        if (!isAddressFieldsValid()) return;
-        setSaving(true);
-        setSaveError(null);
-        setSaveSuccess(false);
-        try {
-            const addr = addresses[currentAddressIndex];
-            const updated = await updateAddress(addr.id, {
-                ...addr,
-                recipientFirstName: details.deliveryFirstName,
-                recipientLastName: details.deliveryLastName,
-                country: details.country,
-                city: details.city,
-                street: details.street,
-                postalCode: details.postalCode,
-                user: { id: userId }
-            });
-            const updatedAddresses = addresses.slice();
-            updatedAddresses[currentAddressIndex] = updated;
-            setAddresses(updatedAddresses);
-            setMode('view');
-            setSaveSuccess(true);
-        } catch (err) {
-            setSaveError("Ошибка при сохранении изменений адреса");
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    // Сохранение адреса (Save)
     const handleSave = async () => {
         console.log('handleSave called', { mainAddressIndex, addresses });
         setSaveError(null);
-        setSaveSuccess(false);
         try {
             let updatedAddresses = [...addresses];
             if (mode === 'add') {
@@ -263,7 +227,6 @@ const AccountDetails = () => {
             setMainAddressIndex(idx >= 0 ? idx : 0);
             setCurrentAddressIndex(idx >= 0 ? idx : 0);
             setMode('view');
-            setSaveSuccess(true);
         } catch (e) {
             setSaveError('Ошибка при сохранении адреса');
         }
