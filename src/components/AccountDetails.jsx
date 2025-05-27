@@ -8,7 +8,6 @@ import { getAddressesByUser, updateAddress, createAddress, deleteAddress } from 
 const AccountDetails = () => {
     const auth = useContext(AuthContext);
     const user = auth?.user;
-    console.log('user from AuthContext:', user); // временный лог для отладки
     const userId = user?.id;
     const [addresses, setAddresses] = useState([]);
     const [currentAddressIndex, setCurrentAddressIndex] = useState(0);

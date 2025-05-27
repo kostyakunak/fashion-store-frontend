@@ -28,7 +28,7 @@ const Checkout = () => {
     const { clearCart } = useCart();
 
     useEffect(() => {
-        console.log('Checkout userId:', userId);
+        // console.log('Checkout userId:', userId); // удалено
     }, [userId]);
 
     const handleOrder = async () => {

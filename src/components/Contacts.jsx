@@ -5,9 +5,7 @@ function Contacts() {
     useEffect(() => {
         fetch("http://localhost:8080/products")
             .then(response => response.json())
-            .then(data => {
-                // ... можно удалить весь блок, если randomImage нигде не используется
-            })
+            // .then(data => { }) // удалено, блок ничего не делал
             .catch(error => console.error("Ошибка загрузки товаров:", error));
     }, []);
 
