@@ -34,7 +34,7 @@ function OrderDetails() {
     }, [isAuthenticated, navigate, orderId, loadOrderById]);
 
     const handleCancelOrder = async () => {
-        if (window.confirm('Вы уверены, что хотите отменить этот заказ?')) {
+        if (window.confirm('Ви впевнені, що хочете скасувати це замовлення?')) {
             const success = await cancelOrder(orderId);
             if (success) {
                 // Order was successfully cancelled
@@ -47,11 +47,11 @@ function OrderDetails() {
     // Map status codes to readable Russian text
     const getStatusText = (status) => {
         const statusMap = {
-            'AWAITING_PAYMENT': 'Ожидает оплаты',
-            'PAID': 'Оплачен',
-            'SHIPPED': 'Отправлен',
-            'DELIVERED': 'Доставлен',
-            'CANCELLED': 'Отменен'
+            'AWAITING_PAYMENT': 'Очікує оплати',
+            'PAID': 'Оплачено',
+            'SHIPPED': 'Відправлено',
+            'DELIVERED': 'Доставлено',
+            'CANCELLED': 'Скасовано'
         };
         return statusMap[status] || status;
     };
@@ -61,7 +61,7 @@ function OrderDetails() {
             <div className="order-details">
                 <Header />
                 <main>
-                    <div className="loading">Загрузка...</div>
+                    <div className="loading">Завантаження...</div>
                 </main>
                 <Footer />
             </div>
@@ -85,7 +85,7 @@ function OrderDetails() {
             <div className="order-details">
                 <Header />
                 <main>
-                    <div className="error">Заказ не найден</div>
+                    <div className="error">Замовлення не знайдено</div>
                 </main>
                 <Footer />
             </div>
@@ -98,11 +98,11 @@ function OrderDetails() {
             <main>
                 <div className="order-details-container">
                     <div className="back-link">
-                        <Link to="/orders">← Вернуться к списку заказов</Link>
+                        <Link to="/orders">← Повернутися до списку замовлень</Link>
                     </div>
                     
                     <div className="order-details-header">
-                        <h2>Детали заказа #{selectedOrder.id}</h2>
+                        <h2>Деталі замовлення #{selectedOrder.id}</h2>
                         <span className={`status-badge ${selectedOrder.status.toLowerCase()}`}>
                             {getStatusText(selectedOrder.status)}
                         </span>
@@ -110,15 +110,15 @@ function OrderDetails() {
                     
                     <div className="order-info">
                         <div className="order-info-section">
-                            <h3>Информация о заказе</h3>
-                            <p><strong>Дата создания:</strong> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                            <h3>Інформація про замовлення</h3>
+                            <p><strong>Дата створення:</strong> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
                             <p><strong>Статус:</strong> {getStatusText(selectedOrder.status)}</p>
-                            <p><strong>Сумма заказа:</strong> ${selectedOrder.totalPrice}</p>
+                            <p><strong>Сума замовлення:</strong> ${selectedOrder.totalPrice}</p>
                         </div>
                     </div>
                     
                     <div className="order-items-section">
-                        <h3>Товары в заказе</h3>
+                        <h3>Товари у замовленні</h3>
                         <div className="order-items-list">
                             {orderDetails.map((item) => (
                                 <div key={item.id} className="order-item-detail">
@@ -130,10 +130,10 @@ function OrderDetails() {
                                     </div>
                                     <div className="item-info">
                                         <h4>{item.product.name}</h4>
-                                        <p>Размер: {item.size.name}</p>
-                                        <p>Количество: {item.quantity}</p>
-                                        <p>Цена за единицу: ${item.priceAtPurchase}</p>
-                                        <p>Итого: ${(item.priceAtPurchase * item.quantity).toFixed(2)}</p>
+                                        <p>Розмір: {item.size.name}</p>
+                                        <p>Кількість: {item.quantity}</p>
+                                        <p>Ціна за одиницю: ${item.priceAtPurchase}</p>
+                                        <p>Разом: ${(item.priceAtPurchase * item.quantity).toFixed(2)}</p>
                                     </div>
                                 </div>
                             ))}
@@ -141,7 +141,7 @@ function OrderDetails() {
                     </div>
                     
                     <div className="order-summary">
-                        <h3>Итого</h3>
+                        <h3>Разом</h3>
                         <p className="total-price">${selectedOrder.totalPrice}</p>
                         
                         {canBeCancelled(selectedOrder) && (
@@ -150,7 +150,7 @@ function OrderDetails() {
                                     className="cancel-button" 
                                     onClick={handleCancelOrder}
                                 >
-                                    Отменить заказ
+                                    Скасувати замовлення
                                 </button>
                             </div>
                         )}

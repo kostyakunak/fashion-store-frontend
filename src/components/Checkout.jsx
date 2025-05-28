@@ -17,9 +17,9 @@ const Checkout = () => {
     const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [selectedPayment, setSelectedPayment] = useState('CARD');
     const paymentOptions = [
-        { value: 'CARD', label: 'Карта' },
-        { value: 'CASH_ON_DELIVERY', label: 'Наложенный платёж' },
-        { value: 'PICKUP', label: 'Самовывоз' }
+        { value: 'CARD', label: 'Картка' },
+        { value: 'CASH_ON_DELIVERY', label: 'Післяплата' },
+        { value: 'PICKUP', label: 'Самовивіз' }
     ];
 
     const navigate = useNavigate();
@@ -52,13 +52,13 @@ const Checkout = () => {
             clearCart();
             navigate("/my-orders");
         } catch (e) {
-            setOrderError(e.response?.data?.error || e.message || "Ошибка оформления заказа");
+            setOrderError(e.response?.data?.error || e.message || "Помилка оформлення замовлення");
         } finally {
             setOrderLoading(false);
         }
     };
 
-    // Функция для получения названия размера по id
+    // Функція для отримання назви розміру за id
     const getSizeName = (item) => {
         const sizes = getAvailableSizesForProduct(item.productId);
         const size = sizes.find(s => s.id === item.sizeId);
@@ -71,7 +71,7 @@ const Checkout = () => {
                 <Header />
                 <div className="layout-container">
                     <main>
-                        <p>Загрузка профиля...</p>
+                        <p>Завантаження профілю...</p>
                     </main>
                 </div>
                 <Footer />
@@ -85,25 +85,25 @@ const Checkout = () => {
             <div className="layout-container">
                 <main>
                     <section className="account-section">
-                        <h2>Оформление заказа</h2>
+                        <h2>Оформлення замовлення</h2>
                         {/* Список товаров */}
                         <div className="field">
-                            <label>Товары в заказе</label>
+                            <label>Товари у замовленні</label>
                             <div className="checkout-items-list">
                                 {loading ? (
-                                    <p style={{ opacity: 0.7 }}>Загрузка...</p>
+                                    <p style={{ opacity: 0.7 }}>Завантаження...</p>
                                 ) : isCartEmpty ? (
-                                    <p style={{ opacity: 0.7 }}>Корзина пуста</p>
+                                    <p style={{ opacity: 0.7 }}>Кошик порожній</p>
                                 ) : (
                                     cartItems.map((item, idx) => (
                                         <div key={idx} className="checkout-item" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
                                             <img src={item.imageUrl} alt={item.name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, marginRight: 12 }} />
                                             <div style={{ flex: 1 }}>
                                                 <div style={{ fontWeight: 500 }}>{item.name}</div>
-                                                <div style={{ fontSize: 13, opacity: 0.7 }}>Размер: {getSizeName(item)}</div>
+                                                <div style={{ fontSize: 13, opacity: 0.7 }}>Розмір: {getSizeName(item)}</div>
                                             </div>
-                                            <div style={{ minWidth: 60, textAlign: 'right' }}>{item.quantity} × {item.price} ₽</div>
-                                            <div style={{ minWidth: 70, textAlign: 'right', marginLeft: 16, fontWeight: 500 }}>{(item.price * item.quantity).toFixed(2)} ₽</div>
+                                            <div style={{ minWidth: 60, textAlign: 'right' }}>{item.quantity} × {item.price} грн.</div>
+                                            <div style={{ minWidth: 70, textAlign: 'right', marginLeft: 16, fontWeight: 500 }}>{(item.price * item.quantity).toFixed(2)} грн.</div>
                                         </div>
                                     ))
                                 )}
@@ -112,7 +112,7 @@ const Checkout = () => {
                     </section>
 
                     <section className="account-section">
-                        <h2>Адрес доставки</h2>
+                        <h2>Адреса доставки</h2>
                         <div className="field">
                             <AddressSelector
                                 userId={userId}
@@ -123,7 +123,7 @@ const Checkout = () => {
                     </section>
 
                     <section className="account-section">
-                        <h2>Способ оплаты</h2>
+                        <h2>Спосіб оплати</h2>
                         <div className="field">
                             {paymentOptions.map(opt => (
                                 <label key={opt.value} style={{ display: 'block', marginBottom: 8, cursor: 'pointer' }}>
@@ -143,8 +143,8 @@ const Checkout = () => {
 
                     <section className="account-section">
                         <div className="field">
-                            <label>Итого</label>
-                            <p className="checkout-total" style={{ fontWeight: 'bold', fontSize: '18px' }}>{total} ₽</p>
+                            <label>Разом</label>
+                            <p className="checkout-total" style={{ fontWeight: 'bold', fontSize: '18px' }}>{total} грн.</p>
                         </div>
                         <button
                             className="checkout-btn"
@@ -152,7 +152,7 @@ const Checkout = () => {
                             disabled={isCartEmpty || loading || !selectedAddressId || !selectedPayment || orderLoading}
                             onClick={handleOrder}
                         >
-                            {orderLoading ? "Оформление..." : "Оформить заказ"}
+                            {orderLoading ? "Оформлення..." : "Оформити замовлення"}
                         </button>
                         {orderError && <p style={{ color: 'red', marginTop: 8 }}>{orderError}</p>}
                     </section>

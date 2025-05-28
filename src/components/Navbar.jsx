@@ -56,25 +56,25 @@ const Navbar = () => {
                                         <p className="user-email">{user.email}</p>
                                     </div>
                                     <div className="dropdown-links">
-                                        <Link to="/orders">Мои заказы</Link>
-                                            <Link to="/account/details">Детали аккаунта</Link>
-                                            <Link to="/contacts">Контакты</Link>
-                                        <button onClick={handleLogout}>Выйти</button>
+                                        <Link to="/orders">Мої замовлення</Link>
+                                        <Link to="/account/details">Деталі акаунта</Link>
+                                        <Link to="/contacts">Контакти</Link>
+                                        <button onClick={handleLogout}>Вийти</button>
                                     </div>
                                 </>
                             ) : (
                                 <div className="dropdown-links">
-                                    <Link to="/login">Войти</Link>
-                                    <Link to="/register">Регистрация</Link>
+                                    <Link to="/login">Увійти</Link>
+                                    <Link to="/register">Реєстрація</Link>
                                 </div>
                             )}
                         </div>
                     )}
                     </div>
-                    <Link to="/wishlist" className="navbar-icon-link" aria-label="Избранное">
+                    <Link to="/wishlist" className="navbar-icon-link" aria-label="Обране">
                         <i className="fas fa-heart navbar-icon"></i>
                     </Link>
-                    <Link to="/cart" className="navbar-icon-link" aria-label="Корзина">
+                    <Link to="/cart" className="navbar-icon-link" aria-label="Кошик">
                         <i className="fas fa-shopping-cart navbar-icon"></i>
                     </Link>
                 </div>

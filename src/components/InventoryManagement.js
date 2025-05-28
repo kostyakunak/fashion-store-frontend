@@ -40,7 +40,7 @@ const InventoryManagement = () => {
       }
       setNewId(nextId.toString());
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Помилка отримання даних:', error);
     }
   };
 
@@ -81,7 +81,7 @@ const InventoryManagement = () => {
         // Проверяем, существует ли ID
         const idExists = items.some(item => item.id === parseInt(newId));
         if (idExists) {
-          setIdError('Этот ID уже существует. Пожалуйста, выберите другой.');
+          setIdError('Цей ID вже існує. Будь ласка, виберіть інший.');
           return;
         }
 
@@ -100,9 +100,9 @@ const InventoryManagement = () => {
       setQuantity('');
       setIdError('');
     } catch (error) {
-      console.error('Error saving data:', error);
+      console.error('Помилка збереження даних:', error);
       if (error.response && error.response.status === 409) {
-        setIdError('Этот ID уже существует. Пожалуйста, выберите другой.');
+        setIdError('Цей ID вже існує. Будь ласка, виберіть інший.');
       }
     }
   };
@@ -110,14 +110,14 @@ const InventoryManagement = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-4">
-        <h2 className="text-2xl font-bold mb-4">Inventory Management</h2>
+        <h2 className="text-2xl font-bold mb-4">Управління складом</h2>
         <div className="flex gap-4 mb-4">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="border rounded px-3 py-2"
           >
-            <option value="">All Categories</option>
+            <option value="">Всі категорії</option>
             {categories.map(category => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -128,7 +128,7 @@ const InventoryManagement = () => {
             onClick={handleAddClick}
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
-            Add New Inventory Item
+            Додати нову позицію
           </button>
         </div>
       </div>
@@ -136,7 +136,7 @@ const InventoryManagement = () => {
       {showAddForm && (
         <div className="mb-4 p-4 border rounded">
           <h3 className="text-xl font-bold mb-4">
-            {editingItem ? 'Edit Inventory Item' : 'Add New Inventory Item'}
+            {editingItem ? 'Редагувати позицію' : 'Додати нову позицію'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
@@ -160,7 +160,7 @@ const InventoryManagement = () => {
               onChange={(e) => setSelectedProduct(e.target.value)}
               className="border rounded px-3 py-2"
             >
-              <option value="">Select Product</option>
+              <option value="">Оберіть товар</option>
               {products.map(product => (
                 <option key={product.id} value={product.id}>
                   {product.name}
@@ -172,7 +172,7 @@ const InventoryManagement = () => {
               onChange={(e) => setSelectedSize(e.target.value)}
               className="border rounded px-3 py-2"
             >
-              <option value="">Select Size</option>
+              <option value="">Оберіть розмір</option>
               {sizes.map(size => (
                 <option key={size.id} value={size.id}>
                   {size.name}
@@ -183,7 +183,7 @@ const InventoryManagement = () => {
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              placeholder="Quantity"
+              placeholder="Кількість"
               className="border rounded px-3 py-2"
             />
           </div>
@@ -191,7 +191,7 @@ const InventoryManagement = () => {
             onClick={handleSave}
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            {editingItem ? 'Save Changes' : 'Add Data'}
+            {editingItem ? 'Зберегти зміни' : 'Додати'}
           </button>
         </div>
       )}
@@ -201,19 +201,19 @@ const InventoryManagement = () => {
           <thead>
             <tr>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Product
+                Товар
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Category
+                Категорія
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Size
+                Розмір
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Quantity
+                Кількість
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Actions
+                Дії
               </th>
             </tr>
           </thead>
@@ -237,13 +237,13 @@ const InventoryManagement = () => {
                     onClick={() => handleEdit(item)}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2"
                   >
-                    Edit
+                    Редагувати
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
                   >
-                    Delete
+                    Видалити
                   </button>
                 </td>
               </tr>

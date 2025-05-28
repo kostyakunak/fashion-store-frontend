@@ -31,18 +31,18 @@ function Catalog() {
                 return response.json();
             })
             .then(data => {
-                console.log("Загружено товаров:", data.length);
+                console.log("Завантажено товарів:", data.length);
                 setProducts(data);
                 setLoading(false);
             })
             .catch(error => {
-                console.error("Ошибка загрузки товаров:", error);
+                console.error("Помилка завантаження товарів:", error);
                 setError(error.message);
                 setLoading(false);
             });
     }, []);
 
-    // Функция для получения URL изображения товара
+    // Функція для отримання URL зображення товару
     const getImageSrc = (product) => {
         if (product && product.images && product.images.length > 0) {
             return product.images[0].imageUrl || "https://via.placeholder.com/300x400";
@@ -50,16 +50,16 @@ function Catalog() {
         return "https://via.placeholder.com/300x400";
     };
 
-    // Пагинация
+    // Пагінація
     const totalPages = Math.ceil(products.length / CARDS_PER_PAGE);
     const paginatedProducts = products.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE);
 
-    // Распределяем карточки по колонкам
+    // Розподіляємо картки по колонках
     const column1Products = paginatedProducts.slice(0, LEFT_COUNT);
     const column2Products = paginatedProducts.slice(LEFT_COUNT, LEFT_COUNT + MIDDLE_COUNT);
     const column3Products = paginatedProducts.slice(LEFT_COUNT + MIDDLE_COUNT, CARDS_PER_PAGE);
 
-    // Выравнивание низов колонок
+    // Вирівнювання низу колонок
     useEffect(() => {
         if (!leftRef.current || !middleRef.current || !rightRef.current) return;
         const h1 = leftRef.current.offsetHeight;
@@ -78,7 +78,7 @@ function Catalog() {
             <div className="catalog">
                 <Header />
                 <main>
-                    <div className="loading">Загрузка товаров...</div>
+                    <div className="loading">Завантаження товарів...</div>
                 </main>
                 <Footer />
             </div>
@@ -90,7 +90,7 @@ function Catalog() {
             <div className="catalog">
                 <Header />
                 <main>
-                    <div className="error">Ошибка: {error}</div>
+                    <div className="error">Помилка: {error}</div>
                 </main>
                 <Footer />
             </div>
@@ -102,7 +102,7 @@ function Catalog() {
             <div className="catalog">
                 <Header />
                 <main>
-                    <div className="empty-catalog">В каталоге пока нет товаров</div>
+                    <div className="empty-catalog">У каталозі поки що немає товарів</div>
                 </main>
                 <Footer />
             </div>
@@ -175,7 +175,7 @@ function Catalog() {
                         {fillers.right > 0 && <div style={{ height: fillers.right }} />}
                     </div>
                 </div>
-                {/* Пагинация */}
+                {/* Пагінація */}
                 {totalPages > 1 && (
                     <div className="pagination">
                         {Array.from({ length: totalPages }, (_, i) => (

@@ -3,19 +3,19 @@ import PropTypes from 'prop-types';
 import './LoadingIndicator.css';
 
 /**
- * Reusable loading indicator component that can be used across the application
+ * Багатократний компонент індикатора завантаження для використання у всьому застосунку
  * 
- * @param {Object} props - Component props
- * @param {boolean} props.isLoading - Whether the component should display loading state
- * @param {string} props.size - Size of the loading indicator (small, medium, large)
- * @param {string} props.message - Optional loading message
- * @param {boolean} props.overlay - Whether to show as full-screen overlay
- * @returns {JSX.Element|null} Loading indicator component or null if not loading
+ * @param {Object} props - Пропси компонента
+ * @param {boolean} props.isLoading - Чи показувати стан завантаження
+ * @param {string} props.size - Розмір індикатора (small, medium, large)
+ * @param {string} props.message - Необов'язкове повідомлення про завантаження
+ * @param {boolean} props.overlay - Чи показувати як повноекранний оверлей
+ * @returns {JSX.Element|null} Компонент індикатора завантаження або null, якщо не завантажується
  */
 const LoadingIndicator = ({ 
   isLoading, 
   size = 'medium', 
-  message = 'Loading...', 
+  message = 'Завантаження...', 
   overlay = false 
 }) => {
   // If not loading, don't render anything

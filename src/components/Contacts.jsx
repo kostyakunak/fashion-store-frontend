@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import "../styles/Contacts.css"; // Подключаем стили
+import "../styles/Contacts.css"; // Підключаємо стилі
 
 function Contacts() {
     useEffect(() => {
         fetch("http://localhost:8080/products")
             .then(response => response.json())
-            // .then(data => { }) // удалено, блок ничего не делал
-            .catch(error => console.error("Ошибка загрузки товаров:", error));
+            // .then(data => { }) // видалено, блок нічого не робив
+            .catch(error => console.error("Помилка завантаження товарів:", error));
     }, []);
 
     return (

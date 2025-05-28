@@ -19,15 +19,15 @@ function Cart() {
         mergeCart
     } = useCart();
     
-    // Используем контекст аутентификации
+    // Використовуємо контекст автентифікації
     const auth = useContext(AuthContext);
 
-    // Состояние для хранения сообщений о недоступных размерах
+    // Стан для зберігання повідомлень про недоступні розміри
     const [sizeWarnings, setSizeWarnings] = useState({});
 
     const navigate = useNavigate();
 
-    // Проверяем доступность выбранных размеров при загрузке и изменении корзины
+    // Перевіряємо доступність обраних розмірів при завантаженні та зміні кошика
     useEffect(() => {
         if (!loading && cartItems.length > 0) {
             const warnings = {};
@@ -43,14 +43,14 @@ function Cart() {
         }
     }, [cartItems, loading]); // убираем getAvailableSizesForProduct из зависимостей
     
-    // Объединяем корзину при входе пользователя в систему
+    // Об'єднуємо кошик при вході користувача в систему
     useEffect(() => {
         if (auth.isAuthenticated()) {
             mergeCart();
         }
     }, [auth.isAuthenticated, mergeCart]);
 
-    // Функция для отображения размеров товара
+    // Функція для відображення розмірів товару
     const renderSizeSelect = (item) => {
         const availableSizes = getAvailableSizesForProduct(item.productId);
         // Фильтруем дубликаты по id-name
@@ -69,7 +69,7 @@ function Cart() {
             <div className="cart-item-size">
                 {sizeWarnings[item.id] && (
                     <div className="size-warning">
-                        Выбранный размер недоступен. Пожалуйста, выберите другой размер.
+                        Обраний розмір недоступний. Будь ласка, виберіть інший розмір.
                     </div>
                 )}
                 
@@ -80,7 +80,7 @@ function Cart() {
                 >
                     {!currentSizeExists && (
                         <option value="" disabled>
-                            Выберите размер
+                            Виберіть розмір
                         </option>
                     )}
                     {uniqueSizes.map(size => (
@@ -97,20 +97,20 @@ function Cart() {
         <div className="cart">
             <Header />
             <main>
-                <h1>Корзина</h1>
+                <h1>Кошик</h1>
                 
                 {loading ? (
-                    <div className="loading">Загрузка корзины...</div>
+                    <div className="loading">Завантаження кошика...</div>
                 ) : error ? (
-                    <div className="error">Ошибка: {error}</div>
+                    <div className="error">Помилка: {error}</div>
                 ) : cartItems.length > 0 ? (
                     <div className="cart-container">
                         <div className="cart-headers">
                             <div className="cart-header-item">ТОВАР</div>
-                            <div className="cart-header-price">ЦЕНА</div>
-                            <div className="cart-header-size">РАЗМЕР</div>
-                            <div className="cart-header-quantity">КОЛИЧЕСТВО</div>
-                            <div className="cart-header-subtotal">СУММА</div>
+                            <div className="cart-header-price">ЦІНА</div>
+                            <div className="cart-header-size">РОЗМІР</div>
+                            <div className="cart-header-quantity">КІЛЬКІСТЬ</div>
+                            <div className="cart-header-subtotal">СУМА</div>
                             <div className="cart-header-action"></div>
                         </div>
                         
@@ -134,7 +134,7 @@ function Cart() {
                                         </div>
                                         
                                         <div className="cart-item-price">
-                                            {item.price} руб.
+                                            {item.price} грн.
                                         </div>
                                         
                                         {renderSizeSelect(item)}
@@ -163,14 +163,14 @@ function Cart() {
                                         </div>
                                         
                                         <div className="cart-item-subtotal">
-                                            {(item.price * item.quantity).toFixed(2)} руб.
+                                            {(item.price * item.quantity).toFixed(2)} грн.
                                         </div>
                                         
                                         <div className="cart-item-remove">
                                             <button 
                                                 className="remove-btn" 
                                                 onClick={() => removeFromCart(item.id)}
-                                                title="Удалить из корзины"
+                                                title="Видалити з кошика"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                                                     <path fill="none" d="M0 0h24v24H0z"/>
@@ -185,27 +185,27 @@ function Cart() {
                         
                         <div className="cart-summary">
                             <div className="cart-total">
-                                <h3>Итого:</h3>
-                                <span className="cart-total-price">{total} руб.</span>
+                                <h3>Разом:</h3>
+                                <span className="cart-total-price">{total} грн.</span>
                             </div>
                             <div className="cart-actions">
                                 <Link to="/catalog" className="continue-shopping">
-                                    Продолжить покупки
+                                    Продовжити покупки
                                 </Link>
                                 <button 
                                     className="checkout-btn"
                                     disabled={Object.keys(sizeWarnings).length > 0}
-                                    title={Object.keys(sizeWarnings).length > 0 ? "Пожалуйста, выберите доступные размеры для всех товаров" : ""}
+                                    title={Object.keys(sizeWarnings).length > 0 ? "Будь ласка, виберіть доступні розміри для всіх товарів" : ""}
                                     onClick={() => navigate('/checkout')}
                                 >
-                                    Оформить заказ
+                                    Оформити замовлення
                                 </button>
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="cart-empty">
-                        <p>Ваша корзина пуста</p>
+                        <p>Ваш кошик порожній</p>
                         <Link to="/catalog" className="continue-shopping">
                             Перейти в каталог
                         </Link>

@@ -8,11 +8,11 @@ jest.mock('../../../services/authService');
 
 describe('ProfileView', () => {
     const mockUser = {
-        firstName: 'Иван',
-        lastName: 'Иванов',
+        firstName: 'Іван',
+        lastName: 'Іваненко',
         email: 'test@example.com',
-        phone: '+79123456789',
-        address: 'ул. Примерная, 123'
+        phone: '+380931234567',
+        address: 'вул. Прикладна, 123'
     };
 
     beforeEach(() => {
@@ -20,7 +20,7 @@ describe('ProfileView', () => {
         authService.getCurrentUser.mockResolvedValue(mockUser);
     });
 
-    test('отображает данные пользователя', async () => {
+    test('відображає дані користувача', async () => {
         render(
             <BrowserRouter>
                 <ProfileView />
@@ -36,7 +36,7 @@ describe('ProfileView', () => {
         });
     });
 
-    test('переключается в режим редактирования', async () => {
+    test('перемикається в режим редагування', async () => {
         render(
             <BrowserRouter>
                 <ProfileView />
@@ -44,16 +44,16 @@ describe('ProfileView', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: /редактировать/i })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /редагувати/i })).toBeInTheDocument();
         });
 
-        fireEvent.click(screen.getByRole('button', { name: /редактировать/i }));
+        fireEvent.click(screen.getByRole('button', { name: /редагувати/i }));
 
-        expect(screen.getByRole('button', { name: /сохранить/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /отмена/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /зберегти/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /скасувати/i })).toBeInTheDocument();
     });
 
-    test('сохраняет изменения профиля', async () => {
+    test('зберігає зміни профілю', async () => {
         authService.updateProfile.mockResolvedValueOnce({ success: true });
 
         render(
@@ -63,17 +63,17 @@ describe('ProfileView', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: /редактировать/i })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /редагувати/i })).toBeInTheDocument();
         });
 
-        fireEvent.click(screen.getByRole('button', { name: /редактировать/i }));
+        fireEvent.click(screen.getByRole('button', { name: /редагувати/i }));
 
-        const newFirstName = 'Петр';
-        fireEvent.change(screen.getByLabelText(/имя/i), {
+        const newFirstName = 'Петро';
+        fireEvent.change(screen.getByLabelText(/ім'я/i), {
             target: { value: newFirstName },
         });
 
-        fireEvent.click(screen.getByRole('button', { name: /сохранить/i }));
+        fireEvent.click(screen.getByRole('button', { name: /зберегти/i }));
 
         await waitFor(() => {
             expect(authService.updateProfile).toHaveBeenCalledWith(
@@ -82,7 +82,7 @@ describe('ProfileView', () => {
         });
     });
 
-    test('выход из системы', async () => {
+    test('вихід із системи', async () => {
         render(
             <BrowserRouter>
                 <ProfileView />
@@ -90,17 +90,17 @@ describe('ProfileView', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: /выйти/i })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /вийти/i })).toBeInTheDocument();
         });
 
-        fireEvent.click(screen.getByRole('button', { name: /выйти/i }));
+        fireEvent.click(screen.getByRole('button', { name: /вийти/i }));
 
         expect(authService.logout).toHaveBeenCalled();
         expect(window.location.pathname).toBe('/login');
     });
 
-    test('показывает ошибку при загрузке профиля', async () => {
-        authService.getCurrentUser.mockRejectedValueOnce(new Error('Ошибка загрузки профиля'));
+    test('показує помилку при завантаженні профілю', async () => {
+        authService.getCurrentUser.mockRejectedValueOnce(new Error('Помилка при завантаженні профілю'));
 
         render(
             <BrowserRouter>
@@ -109,7 +109,7 @@ describe('ProfileView', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText(/ошибка при загрузке профиля/i)).toBeInTheDocument();
+            expect(screen.getByText(/помилка при завантаженні профілю/i)).toBeInTheDocument();
         });
     });
 }); 

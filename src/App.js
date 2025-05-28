@@ -45,7 +45,7 @@ function App() {
             <Router>
                 <div className="App">
                     <Routes>
-                        {/* Публичные маршруты */}
+                        {/* Публічні маршрути */}
                         <Route path="/" element={<Home />} />
                         <Route path="/catalog" element={<PageWrapper><Catalog /></PageWrapper>} />
                         <Route path="/contacts" element={<PageWrapper><Contacts /></PageWrapper>} />
@@ -53,7 +53,7 @@ function App() {
                         <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
                         <Route path="/register" element={<PageWrapper><RegisterPage /></PageWrapper>} />
                         
-                        {/* Защищенные маршруты пользователя */}
+                        {/* Захищені маршрути користувача */}
                         <Route path="/account" element={<PrivateRoute><PageWrapper><Account /></PageWrapper></PrivateRoute>} />
                         <Route path="/account/details" element={<PrivateRoute><PageWrapper><AccountDetails /></PageWrapper></PrivateRoute>} />
                         <Route path="/orders" element={<PrivateRoute><PageWrapper><MyOrders /></PageWrapper></PrivateRoute>} />
@@ -63,7 +63,7 @@ function App() {
                         <Route path="/orders/:orderId" element={<PrivateRoute><PageWrapper><OrderDetails /></PageWrapper></PrivateRoute>} />
                         <Route path="/checkout" element={<PrivateRoute><PageWrapper><Checkout /></PageWrapper></PrivateRoute>} />
                         
-                        {/* Админ маршруты с проверкой роли ADMIN */}
+                        {/* Адмін-маршрути з перевіркою ролі ADMIN */}
                         <Route path="/admin" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminPanel /></PageWrapper></PrivateRoute>} />
                         <Route path="/admin/products" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminProducts /></PageWrapper></PrivateRoute>} />
                         <Route path="/admin/orders" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminOrders /></PageWrapper></PrivateRoute>} />

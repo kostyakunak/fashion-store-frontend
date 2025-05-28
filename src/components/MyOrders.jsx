@@ -30,7 +30,7 @@ function MyOrders() {
     }, [isAuthenticated, navigate]);
 
     const handleCancelOrder = async (orderId) => {
-        if (window.confirm('Вы уверены, что хотите отменить этот заказ?')) {
+        if (window.confirm('Ви впевнені, що хочете скасувати це замовлення?')) {
             const success = await cancelOrder(orderId);
             if (success) {
                 // Order was successfully cancelled
@@ -46,11 +46,11 @@ function MyOrders() {
     // Map status codes to readable Russian text
     const getStatusText = (status) => {
         const statusMap = {
-            'AWAITING_PAYMENT': 'Ожидает оплаты',
-            'PAID': 'Оплачен',
-            'SHIPPED': 'Отправлен',
-            'DELIVERED': 'Доставлен',
-            'CANCELLED': 'Отменен'
+            'AWAITING_PAYMENT': 'Очікує оплати',
+            'PAID': 'Оплачено',
+            'SHIPPED': 'Відправлено',
+            'DELIVERED': 'Доставлено',
+            'CANCELLED': 'Скасовано'
         };
         return statusMap[status] || status;
     };
@@ -60,7 +60,7 @@ function MyOrders() {
             <div className="my_orders">
                 <Header />
                 <main>
-                    <div className="loading">Загрузка...</div>
+                    <div className="loading">Завантаження...</div>
                 </main>
                 <Footer />
             </div>
@@ -84,12 +84,12 @@ function MyOrders() {
             <Header />
             <main>
                 <section className="container content-section">
-                    <h2>Мои заказы</h2>
+                    <h2>Мої замовлення</h2>
                     
                     {orders.length === 0 ? (
                         <div className="no-orders">
-                            <p>У вас еще нет заказов.</p>
-                            <Link to="/catalog" className="shop-now-btn">Перейти к покупкам</Link>
+                            <p>У вас ще немає замовлень.</p>
+                            <Link to="/catalog" className="shop-now-btn">Перейти до покупок</Link>
                         </div>
                     ) : (
                         <>
@@ -99,12 +99,12 @@ function MyOrders() {
                                     onChange={(e) => setSelectedStatus(e.target.value)}
                                     className="status-filter"
                                 >
-                                    <option value="">Все статусы</option>
-                                    <option value="AWAITING_PAYMENT">Ожидает оплаты</option>
-                                    <option value="PAID">Оплачен</option>
-                                    <option value="SHIPPED">Отправлен</option>
-                                    <option value="DELIVERED">Доставлен</option>
-                                    <option value="CANCELLED">Отменен</option>
+                                    <option value="">Всі статуси</option>
+                                    <option value="AWAITING_PAYMENT">Очікує оплати</option>
+                                    <option value="PAID">Оплачено</option>
+                                    <option value="SHIPPED">Відправлено</option>
+                                    <option value="DELIVERED">Доставлено</option>
+                                    <option value="CANCELLED">Скасовано</option>
                                 </select>
                             </div>
 
@@ -112,7 +112,7 @@ function MyOrders() {
                                 {filteredOrders.map((order) => (
                                     <div key={order.id} className="order-item">
                                         <div className="order-header">
-                                            <h3>Заказ #{order.id}</h3>
+                                            <h3>Замовлення #{order.id}</h3>
                                             <span className={`status-badge ${order.status.toLowerCase()}`}>
                                                 {getStatusText(order.status)}
                                             </span>
@@ -132,9 +132,9 @@ function MyOrders() {
                                                     />
                                                     <div className="order-details">
                                                         <h4>{item.productMap?.name || item.product?.name}</h4>
-                                                        <p>Размер: {item.size.name}</p>
-                                                        <p>Количество: {item.quantity}</p>
-                                                        <p>Цена: ${item.priceAtPurchase}</p>
+                                                        <p>Розмір: {item.size.name}</p>
+                                                        <p>Кількість: {item.quantity}</p>
+                                                        <p>Ціна: {item.priceAtPurchase} грн.</p>
                                                     </div>
                                                 </div>
                                             ))}
@@ -142,7 +142,7 @@ function MyOrders() {
 
                                         <div className="order-footer">
                                             <div className="order-total">
-                                                <strong>Итого: ${order.totalPrice}</strong>
+                                                <strong>Разом: {order.totalPrice} грн.</strong>
                                             </div>
                                             <div className="order-actions">
                                                 {canBeCancelled(order) && (
@@ -150,7 +150,7 @@ function MyOrders() {
                                                         className="cancel-button"
                                                         onClick={() => handleCancelOrder(order.id)}
                                                     >
-                                                        Отменить
+                                                        Скасувати
                                                     </button>
                                                 )}
                                             </div>

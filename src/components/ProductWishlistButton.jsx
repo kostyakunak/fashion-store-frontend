@@ -51,7 +51,7 @@ const ProductWishlistButton = ({ product, size = 'md', className = '' }) => {
         <button
             className={`wishlist-button${inWishlist ? ' in-wishlist' : ''} ${className}`}
             onClick={handleWishlistClick}
-            aria-label={inWishlist ? "Удалить из избранного" : "Добавить в избранное"}
+            aria-label={inWishlist ? "Видалити з обраного" : "Додати до обраного"}
             type="button"
         >
             <span className="wishlist-heart" aria-hidden="true">

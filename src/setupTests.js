@@ -5,9 +5,10 @@
 import '@testing-library/jest-dom';
 
 // Мок для CSS-файлов
+// Мок для CSS-файлів
 jest.mock('*.css', () => ({}));
 
-// Мок для useNavigate из react-router-dom
+// Мок для useNavigate з react-router-dom
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),

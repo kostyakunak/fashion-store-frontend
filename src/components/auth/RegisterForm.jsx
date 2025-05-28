@@ -26,15 +26,15 @@ const RegisterForm = () => {
 
     const validateForm = () => {
         if (formData.password !== formData.confirmPassword) {
-            setError('Пароли не совпадают');
+            setError('Паролі не співпадають');
             return false;
         }
         if (formData.password.length < 8) {
-            setError('Пароль должен содержать минимум 8 символов');
+            setError('Пароль має містити мінімум 8 символів');
             return false;
         }
-        if (!/^\+7\d{10}$/.test(formData.phone)) {
-            setError('Телефон должен быть в формате +7XXXXXXXXXX');
+        if (!/^\+380\d{9}$/.test(formData.phone)) {
+            setError('Телефон має бути у форматі +380XXXXXXXXX');
             return false;
         }
         return true;
@@ -55,7 +55,7 @@ const RegisterForm = () => {
             await authService.register(registerData);
             navigate('/profile');
         } catch (err) {
-            setError(err.message || 'Ошибка при регистрации');
+            setError(err.message || 'Помилка при реєстрації');
         } finally {
             setLoading(false);
         }
@@ -66,7 +66,7 @@ const RegisterForm = () => {
             {error && <div className="error-message">{error}</div>}
             
             <div className="form-group">
-                <label htmlFor="firstName">Имя</label>
+                <label htmlFor="firstName">Ім'я</label>
                 <input
                     type="text"
                     id="firstName"
@@ -78,7 +78,7 @@ const RegisterForm = () => {
             </div>
 
             <div className="form-group">
-                <label htmlFor="lastName">Фамилия</label>
+                <label htmlFor="lastName">Прізвище</label>
                 <input
                     type="text"
                     id="lastName"
@@ -109,7 +109,7 @@ const RegisterForm = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="+7XXXXXXXXXX"
+                    placeholder="+380XXXXXXXXX"
                     required
                 />
             </div>
@@ -127,7 +127,7 @@ const RegisterForm = () => {
             </div>
 
             <div className="form-group">
-                <label htmlFor="confirmPassword">Подтверждение пароля</label>
+                <label htmlFor="confirmPassword">Підтвердження паролю</label>
                 <input
                     type="password"
                     id="confirmPassword"
@@ -139,7 +139,7 @@ const RegisterForm = () => {
             </div>
 
             <button type="submit" disabled={loading} className="submit-button">
-                {loading ? 'Загрузка...' : 'Зарегистрироваться'}
+                {loading ? 'Завантаження...' : 'Зареєструватися'}
             </button>
         </form>
     );

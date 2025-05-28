@@ -6,7 +6,7 @@ const AdminSizesGeneric = () => {
     const apiClient = {
         getAll: getSizes,
         create: async (data) => {
-            // Удаляем id из данных, чтобы серверная автогенерация работала корректно
+            // Видаляємо id з даних, щоб серверна автогенерація працювала коректно
             const { id, ...dataWithoutId } = data;
             return createSize(dataWithoutId);
         },
@@ -21,11 +21,11 @@ const AdminSizesGeneric = () => {
             type: "number",
             readOnly: true,
             display: (item) => item.id,
-            hint: "ID генерируется автоматически системой"
+            hint: "ID генерується автоматично системою"
         },
         {
             name: "name",
-            label: "Название размера",
+            label: "Назва розміру",
             type: "text",
             required: true
         }
@@ -37,7 +37,7 @@ const AdminSizesGeneric = () => {
 
     return (
         <GenericTableManager
-            title="Управление размерами"
+            title="Управління розмірами"
             apiClient={apiClient}
             fields={fields}
             validators={validators}

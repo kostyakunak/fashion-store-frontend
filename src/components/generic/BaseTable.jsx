@@ -10,7 +10,7 @@ const BaseTable = ({
     onDelete,
     isLoading,
     error,
-    emptyMessage = 'Нет данных для отображения'
+    emptyMessage = 'Немає даних для відображення'
 }) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
@@ -37,11 +37,11 @@ const BaseTable = ({
     }, [data, sortConfig]);
 
     if (isLoading) {
-        return <div className="base-table-loading">Загрузка...</div>;
+        return <div className="base-table-loading">Завантаження...</div>;
     }
 
     if (error) {
-        return <div className="base-table-error">Ошибка: {error}</div>;
+        return <div className="base-table-error">Помилка: {error}</div>;
     }
 
     if (!data || data.length === 0) {
@@ -67,7 +67,7 @@ const BaseTable = ({
                                 )}
                             </th>
                         ))}
-                        {(onEdit || onDelete) && <th>Действия</th>}
+                        {(onEdit || onDelete) && <th>Дії</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +92,7 @@ const BaseTable = ({
                                             }}
                                             className="action-button edit"
                                         >
-                                            Редактировать
+                                            Редагувати
                                         </button>
                                     )}
                                     {onDelete && (
@@ -103,7 +103,7 @@ const BaseTable = ({
                                             }}
                                             className="action-button delete"
                                         >
-                                            Удалить
+                                            Видалити
                                         </button>
                                     )}
                                 </td>

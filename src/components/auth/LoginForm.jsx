@@ -29,7 +29,7 @@ const LoginForm = () => {
             await authService.login(formData);
             navigate('/profile');
         } catch (err) {
-            setError(err.message || 'Ошибка при входе');
+            setError(err.message || 'Помилка при вході');
         } finally {
             setLoading(false);
         }
@@ -64,7 +64,7 @@ const LoginForm = () => {
             </div>
 
             <button type="submit" disabled={loading} className="submit-button">
-                {loading ? 'Загрузка...' : 'Войти'}
+                {loading ? 'Завантаження...' : 'Увійти'}
             </button>
         </form>
     );

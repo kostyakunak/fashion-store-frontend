@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "../components/static/header-footer.css"; // Подключаем стили
+import "../components/static/header-footer.css"; // Підключаємо стилі
 
 export function Footer() {
     const [footer, setFooter] = useState("");

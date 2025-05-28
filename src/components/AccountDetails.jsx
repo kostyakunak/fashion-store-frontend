@@ -28,15 +28,15 @@ const AccountDetails = () => {
     const [saveError, setSaveError] = useState(null);
     const [mainAddressIndex, setMainAddressIndex] = useState(null);
 
-    // Загружаем все адреса пользователя
+    // Завантажуємо всі адреси користувача
     useEffect(() => {
         if (userId) {
             getAddressesByUser(userId)
                 .then((addresses) => {
-                    // Сортируем: основной адрес — первый
+                    // Сортуємо: основна адреса — перша
                     const sorted = addresses.slice().sort((a, b) => (b.isMain ? 1 : 0) - (a.isMain ? 1 : 0));
                     setAddresses(sorted);
-                    // currentAddressIndex всегда 0 (основной)
+                    // currentAddressIndex завжди 0 (основна)
                     setCurrentAddressIndex(0);
                     setLoading(false);
                 })
@@ -46,7 +46,7 @@ const AccountDetails = () => {
         }
     }, [userId]);
 
-    // Обновляем details при смене адреса или пользователя
+    // Оновлюємо details при зміні адреси або користувача
     useEffect(() => {
         const addr = addresses[currentAddressIndex] || {};
         setDetails({
@@ -62,7 +62,7 @@ const AccountDetails = () => {
         });
     }, [user, addresses, currentAddressIndex]);
 
-    // useEffect: при входе в edit/add/selectMain выставлять mainAddressIndex
+    // useEffect: при вході в edit/add/selectMain виставляти mainAddressIndex
     useEffect(() => {
         if ((mode === 'edit' || mode === 'add' || mode === 'selectMain') && addresses.length > 0) {
             const idx = addresses.findIndex(a => a.isMain);
@@ -74,7 +74,7 @@ const AccountDetails = () => {
         setDetails({ ...details, [field]: e.target.innerText });
     };
 
-    // Переключение адреса (стрелки)
+    // Переключення адреси (стрелок)
     const handlePrevAddress = () => {
         if (addresses.length < 2) return;
         setCurrentAddressIndex((prev) => {
@@ -90,7 +90,7 @@ const AccountDetails = () => {
         });
     };
 
-    // Добавление нового адреса
+    // Додавання нового адреси
     const handleAddAddress = () => {
         setMode('add');
         setDetails({
@@ -129,16 +129,16 @@ const AccountDetails = () => {
             setAddresses(updatedAddresses);
             setMode('view');
         } catch (err) {
-            setSaveError("Ошибка при сохранении изменений адреса");
+            setSaveError("Помилка при збереженні змін адреси");
         } finally {
             setSaving(false);
         }
     };
 
-    // Удаление адреса
+    // Видалення адреси
     const handleDeleteAddress = async () => {
-        if (addresses.length <= 1) return; // нельзя удалить последний адрес
-        if (!window.confirm("Удалить этот адрес?")) return;
+        if (addresses.length <= 1) return; // не можна видалити останню адресу
+        if (!window.confirm("Видалити цю адресу?")) return;
         setSaving(true);
         setSaveError(null);
         try {
@@ -155,16 +155,16 @@ const AccountDetails = () => {
             setMode('view');
         } catch (err) {
             if (err.message && err.message.includes('foreign key constraint fails')) {
-                setSaveError('Этот адрес нельзя удалить, так как он используется в одном или нескольких заказах.');
+                setSaveError('Цю адресу не можна видалити, оскільки вона використовується в одному або декількох замовленнях.');
             } else {
-                setSaveError('Ошибка при удалении адреса');
+                setSaveError('Помилка при видаленні адреси');
             }
         } finally {
             setSaving(false);
         }
     };
 
-    // Режим выбора адреса по умолчанию
+    // Режим вибору адреси по умолчанню
     const handleSelectMainMode = () => {
         setMode('selectMain');
     };
@@ -178,20 +178,20 @@ const AccountDetails = () => {
                     ? updateAddress(addr.id, { ...addr, isMain: true, user: { id: userId } })
                     : updateAddress(addr.id, { ...addr, isMain: false, user: { id: userId } })
             ));
-            // Перезагружаем адреса
+            // Перезагружаем адреси
             const updated = await getAddressesByUser(userId);
             setAddresses(updated);
             const mainIdx = updated.findIndex(a => a.isMain);
             setCurrentAddressIndex(mainIdx >= 0 ? mainIdx : 0);
             setMode('view');
         } catch (err) {
-            setSaveError("Ошибка при установке адреса по умолчанию");
+            setSaveError("Помилка при встановленні адреси за замовчуванням");
         } finally {
             setSaving(false);
         }
     };
 
-    // Сохранение изменений при редактировании адреса
+    // Збереження змін при редагуванні адреси
     const handleSave = async () => {
         console.log('handleSave called', { mainAddressIndex, addresses });
         setSaveError(null);
@@ -227,12 +227,12 @@ const AccountDetails = () => {
             setCurrentAddressIndex(idx >= 0 ? idx : 0);
             setMode('view');
         } catch (e) {
-            setSaveError('Ошибка при сохранении адреса');
+            setSaveError('Помилка при збереженні адреси');
         }
     };
 
     if (loading) {
-        return <div className="account-details"><Header /><div className="layout-container"><main><p>Загрузка...</p></main></div><Footer /></div>;
+        return <div className="account-details"><Header /><div className="layout-container"><main><p>Завантаження...</p></main></div><Footer /></div>;
     }
 
     return (
@@ -284,8 +284,8 @@ const AccountDetails = () => {
                         {/* Новый блок: если нет ни одного адреса */}
                         {addresses.length === 0 ? (
                           <div style={{ textAlign: 'center', margin: 24 }}>
-                            <p>У вас нет ни одного адреса доставки.</p>
-                            <button onClick={handleAddAddress}>Добавить адрес</button>
+                            <p>У вас немає жодної адреси доставки.</p>
+                            <button onClick={handleAddAddress}>Додати адресу</button>
                           </div>
                         ) : (
                         // Контейнер стрелок и блока адреса
@@ -295,7 +295,7 @@ const AccountDetails = () => {
                                 <button
                                     className="address-arrow-btn left"
                                     onClick={handlePrevAddress}
-                                    aria-label="Предыдущий адрес"
+                                    aria-label="Попередня адреса"
                                     disabled={addresses.length <= 1}
                                     style={{ width: 40, minWidth: 40, textAlign: 'center', borderRadius: 0, background: '#2c394a' }}
                                 >
@@ -378,7 +378,7 @@ const AccountDetails = () => {
                                 <button
                                     className="address-arrow-btn right"
                                     onClick={handleNextAddress}
-                                    aria-label="Следующий адрес"
+                                    aria-label="Наступна адреса"
                                     disabled={addresses.length <= 1}
                                     style={{ width: 40, minWidth: 40, textAlign: 'center', borderRadius: 0, background: '#2c394a' }}
                                 >
@@ -412,7 +412,7 @@ const AccountDetails = () => {
                                                 marginRight: 8
                                             }}
                                         >
-                                            Добавить адрес
+                                            Додати адресу
                                         </button>
                                     )}
                                     {mode === 'edit' && (
@@ -438,7 +438,7 @@ const AccountDetails = () => {
                                                 transition: 'background 0.2s, color 0.2s, opacity 0.2s'
                                             }}
                                         >
-                                            Сохранить
+                                            Зберегти
                                         </button>
                                     )}
                                     {mode === 'add' && (
@@ -466,7 +466,7 @@ const AccountDetails = () => {
                                                     marginRight: 8
                                                 }}
                                             >
-                                                Сохранить
+                                                Зберегти
                                             </button>
                                             <button
                                                 onClick={() => setMode('view')}
@@ -488,7 +488,7 @@ const AccountDetails = () => {
                                                     transition: 'background 0.2s, color 0.2s, opacity 0.2s'
                                                 }}
                                             >
-                                                Отменить
+                                                Скасувати
                                             </button>
                                         </>
                                     )}
@@ -531,7 +531,7 @@ const AccountDetails = () => {
                                                 }
                                             }}
                                         >
-                                            По умолчанию
+                                            За замовчуванням
                                         </button>
                                     )}
                                     {(addresses.length > 1 && mode !== 'add' && mode !== 'selectMain') && (
@@ -556,7 +556,7 @@ const AccountDetails = () => {
                                             }}
                                             disabled={saving}
                                         >
-                                            Удалить адрес
+                                            Видалити адресу
                                         </button>
                                     )}
                                 </div>

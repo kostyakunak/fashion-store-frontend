@@ -22,7 +22,7 @@ function Item() {
     const location = useLocation();
     const navigate = useNavigate();
     
-    // Получаем id товара из URL параметров
+    // Отримуємо id товару з URL параметрів
     const params = new URLSearchParams(location.search);
     const productId = params.get("id");
     
@@ -42,34 +42,32 @@ function Item() {
         updateZoomPosition
     } = useImageModal();
 
-    // Получаем данные о товаре при загрузке страницы
+    // Отримуємо дані про товар при завантаженні сторінки
     useEffect(() => {
         if (!productId) {
-            setError("Не указан ID товара");
+            setError("Не вказано ID товару");
             setLoading(false);
             return;
         }
-        
-        // Загружаем данные о товаре
+        // Завантажуємо дані про товар
         setLoading(true);
         fetch(`http://localhost:8080/products/${productId}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP ошибка! Статус: ${response.status}`);
+                    throw new Error(`HTTP помилка! Статус: ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
-                console.log("Данные о товаре:", data);
+                console.log("Дані про товар:", data);
                 setProduct(data);
-                
-                // Загружаем доступные размеры для товара (теперь публичный endpoint)
+                // Завантажуємо доступні розміри для товару (тепер публічний endpoint)
                 return fetch(`http://localhost:8080/api/public/warehouse/product/${productId}/sizes`);
             })
             .then(response => {
                 if (!response.ok) {
-                    // Если ошибка при загрузке размеров, используем временные данные
-                    console.error(`Ошибка загрузки размеров: ${response.status}`);
+                    // Якщо помилка при завантаженні розмірів, використовуємо тимчасові дані
+                    console.error(`Помилка завантаження розмірів: ${response.status}`);
                     const dummySizes = [
                         { id: 2, name: "S" },
                         { id: 3, name: "M" },
@@ -86,9 +84,8 @@ function Item() {
                 return response.json();
             })
             .then(sizes => {
-                if (!sizes) return; // Если использовали временные данные, просто выходим
-                
-                console.log("Доступные размеры:", sizes);
+                if (!sizes) return; // Якщо використовували тимчасові дані, просто виходимо
+                console.log("Доступні розміри:", sizes);
                 setAvailableSizes(sizes);
                 if (sizes.length > 0) {
                     setSelectedSize(sizes[0].id);
@@ -96,7 +93,7 @@ function Item() {
                 setLoading(false);
             })
             .catch(error => {
-                console.error("Ошибка загрузки товара:", error);
+                console.error("Помилка завантаження товару:", error);
                 setError(error.message);
                 setLoading(false);
             });
@@ -112,17 +109,16 @@ function Item() {
         }
     };
     
-    // Функция добавления товара в корзину
+    // Функція додавання товару в кошик
     const addToCart = () => {
         if (!selectedSize) {
-            alert("Пожалуйста, выберите размер");
+            alert("Будь ласка, оберіть розмір");
             return;
         }
-        
-        // Получаем userId из localStorage (предполагаем что пользователь авторизован)
+        // Отримуємо userId з localStorage (передбачається, що користувач авторизований)
         const userId = localStorage.getItem("userId");
         if (!userId) {
-            // Если пользователь не авторизован, сохраняем в localStorage
+            // Якщо користувач не авторизований, зберігаємо в localStorage
             const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
             const cartItem = {
                 productId: product.id,
@@ -132,29 +128,24 @@ function Item() {
                 price: product.price,
                 imageUrl: product.images && product.images.length > 0 ? product.images[0].imageUrl : null
             };
-            
-            // Проверяем, есть ли уже такой товар в корзине
+            // Перевіряємо, чи є вже такий товар у кошику
             const existingItemIndex = cartItems.findIndex(
                 item => item.productId === product.id && item.sizeId === selectedSize
             );
-            
             if (existingItemIndex !== -1) {
-                // Если товар уже есть, увеличиваем количество
+                // Якщо товар вже є, збільшуємо кількість
                 cartItems[existingItemIndex].quantity += quantity;
             } else {
-                // Если товара нет, добавляем его
+                // Якщо товару немає, додаємо його
                 cartItems.push(cartItem);
             }
-            
             localStorage.setItem("cartItems", JSON.stringify(cartItems));
-            alert("Товар добавлен в корзину");
-            
-            // После добавления переходим в корзину
+            alert("Товар додано до кошика");
+            // Після додавання переходимо в кошик
             navigate("/cart");
             return;
         }
-        
-        // Если пользователь авторизован, отправляем запрос на сервер
+        // Якщо користувач авторизований, надсилаємо запит на сервер
         fetch("http://localhost:8080/api/cart", {
             method: "POST",
             headers: {
@@ -170,18 +161,18 @@ function Item() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP ошибка! Статус: ${response.status}`);
+                throw new Error(`HTTP помилка! Статус: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log("Товар добавлен в корзину:", data);
-            alert("Товар добавлен в корзину");
+            console.log("Товар додано до кошика:", data);
+            alert("Товар додано до кошика");
             navigate("/cart");
         })
         .catch(error => {
-            console.error("Ошибка добавления в корзину:", error);
-            alert(`Ошибка: ${error.message}`);
+            console.error("Помилка додавання до кошика:", error);
+            alert(`Помилка: ${error.message}`);
         });
     };
 
@@ -190,9 +181,9 @@ function Item() {
             <Header />
             <main>
                 {loading ? (
-                    <div className="loading">Загрузка товара...</div>
+                    <div className="loading">Завантаження товару...</div>
                 ) : error ? (
-                    <div className="error">Ошибка: {error}</div>
+                    <div className="error">Помилка: {error}</div>
                 ) : product ? (
                     <div className="product-item">
                         <div className="product-card">
@@ -213,7 +204,7 @@ function Item() {
                                         <div className="card-sizing active">
                                             <img
                                                 src="https://via.placeholder.com/400"
-                                                alt="Нет изображения"
+                                                alt="Немає зображення"
                                                 className="thumbnail"
                                             />
                                         </div>
@@ -221,7 +212,7 @@ function Item() {
                                 }
                             </div>
 
-                            {/* Модальное окно */}
+                            {/* Модальне вікно */}
                             {isOpen && (
                                 <div className="image-modal-overlay" onClick={closeModal}>
                                     <div className="image-modal-content" ref={modalRef} onClick={(e) => e.stopPropagation()}>
@@ -253,7 +244,7 @@ function Item() {
                             )}
 
                             <div className="price-wishlist-container">
-                                <div className="cost">{product.price} руб.</div>
+                                <div className="cost">{product.price} грн.</div>
                                 {console.log('Product для wishlist:', product)}
                                 <ProductWishlistButton product={product} size="md" />
                             </div>
@@ -261,13 +252,13 @@ function Item() {
                             <div className="details-container">
                                 <div className="details-left">
                                     <div className="product-details">
-                                        <h3>Описание товара</h3>
+                                        <h3>Опис товару</h3>
                                         <p>{product.productDetails}</p>
                                     </div>
                                 </div>
                                 <div className="details-right">
                                     <div className="measurements-container">
-                                        <h3>Параметры</h3>
+                                        <h3>Параметри</h3>
                                         <p>{product.measurements}</p>
                                     </div>
                                 </div>
@@ -282,12 +273,12 @@ function Item() {
                                 
                                 <div className="size-selection-container">
                                     <div className="size-header">
-                                        <h3>Выберите размер</h3>
+                                        <h3>Оберіть розмір</h3>
                                         <button
                                             className="size-chart-button"
                                             onClick={() => setShowSizeChart(true)}
                                         >
-                                            Таблица размеров
+                                            Таблиця розмірів
                                         </button>
                                     </div>
                                     
@@ -302,7 +293,7 @@ function Item() {
                                                     className={`size-button ${selectedSize === size.id ? "active" : ""} ${!isAvailable ? "disabled" : ""}`}
                                                     onClick={() => isAvailable && setSelectedSize(size.id)}
                                                     disabled={!isAvailable}
-                                                    title={!isAvailable ? "Размер отсутствует на складе" : ""}
+                                                    title={!isAvailable ? "Розмір відсутній на складі" : ""}
                                                 >
                                                     {size.name}
                                                     {!isAvailable && <span className="out-of-stock-label">❌</span>}
@@ -317,17 +308,17 @@ function Item() {
                                     <div className="size-chart-modal-overlay" onClick={() => setShowSizeChart(false)}>
                                         <div className="size-chart-modal" onClick={(e) => e.stopPropagation()}>
                                             <div className="size-chart-header">
-                                                <h2>Таблица размеров</h2>
+                                                <h2>Таблиця розмірів</h2>
                                                 <button className="close-button" onClick={() => setShowSizeChart(false)}>×</button>
                                             </div>
                                             <div className="size-chart-content">
                                                 <table className="size-chart-table">
                                                     <thead>
                                                         <tr>
-                                                            <th>Размер</th>
-                                                            <th>Грудь (см)</th>
-                                                            <th>Талия (см)</th>
-                                                            <th>Бёдра (см)</th>
+                                                            <th>Розмір</th>
+                                                            <th>Груди (см)</th>
+                                                            <th>Талія (см)</th>
+                                                            <th>Стегна (см)</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -368,13 +359,13 @@ function Item() {
                                     </div>
                                 )}
                                 <button className="add-to-bag" onClick={addToCart}>
-                                    Добавить в корзину
+                                    Додати до кошика
                                 </button>
                             </div>
                         </div>
                     </div>
                 ) : (
-                    <div className="not-found">Товар не найден</div>
+                    <div className="not-found">Товар не знайдено</div>
                 )}
             </main>
             <Footer />

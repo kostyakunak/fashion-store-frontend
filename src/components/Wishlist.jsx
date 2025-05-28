@@ -7,7 +7,7 @@ import './Wishlist.css';
 function Wishlist() {
     const { wishlistItems, loading, error, removeFromWishlist, loadWishlist } = useWishlist();
     const { addToCart } = useCart();
-    // Состояние для размеров и выбранных размеров по каждому товару
+    // Стан для розмірів і вибраних розмірів по кожному товару
     const [sizesMap, setSizesMap] = useState({}); // { [productId]: [sizes] }
     const [selectedSizes, setSelectedSizes] = useState({}); // { [productId]: sizeId }
     const [warning, setWarning] = useState({}); // { [productId]: true }
@@ -17,7 +17,7 @@ function Wishlist() {
         loadWishlist();
     }, [loadWishlist]);
 
-    // Загружаем размеры для всех товаров из wishlist
+    // Завантажуємо розміри для всіх товарів із wishlist
     useEffect(() => {
         async function fetchSizes() {
             const newSizesMap = {};
@@ -74,10 +74,10 @@ function Wishlist() {
     if (error) {
         return (
             <div className="wishlist-container" style={{textAlign: 'center', marginTop: '3rem'}}>
-                <h3>Произошла ошибка</h3>
+                <h3>Виникла помилка</h3>
                 <p>{error}</p>
                 <button className="wishlist-move-btn" onClick={loadWishlist}>
-                    Попробовать снова
+                    Спробувати ще раз
                 </button>
             </div>
         );
@@ -86,13 +86,13 @@ function Wishlist() {
     if (wishlistItems.length === 0) {
         return (
             <div className="wishlist-container" style={{marginTop: '3rem'}}>
-                <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>Мой список желаний</h2>
+                <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>Мій список бажань</h2>
                 <div className="wishlist-item" style={{textAlign: 'center', padding: '3rem'}}>
-                    <h3>Ваш список желаний пуст</h3>
-                    <p>Добавьте товары, которые вам нравятся, в список желаний</p>
+                    <h3>Ваш список бажань порожній</h3>
+                    <p>Додайте товари, які вам подобаються, до списку бажань</p>
                     <Link to="/products">
                         <button className="wishlist-move-btn">
-                            Перейти к товарам
+                            Перейти до товарів
                         </button>
                     </Link>
                 </div>
@@ -102,7 +102,7 @@ function Wishlist() {
 
     return (
         <div className="wishlist-container" style={{marginTop: '3rem'}}>
-            <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>Мой список желаний</h2>
+            <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>Мій список бажань</h2>
             <div className="wishlist-row">
                 {wishlistItems.map(item => (
                     <div key={item.id} className="wishlist-col">
@@ -125,7 +125,7 @@ function Wishlist() {
                                 <Link to={`/product/${item.productId}`} style={{textDecoration: 'none'}}>
                                     <div className="wishlist-title">{item.name}</div>
                                 </Link>
-                                <div className="price">{item.price ? `${item.price.toFixed(2)} ₽` : 'Цена недоступна'}</div>
+                                <div className="price">{item.price ? `${item.price.toFixed(2)} грн.` : 'Ціна недоступна'}</div>
                                 {/* Селектор размеров */}
                                 {sizesMap[item.productId] && (
                                     <div style={{margin: '12px 0'}}>
@@ -136,10 +136,10 @@ function Wishlist() {
                                             disabled={!sizesMap[item.productId] || sizesMap[item.productId].length === 0}
                                         >
                                             {sizesMap[item.productId].length === 0 ? (
-                                                <option value="" disabled>Нет доступных размеров</option>
+                                                <option value="" disabled>Немає доступних розмірів</option>
                                             ) : (
                                                 <>
-                                                    <option value="" disabled>Выберите размер</option>
+                                                    <option value="" disabled>Оберіть розмір</option>
                                                     {sizesMap[item.productId].map(size => (
                                                         <option key={size.id} value={size.id}>{size.name}</option>
                                                     ))}
@@ -147,7 +147,7 @@ function Wishlist() {
                                             )}
                                         </select>
                                         {warning[item.productId] && (
-                                            <div style={{color: '#e04848', fontSize: 13, marginTop: 4}}>Пожалуйста, выберите размер</div>
+                                            <div style={{color: '#e04848', fontSize: 13, marginTop: 4}}>Будь ласка, оберіть розмір</div>
                                         )}
                                     </div>
                                 )}
@@ -161,7 +161,7 @@ function Wishlist() {
                                     (sizesMap[item.productId] && sizesMap[item.productId].length === 0)
                                 }
                             >
-                                MOVE TO BAG
+                                ДОДАТИ ДО КОШИКА
                             </button>
                         </div>
                     </div>

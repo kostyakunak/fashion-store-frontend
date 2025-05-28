@@ -30,7 +30,7 @@ const ProfileView = () => {
                     });
                 }
             } catch (err) {
-                setError('Ошибка при загрузке профиля');
+                setError('Помилка при завантаженні профілю');
             } finally {
                 setLoading(false);
             }
@@ -56,7 +56,7 @@ const ProfileView = () => {
             // Здесь будет логика обновления профиля
             setEditMode(false);
         } catch (err) {
-            setError('Ошибка при обновлении профиля');
+            setError('Помилка при оновленні профілю');
         } finally {
             setLoading(false);
         }
@@ -68,22 +68,22 @@ const ProfileView = () => {
     };
 
     if (loading) {
-        return <div className="loading">Загрузка...</div>;
+        return <div className="loading">Завантаження...</div>;
     }
 
     if (!user) {
-        return <div className="error">Пользователь не найден</div>;
+        return <div className="error">Користувача не знайдено</div>;
     }
 
     return (
         <div className="profile-container">
-            <h1>Профиль пользователя</h1>
+            <h1>Профіль користувача</h1>
             
             {error && <div className="error-message">{error}</div>}
 
             <form onSubmit={handleSubmit} className="profile-form">
                 <div className="form-group">
-                    <label htmlFor="firstName">Имя</label>
+                    <label htmlFor="firstName">Ім'я</label>
                     <input
                         type="text"
                         id="firstName"
@@ -96,7 +96,7 @@ const ProfileView = () => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="lastName">Фамилия</label>
+                    <label htmlFor="lastName">Прізвище</label>
                     <input
                         type="text"
                         id="lastName"
@@ -135,7 +135,7 @@ const ProfileView = () => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="address">Адрес</label>
+                    <label htmlFor="address">Адреса</label>
                     <input
                         type="text"
                         id="address"
@@ -150,14 +150,14 @@ const ProfileView = () => {
                     {editMode ? (
                         <>
                             <button type="submit" className="save-button">
-                                Сохранить
+                                Зберегти
                             </button>
                             <button
                                 type="button"
                                 className="cancel-button"
                                 onClick={() => setEditMode(false)}
                             >
-                                Отмена
+                                Скасувати
                             </button>
                         </>
                     ) : (
@@ -166,14 +166,14 @@ const ProfileView = () => {
                             className="edit-button"
                             onClick={() => setEditMode(true)}
                         >
-                            Редактировать
+                            Редагувати
                         </button>
                     )}
                 </div>
             </form>
 
             <button className="logout-button" onClick={handleLogout}>
-                Выйти
+                Вийти
             </button>
         </div>
     );

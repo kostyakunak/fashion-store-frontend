@@ -3,19 +3,19 @@ import PropTypes from 'prop-types';
 import '../../styles/AdminTables.css';
 
 /**
- * Компонент для стилизованного отображения ошибок
- * @param {Object} props - Свойства компонента
- * @param {string} props.message - Сообщение об ошибке
+ * Компонент для стилізованого відображення помилок
+ * @param {Object} props - Властивості компонента
+ * @param {string} props.message - Повідомлення про помилку
  */
 const ErrorAlert = ({ message }) => {
     if (!message) return null;
     
-    // Преобразуем сообщение об ошибке в более понятный формат
+    // Перетворюємо повідомлення про помилку у більш зрозумілий формат
     let displayMessage = message;
     if (typeof message === 'string') {
         if (message.startsWith('Invalid') || message.startsWith('Неверное значение поля')) {
             const fieldName = message.split(' ').pop();
-            displayMessage = `Пожалуйста, проверьте поле "${fieldName}"`;
+            displayMessage = `Будь ласка, перевірте поле "${fieldName}"`;
         }
     }
     
@@ -40,28 +40,28 @@ const ErrorAlert = ({ message }) => {
 };
 
 /**
- * Универсальный компонент для управления данными в таблице (CRUD-операции)
+ * Універсальний компонент для керування даними в таблиці (CRUD-операції)
  * 
- * @param {Object} props - Свойства компонента
- * @param {string} props.title - Заголовок таблицы
- * @param {Object} props.apiClient - Клиент API для работы с данными
- * @param {Function} props.apiClient.getAll - Функция для получения всех элементов
- * @param {Function} props.apiClient.create - Функция для создания элемента
- * @param {Function} props.apiClient.update - Функция для обновления элемента
- * @param {Function} props.apiClient.delete - Функция для удаления элемента
- * @param {Array} props.fields - Описание полей для отображения и редактирования
- * @param {Object} props.customHandlers - Пользовательские обработчики событий
- * @param {Function} props.customHandlers.onCreate - Пользовательский обработчик создания
- * @param {Function} props.customHandlers.onUpdate - Пользовательский обработчик обновления
- * @param {Function} props.customHandlers.onDelete - Пользовательский обработчик удаления
- * @param {Function} props.customHandlers.onEdit - Пользовательский обработчик начала редактирования
- * @param {Object} props.validators - Объект с функциями валидации для полей
- * @param {Object} props.additionalComponents - Дополнительные компоненты для отображения
- * @param {React.Component} props.additionalComponents.beforeTable - Компонент перед таблицей
- * @param {React.Component} props.additionalComponents.afterTable - Компонент после таблицы
- * @param {Object} props.styles - Стили для компонентов
+ * @param {Object} props - Властивості компонента
+ * @param {string} props.title - Заголовок таблиці
+ * @param {Object} props.apiClient - API-клієнт для роботи з даними
+ * @param {Function} props.apiClient.getAll - Функція для отримання всіх елементів
+ * @param {Function} props.apiClient.create - Функція для створення елемента
+ * @param {Function} props.apiClient.update - Функція для оновлення елемента
+ * @param {Function} props.apiClient.delete - Функція для видалення елемента
+ * @param {Array} props.fields - Опис полів для відображення та редагування
+ * @param {Object} props.customHandlers - Користувацькі обробники подій
+ * @param {Function} props.customHandlers.onCreate - Користувацький обробник створення
+ * @param {Function} props.customHandlers.onUpdate - Користувацький обробник оновлення
+ * @param {Function} props.customHandlers.onDelete - Користувацький обробник видалення
+ * @param {Function} props.customHandlers.onEdit - Користувацький обробник початку редагування
+ * @param {Object} props.validators - Об'єкт з функціями валідації для полів
+ * @param {Object} props.additionalComponents - Додаткові компоненти для відображення
+ * @param {React.Component} props.additionalComponents.beforeTable - Компонент перед таблицею
+ * @param {React.Component} props.additionalComponents.afterTable - Компонент після таблиці
+ * @param {Object} props.styles - Стилі для компонентів
  * 
- * @returns {JSX.Element} Компонент для управления данными
+ * @returns {JSX.Element} Компонент для керування даними
  */
 const GenericTableManager = ({
     title,
@@ -87,7 +87,7 @@ const GenericTableManager = ({
     }, []);
 
     /**
-     * Получает данные с сервера и обновляет состояние
+     * Отримує дані з сервера та оновлює стан
      * 
      * @returns {Promise<void>}
      */
@@ -95,11 +95,11 @@ const GenericTableManager = ({
         setLoading(true);
         try {
             const data = await apiClient.getAll();
-            // Сортируем элементы по ID по умолчанию, если не указан другой порядок сортировки
+            // Сортуємо елементи за ID за замовчуванням, якщо не вказано інший порядок сортування
             const sortedData = sortConfig.key ? data : data.sort((a, b) => a.id - b.id);
             setItems(sortedData);
         } catch (error) {
-            console.error("Error fetching items:", error);
+            console.error("Помилка отримання елементів:", error);
             setErrors({ fetch: error.response?.data?.message || error.message });
         } finally {
             setLoading(false);
@@ -107,9 +107,9 @@ const GenericTableManager = ({
     };
 
     /**
-     * Обработчик сортировки по заголовку таблицы
+     * Обробник сортування за заголовком таблиці
      * 
-     * @param {string} key - Ключ для сортировки
+     * @param {string} key - Ключ для сортування
      */
     const handleSort = (key) => {
         let direction = 'asc';
@@ -140,11 +140,11 @@ const GenericTableManager = ({
     );
 
     /**
-     * Проверяет значение поля на соответствие правилам валидации
+     * Перевіряє значення поля на відповідність правилам валідації
      * 
-     * @param {string} name - Имя поля
-     * @param {*} value - Значение поля
-     * @returns {boolean} Результат валидации
+     * @param {string} name - Ім'я поля
+     * @param {*} value - Значення поля
+     * @returns {boolean} Результат валідації
      */
     const validateField = (name, value) => {
         if (validators && validators[name]) {
@@ -154,16 +154,16 @@ const GenericTableManager = ({
     };
 
     /**
-     * Обработчик изменения значения поля ввода
+     * Обробник зміни значення поля вводу
      * 
-     * @param {string} name - Имя поля
-     * @param {*} value - Новое значение
-     * @param {Object|null} item - Элемент для редактирования или null для нового элемента
+     * @param {string} name - Ім'я поля
+     * @param {*} value - Нове значення
+     * @param {Object|null} item - Елемент для редагування або null для нового елемента
      */
     const handleInputChange = (name, value, item = null) => {
         const targetItem = item || newItem;
         
-        // Для поля ID просто обновляем значение без валидации
+        // Для поля ID просто оновлюємо значення без валідації
         if (name === 'id') {
             if (item) {
                 setEditingItem(prev => ({ ...prev, [name]: value }));
@@ -173,32 +173,32 @@ const GenericTableManager = ({
             return;
         }
         
-        // Преобразуем значение в число для числовых полей
+        // Перетворюємо значення у число для числових полів
         let processedValue = value;
         if (name === 'orderId' || name === 'productId' || name === 'sizeId' || name === 'quantity') {
             processedValue = value === '' ? null : parseInt(value);
         }
         
-        // Обновляем значение поля
+        // Оновлюємо значення поля
         if (item) {
             setEditingItem(prev => ({ ...prev, [name]: processedValue }));
         } else {
             setNewItem({ ...targetItem, [name]: processedValue });
         }
 
-        // Проверяем валидность после обновления значения
+        // Перевіряємо валідність після оновлення значення
         const isValid = validateField(name, processedValue);
         
-        // Находим поле для получения его метки
+        // Знаходимо поле для отримання його мітки
         const field = fields.find(f => f.name === name);
         const fieldLabel = field ? field.label : name;
         
         if (!isValid) {
-            let errorMessage = `Пожалуйста, проверьте поле "${fieldLabel}"`;
-            if (!processedValue || processedValue.trim().length === 0) {
-                errorMessage = `Поле "${fieldLabel}" не может быть пустым`;
-            } else if (processedValue.trim().length < 2) {
-                errorMessage = `Поле "${fieldLabel}" должно содержать минимум 2 символа`;
+            let errorMessage = `Будь ласка, перевірте поле "${fieldLabel}"`;
+            if (!processedValue || (typeof processedValue === 'string' && processedValue.trim().length === 0)) {
+                errorMessage = `Поле "${fieldLabel}" не може бути порожнім`;
+            } else if (typeof processedValue === 'string' && processedValue.trim().length < 2) {
+                errorMessage = `Поле "${fieldLabel}" має містити щонайменше 2 символи`;
             }
             setErrors(prev => ({ ...prev, [name]: errorMessage }));
         } else {
@@ -211,41 +211,41 @@ const GenericTableManager = ({
     };
 
     /**
-     * Добавляет новый элемент
+     * Додає новий елемент
      * 
-     * Примечание: При использовании таблиц с автоинкрементом ID на сервере
-     * необходимо удалять поле id в пользовательском обработчике
+     * Примітка: При використанні таблиць з автоінкрементом ID на сервері
+     * потрібно видаляти поле id у користувацькому обробнику
      * 
      * @returns {Promise<void>}
      */
     const handleAdd = async () => {
         try {
-            // Очистка ошибок перед отправкой
+            // Очищення помилок перед відправкою
             setErrors({});
             
-            // Проверка ID больше не требуется, так как ID генерируется сервером
-            // Поле ID сохраняется для совместимости, но игнорируется сервером
+            // Перевірка ID більше не потрібна, оскільки ID генерується сервером
+            // Поле ID зберігається для сумісності, але ігнорується сервером
             
-            // Проверка обязательных полей
+            // Перевірка обов'язкових полів
             let hasErrors = false;
             const newErrors = {};
             
             fields.forEach(field => {
-                if (field.required && !newItem[field.name] && field.name !== 'id') { // Исключаем ID из проверки
-                    newErrors[field.name] = `Поле ${field.label} обязательно`;
+                if (field.required && !newItem[field.name] && field.name !== 'id') { // Виключаємо ID з перевірки
+                    newErrors[field.name] = `Поле ${field.label} обов'язкове`;
                     hasErrors = true;
-                    console.log(`Поле '${field.name}' (${field.label}) не заполнено, текущее значение:`, newItem[field.name]);
+                    console.log(`Поле '${field.name}' (${field.label}) не заповнено, поточне значення:`, newItem[field.name]);
                 }
             });
             
             if (hasErrors) {
-                console.log('Проверка формы выявила ошибки:', newErrors);
-                console.log('Текущие данные формы:', newItem);
+                console.log('Перевірка форми виявила помилки:', newErrors);
+                console.log('Поточні дані форми:', newItem);
                 setErrors(newErrors);
                 return;
             }
 
-            // Преобразуем все числовые поля
+            // Перетворюємо всі числові поля
             const itemToSend = {
                 ...newItem,
                 orderId: newItem.orderId ? parseInt(newItem.orderId) : null,
@@ -260,30 +260,30 @@ const GenericTableManager = ({
             await fetchItems();
             setShowAddForm(false);
             setNewItem({});
-            setSuccessMessage('Элемент успешно добавлен');
+            setSuccessMessage('Елемент успішно додано');
             setTimeout(() => setSuccessMessage(''), 3000);
         } catch (error) {
-            console.error("Error adding item:", error);
-            setErrors({ add: error.response?.data?.message || error.message || 'Произошла ошибка при добавлении' });
+            console.error("Помилка додавання елемента:", error);
+            setErrors({ add: error.response?.data?.message || error.message || 'Виникла помилка при додаванні' });
         }
     };
 
     /**
-     * Открывает форму для добавления нового элемента
+     * Відкриває форму для додавання нового елемента
      * 
-     * Примечание: Можно установить значения по умолчанию для полей
-     * путем модификации объекта defaultValues
+     * Примітка: Можна встановити значення за замовчуванням для полів
+     * шляхом модифікації об'єкта defaultValues
      */
     const handleOpenAddForm = () => {
         const nextId = getNextAvailableId();
-        console.log('Opening form with next ID:', nextId);
+        console.log('Відкриття форми з наступним ID:', nextId);
         
-        // Создаем объект с ID и значениями по умолчанию
+        // Створюємо об'єкт з ID та значеннями за замовчуванням
         const defaultValues = { id: nextId };
         
-        // Устанавливаем значения по умолчанию для известных полей
+        // Встановлюємо значення за замовчуванням для відомих полів
         fields.forEach(field => {
-            // Если это поле роли, устанавливаем значение по умолчанию "USER"
+            // Якщо це поле ролі, встановлюємо значення за замовчуванням "USER"
             if (field.name === 'role') {
                 defaultValues.role = 'USER';
             }
@@ -294,25 +294,25 @@ const GenericTableManager = ({
     };
 
     /**
-     * Начинает редактирование выбранного элемента
+     * Починає редагування вибраного елемента
      * 
-     * Примечание: Для правильной работы со связанными данными (например, товар-категория)
-     * используйте пользовательский обработчик onEdit для преобразования данных
+     * Примітка: Для правильної роботи з пов'язаними даними (наприклад, товар-категорія)
+     * використовуйте користувацький обробник onEdit для перетворення даних
      * 
-     * @param {Object} item - Элемент для редактирования
+     * @param {Object} item - Елемент для редагування
      */
     const handleEdit = (item) => {
-        console.log('Начало редактирования элемента:', item);
+        console.log('Початок редагування елемента:', item);
         
-        // Проверяем, есть ли у элемента все необходимые поля
+        // Перевіряємо, чи є у елемента всі необхідні поля
         let itemWithDefaults = { ...item, originalId: item.id };
         
-        // Если это пользователь и нет роли, установим её по умолчанию
+        // Якщо це користувач і немає ролі, встановимо її за замовчуванням
         if ('role' in item && !item.role) {
             itemWithDefaults.role = 'USER';
         }
         
-        // Если есть пользовательский обработчик onEdit, используем его
+        // Якщо є користувацький обробник onEdit, використовуємо його
         if (customHandlers?.onEdit) {
             itemWithDefaults = customHandlers.onEdit(itemWithDefaults);
         }
@@ -321,95 +321,95 @@ const GenericTableManager = ({
     };
 
     /**
-     * Обновляет существующий элемент
+     * Оновлює існуючий елемент
      * 
      * @returns {Promise<void>}
      */
     const handleUpdate = async () => {
         try {
-            // Очистка ошибок перед отправкой
+            // Очищення помилок перед відправкою
             setErrors({});
             
-            // Проверка ID при обновлении
+            // Перевірка ID при оновленні
             if (!editingItem.id || isNaN(editingItem.id)) {
-                setErrors({ id: 'ID обязателен и должен быть числом' });
+                setErrors({ id: 'ID обовʼязковий і має бути числом' });
                 return;
             }
 
             const id = parseInt(editingItem.id);
             if (id <= 0) {
-                setErrors({ id: 'ID должен быть положительным числом' });
+                setErrors({ id: 'ID має бути додатнім числом' });
                 return;
             }
 
             const existingItem = items.find(item => item.id === id && item.id !== editingItem.originalId);
             if (existingItem) {
-                setErrors({ id: 'Этот ID уже существует. Пожалуйста, выберите другой.' });
+                setErrors({ id: 'Цей ID вже існує. Будь ласка, виберіть інший.' });
                 return;
             }
 
-            // Проверка обязательных полей
+            // Перевірка обов'язкових полів
             let hasErrors = false;
             const newErrors = {};
             
             fields.forEach(field => {
                 if (field.required && !editingItem[field.name]) {
-                    newErrors[field.name] = `Поле ${field.label} обязательно`;
+                    newErrors[field.name] = `Поле ${field.label} обов'язкове`;
                     hasErrors = true;
-                    console.log(`Поле '${field.name}' (${field.label}) не заполнено, текущее значение:`, editingItem[field.name]);
+                    console.log(`Поле '${field.name}' (${field.label}) не заповнено, поточне значення:`, editingItem[field.name]);
                 }
             });
             
             if (hasErrors) {
-                console.log('Проверка формы редактирования выявила ошибки:', newErrors);
-                console.log('Текущие данные формы редактирования:', editingItem);
+                console.log('Перевірка форми редагування виявила помилки:', newErrors);
+                console.log('Поточні дані форми редагування:', editingItem);
                 setErrors(newErrors);
                 return;
             }
 
             const handler = customHandlers?.onUpdate || apiClient.update;
             
-            // Проверка наличия обработчика обновления
+            // Перевірка наявності обробника оновлення
             if (!handler) {
-                setErrors({ update: 'Операция обновления не поддерживается' });
+                setErrors({ update: 'Операція оновлення не підтримується' });
                 return;
             }
             
             await handler(editingItem.originalId, editingItem);
             await fetchItems();
             setEditingItem(null);
-            setSuccessMessage('Изменения успешно сохранены');
+            setSuccessMessage('Зміни успішно збережено');
             setTimeout(() => setSuccessMessage(''), 3000);
         } catch (error) {
-            console.error("Error updating item:", error);
-            setErrors({ update: error.response?.data?.message || error.message || 'Произошла ошибка при обновлении' });
+            console.error("Помилка оновлення елемента:", error);
+            setErrors({ update: error.response?.data?.message || error.message || 'Виникла помилка при оновленні' });
         }
     };
 
     /**
-     * Удаляет элемент
+     * Видаляє елемент
      * 
-     * @param {number|string} id - Идентификатор элемента для удаления
+     * @param {number|string} id - Ідентифікатор елемента для видалення
      * @returns {Promise<void>}
      */
     const handleDelete = async (id) => {
         try {
-            // Очистка ошибок перед отправкой
+            // Очищення помилок перед відправкою
             setErrors({});
             
             const handler = customHandlers?.onDelete || apiClient.delete;
             await handler(id);
             await fetchItems();
         } catch (error) {
-            console.error("Error deleting item:", error);
-            setErrors({ delete: error.response?.data?.message || error.message || 'Произошла ошибка при удалении' });
+            console.error("Помилка видалення елемента:", error);
+            setErrors({ delete: error.response?.data?.message || error.message || 'Виникла помилка при видаленні' });
         }
     };
 
     /**
-     * Определяет следующий доступный ID на основе существующих элементов
+     * Визначає наступний доступний ID на основі існуючих елементів
      * 
-     * @returns {number} Следующий доступный ID
+     * @returns {number} Наступний доступний ID
      */
     const getNextAvailableId = () => {
         const maxId = Math.max(...items.map(item => item.id), 0);
@@ -417,9 +417,9 @@ const GenericTableManager = ({
     };
 
     /**
-     * Возвращает компонент с сообщениями об ошибках валидации
+     * Повертає компонент з повідомленнями про помилки валідації
      * 
-     * @returns {JSX.Element|null} Компонент с ошибками или null, если ошибок нет
+     * @returns {JSX.Element|null} Компонент з помилками або null, якщо помилок немає
      */
     const getValidationErrorSummary = () => {
         const errorFields = Object.keys(errors).filter(key => 
@@ -432,7 +432,7 @@ const GenericTableManager = ({
             <ErrorAlert 
                 message={
                     <div>
-                        <div>Форма содержит ошибки:</div>
+                        <div>Форма містить помилки:</div>
                         <ul style={{ marginTop: '5px', paddingLeft: '20px' }}>
                             {errorFields.map(field => (
                                 <li key={field}>{errors[field]}</li>
@@ -444,7 +444,7 @@ const GenericTableManager = ({
         );
     };
 
-    // Добавить функцию для форматирования даты в YYYY-MM-DD
+    // Додаємо функцію для форматування дати у YYYY-MM-DD
     function formatDate(date) {
         if (!date) return '';
         const d = new Date(date);
@@ -496,13 +496,13 @@ const GenericTableManager = ({
             )}
 
             {loading ? (
-                <div className="loading-indicator">Loading...</div>
+                <div className="loading-indicator">Завантаження...</div>
             ) : (
                 <>
                     <div className="search-container">
                         <input
                             type="text"
-                            placeholder="Search..."
+                            placeholder="Пошук..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -515,12 +515,12 @@ const GenericTableManager = ({
                         onClick={handleOpenAddForm}
                         style={styles?.addButton}
                     >
-                        Add New
+                        Додати новий
                     </button>
 
                     {showAddForm && (
                         <div className="form-container">
-                            <h2>Add New Item</h2>
+                            <h2>Додати новий елемент</h2>
                             {fields.filter(field => !field.readOnly && !field.hideInForm && field.name !== 'id').map(field => (
                                     <div key={field.name} className="edit-field">
                         <label>{field.label}</label>
@@ -545,8 +545,8 @@ const GenericTableManager = ({
                     </div>
                             ))}
                             <div className="button-group">
-                                <button onClick={handleAdd}>Save</button>
-                                <button onClick={() => setShowAddForm(false)}>Cancel</button>
+                                <button onClick={handleAdd}>Зберегти</button>
+                                <button onClick={() => setShowAddForm(false)}>Скасувати</button>
                             </div>
             </div>
                     )}
@@ -565,7 +565,7 @@ const GenericTableManager = ({
                                         {field.label}
                                     </th>
                                 ))}
-                                <th>Actions</th>
+                                <th>Дії</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -609,15 +609,15 @@ const GenericTableManager = ({
                                     <td>
                                         {editingItem && editingItem.originalId === item.id ? (
                                             <>
-                                                <button onClick={handleUpdate}>Save</button>
-                                                <button onClick={() => setEditingItem(null)}>Cancel</button>
+                                                <button onClick={handleUpdate}>Зберегти</button>
+                                                <button onClick={() => setEditingItem(null)}>Скасувати</button>
                                             </>
                                         ) : (
                                             <>
                                                 {apiClient.update !== null && (
-                                                    <button onClick={() => handleEdit(item)}>Edit</button>
+                                                    <button onClick={() => handleEdit(item)}>Редагувати</button>
                                                 )}
-                                                <button onClick={() => handleDelete(item.id)}>Delete</button>
+                                                <button onClick={() => handleDelete(item.id)}>Видалити</button>
                                             </>
                                         )}
                                     </td>

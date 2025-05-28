@@ -21,7 +21,7 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
             .then(data => {
                 setAddresses(data);
                 setLoading(false);
-                // Выбираем основной адрес только если selectedAddressId не задан или не совпадает
+                // Обираємо основну адресу тільки якщо selectedAddressId не заданий або не співпадає
                 if ((!selectedAddressId || !data.some(addr => addr.id === selectedAddressId)) && data.length > 0) {
                     const main = data.find(addr => addr.is_main);
                     const newId = main ? main.id : data[0].id;
@@ -31,7 +31,7 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
                 }
             })
             .catch(e => {
-                setError(e.message || "Ошибка загрузки адресов");
+                setError(e.message || "Помилка завантаження адрес");
                 setLoading(false);
             });
     }, [userId]);
@@ -56,19 +56,19 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
             setForm({ city: '', street: '', house: '', apartment: '', is_main: false });
             onSelect(newAddr.id);
         } catch (e) {
-            setError(e.message || "Ошибка создания адреса");
+            setError(e.message || "Помилка створення адреси");
         } finally {
             setCreating(false);
         }
     };
 
-    if (loading) return <p style={{ opacity: 0.7 }}>Загрузка адресов...</p>;
+    if (loading) return <p style={{ opacity: 0.7 }}>Завантаження адрес...</p>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return (
         <div>
             {addresses.length === 0 && !showForm && allowCreate && (
-                <button className="checkout-btn" onClick={() => setShowForm(true)}>Добавить адрес</button>
+                <button className="checkout-btn" onClick={() => setShowForm(true)}>Додати адресу</button>
             )}
             {addresses.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
@@ -83,23 +83,23 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
                                 style={{ marginRight: 8 }}
                             />
                             {addr.city}, {addr.street} {addr.house} {addr.apartment ? (", кв. " + addr.apartment) : ""}
-                            {addr.is_main && <span style={{ color: '#4caf50', marginLeft: 8 }}>(по умолчанию)</span>}
+                            {addr.is_main && <span style={{ color: '#4caf50', marginLeft: 8 }}>(основна)</span>}
                         </label>
                     ))}
-                    {allowCreate && <button className="checkout-btn" onClick={() => setShowForm(true)}>Добавить адрес</button>}
+                    {allowCreate && <button className="checkout-btn" onClick={() => setShowForm(true)}>Додати адресу</button>}
                 </div>
             )}
             {showForm && allowCreate && (
                 <form onSubmit={handleCreate} style={{ marginTop: 8 }}>
-                    <input name="city" placeholder="Город" value={form.city} onChange={handleFormChange} required style={{ marginRight: 8 }} />
-                    <input name="street" placeholder="Улица" value={form.street} onChange={handleFormChange} required style={{ marginRight: 8 }} />
-                    <input name="house" placeholder="Дом" value={form.house} onChange={handleFormChange} required style={{ marginRight: 8 }} />
+                    <input name="city" placeholder="Місто" value={form.city} onChange={handleFormChange} required style={{ marginRight: 8 }} />
+                    <input name="street" placeholder="Вулиця" value={form.street} onChange={handleFormChange} required style={{ marginRight: 8 }} />
+                    <input name="house" placeholder="Будинок" value={form.house} onChange={handleFormChange} required style={{ marginRight: 8 }} />
                     <input name="apartment" placeholder="Квартира" value={form.apartment} onChange={handleFormChange} style={{ marginRight: 8 }} />
                     <label style={{ marginRight: 8 }}>
-                        <input type="checkbox" name="is_main" checked={form.is_main} onChange={handleFormChange} /> Сделать основным
+                        <input type="checkbox" name="is_main" checked={form.is_main} onChange={handleFormChange} /> Зробити основною
                     </label>
-                    <button type="submit" className="checkout-btn" disabled={creating}>Сохранить</button>
-                    <button type="button" className="checkout-btn" style={{ marginLeft: 8 }} onClick={() => setShowForm(false)}>Отмена</button>
+                    <button type="submit" className="checkout-btn" disabled={creating}>Зберегти</button>
+                    <button type="button" className="checkout-btn" style={{ marginLeft: 8 }} onClick={() => setShowForm(false)}>Скасувати</button>
                 </form>
             )}
         </div>
