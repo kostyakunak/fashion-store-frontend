@@ -1,0 +1,189 @@
+:root {
+  --color-bg-main: #181f2a;
+  --color-bg-secondary: #222b3a;
+  --color-bg-block: #2c394a;
+  --color-accent: #ff5a5f;
+  --color-accent-hover: #e04848;
+  --color-text-main: #fff;
+  --color-text-secondary: #b0b8c1;
+  --color-btn-disabled: #e0e4ea;
+  --color-btn-danger: #e04848;
+}
+
+/* Пример использования переменных */
+body, .account-details {
+  background: var(--color-bg-main);
+  color: var(--color-text-main);
+}
+
+.layout-container {
+  background: var(--color-bg-secondary);
+}
+
+.account-section {
+  background: transparent;
+  border-radius: 0;
+}
+
+h2, .title-container h2 {
+  color: var(--color-text-main);
+}
+
+.field label {
+  color: var(--color-text-secondary);
+}
+
+.button-primary, .main-address-btn {
+  background: var(--color-accent);
+  color: var(--color-text-main);
+}
+.button-primary:hover, .main-address-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.button-primary:disabled, .main-address-btn:disabled {
+  background: var(--color-btn-disabled);
+  color: var(--color-bg-block);
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #111722;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.account-details .layout-container {
+    width: 25vw; /* 1/4 ширины экрана */
+ /* Опциональное ограничение ширины */
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1a2433;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    flex-grow: 1;
+}
+
+/* Заголовки */
+.account-details h1,
+.account-details h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+/* Контейнер заголовка */
+.account-details .title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.delivery-title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.delivery-title-spacer {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.delivery-title-container h2 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+}
+
+.delivery-title-container button {
+    width: 80px;
+    flex-shrink: 0;
+    margin-left: 0;
+    text-align: right;
+}
+
+/* Поля ввода */
+.account-details .field {
+    margin-bottom: 15px;
+}
+
+/* Редактируемые поля */
+.account-details .editable {
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    opacity: 0.5;
+}
+
+.account-details .editable[contenteditable="true"] {
+    opacity: 1;
+    background-color: #2c394a;
+}
+
+.account-details .editable:focus {
+    outline: none;
+}
+
+.title-container h2 {
+    width: 100%;
+    text-align: center;
+}
+
+/* Delivery Details edit UX */
+.delivery-edit-block {
+    padding: 18px 16px 8px 16px;
+    background: transparent;
+    border-radius: 0;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.delivery-edit-block.delivery-edit-hoverable:hover {
+    background: #25324a;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.18);
+    border-radius: 8px;
+}
+.delivery-edit-block.delivery-edit-hoverable {
+    cursor: pointer;
+}
+
+.address-arrows-container {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    width: 100%;
+}
+.address-arrow-btn {
+    width: 40px;
+    min-width: 40px;
+    background: transparent;
+    border: none;
+    color: #7faaff;
+    opacity: 0.1;
+    transition: background 0.2s, opacity 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    z-index: 2;
+    border-radius: 8px;
+    padding: 0;
+    height: auto;
+}
+.address-arrow-btn.left {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+.address-arrow-btn.right {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.address-arrow-btn:hover {
+    background: rgba(127,170,255,0.08);
+    opacity: 1;
+}

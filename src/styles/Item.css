@@ -1,0 +1,387 @@
+.item {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #0c132c;
+    color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Состояния загрузки и ошибки */
+.item .loading, 
+.item .error,
+.item .not-found {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #f7f7f7;
+}
+
+.item .error {
+    color: #ff6b6b;
+}
+
+.item h1,
+.item h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.item p {
+    margin-top: 10px;
+    text-align: center;
+    color: #a0a0a0;
+}
+
+.item .product-item {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item .product-card {
+    max-width: 900px;
+    background-color: #2f3950;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.item .images-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+}
+
+.item .card-sizing {
+    flex: 0 0 auto;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.item .card-sizing img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.item .card-sizing img:hover {
+    transform: scale(1.1);
+}
+
+.item .card-sizing.active {
+    flex-basis: 300px;
+    aspect-ratio: 2 / 3;
+}
+
+.item .card-sizing.inactive {
+    flex-basis: 150px;
+    aspect-ratio: 1 / 3;
+}
+
+.item .price-wishlist-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.item .cost {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ff6f61, #ffcc70);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.item .wishlist-button {
+    position: static !important;
+    border: 2px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.18);
+    font-size: 1.1em;
+    background: none;
+    padding: 1px 5px;
+    cursor: pointer;
+    transition: color 0.4s, border-color 0.4s;
+    box-shadow: none;
+    outline: none;
+    background-clip: padding-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item .wishlist-button:hover,
+.item .wishlist-button:focus {
+    color: #e74c3c;
+    border-color: #e74c3c;
+    background: none;
+}
+
+.item .wishlist-button.in-wishlist,
+.item .wishlist-button.in-wishlist:hover,
+.item .wishlist-button.in-wishlist:focus {
+    color: #fff;
+    border-color: #e74c3c;
+    background: none;
+}
+
+.item .details-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.item .details-left, .details-right {
+    width: 48%;
+}
+
+.item .details-left h3, .details-left div {
+    text-align: left;
+}
+
+.item .details-right h3, .details-right div {
+    text-align: right;
+}
+
+
+.item .purchase-container {
+    margin-top: 20px;
+}
+
+/* Стили для контрола количества */
+.item .quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.item .quantity-controls button {
+    background-color: #2f3950;
+    color: #ffffff;
+    border: 1px solid #4a5568;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.item .quantity-controls button:hover {
+    background-color: #1e2433;
+}
+
+.item .quantity-controls span {
+    margin: 0 15px;
+    font-size: 18px;
+    min-width: 30px;
+    height: 30px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.item .add-to-bag {
+    width: 100%;
+    background-color: #2f3950;
+    color: #ffffff;
+    padding: 12px;
+    font-size: 18px;
+    border: 1px solid #4a5568;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.item .add-to-bag:hover {
+    background-color: #1e2433;
+}
+
+.item .size-selection-container {
+    margin-bottom: 20px;
+}
+
+.item .size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.item .size-chart-button {
+    background-color: transparent;
+    color: #ff6f61;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.item .size-chart-button:hover {
+    color: #ffcc70;
+}
+
+.item .size-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.item .size-button {
+    flex: 1;
+    padding: 10px;
+    background-color: #2f3950;
+    color: #ffffff;
+    border: 1px solid #4a5568;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.item .size-button:hover {
+    background-color: #1e2433;
+}
+
+.item .size-button.active {
+    background-color: #1e2433;
+    border-color: #ff6f61;
+}
+
+/* Стили для неактивных размеров */
+.item .size-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #3c4356;
+    color: #a0a0a0;
+    position: relative;
+}
+
+.item .size-button.disabled:hover {
+    background-color: #3c4356;
+    transform: none;
+}
+
+.item .out-of-stock-label {
+    font-size: 10px;
+    margin-left: 5px;
+    color: #ff6b6b;
+}
+
+@media (max-width: 768px) {
+    .item .details-container {
+        flex-direction: column;
+    }
+
+    .item .details-left, .details-right {
+        width: 100%;
+    }
+}
+
+/* Лупа (увеличительное стекло) */
+.zoom-lens {
+    position: absolute;
+    width: 50vh;
+    height: 50vh;
+    border: 2px solid white;
+    background-repeat: no-repeat;
+    background-size: 200% 200%;
+    pointer-events: none;
+    z-index: 1100;
+}
+
+/* Size Chart Modal */
+.size-chart-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.size-chart-modal {
+    background-color: #2f3950;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.size-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #4a5568;
+}
+
+.size-chart-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #ffffff;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.size-chart-content {
+    padding: 20px;
+}
+
+.size-chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #f7f7f7;
+}
+
+.size-chart-table th, .size-chart-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #4a5568;
+}
+
+.size-chart-table th {
+    background-color: #1e2433;
+    font-weight: bold;
+}
+
+.size-chart-table tr:nth-child(even) {
+    background-color: #394358;
+}
+

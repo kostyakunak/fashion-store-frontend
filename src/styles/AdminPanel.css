@@ -1,0 +1,42 @@
+.admin-panel {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-panel h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.admin-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.admin-menu-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.admin-menu-item h2 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+}
+
+.admin-menu-item p {
+    margin: 0;
+    color: #666;
+} 

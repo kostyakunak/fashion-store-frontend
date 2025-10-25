@@ -1,0 +1,181 @@
+/* Устанавливаем общие стили для всей страницы */
+@font-face {
+    font-family: 'Atkinson';
+    src: url('../src/styles/fonts/PoiretOne-Regular.ttf');
+  }
+
+
+body {
+
+    font-family: Atkinson ,Arial, sans-serif;
+    /* Убираем отступы и поля страницы */
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+
+    background-color: #0c132c
+}
+/* Стили для заголовков на странице */
+h1, h2 {
+    /* Центрируем текст заголовков */
+    text-align: center;
+
+    color: #f7f7f7;
+}
+
+/* Стили для верхней части страницы (header) */
+header {
+
+    /* Цвет текста в шапке белый */
+    color: white;
+    display: flex;
+    justify-content: space-between; /* Размещаем элементы по краям */
+    align-items: center; /* Центрируем элементы по вертикали */
+    height: 8vh; /* Задаем высоту шапки на весь экран */
+    padding: 20px 0;
+    box-sizing: border-box
+
+}
+
+nav {
+    position: fixed; /* Фиксируем панель навигации */
+    top: 0;
+    right: 0; /* Если нужно справа, поменяй на right: 0; */
+    width: 25%; /* Ширина панели навигации */
+    height: 100vh; /* Высота панели на весь экран */
+
+    display: flex;
+    justify-content: center; /* Центрируем содержимое по горизонтали */
+    align-items: center; /* Центрируем содержимое по вертикали */
+}
+/* Стили для навигационного меню */
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Элементы располагаются по вертикали */
+    justify-content: space-between; /* Равномерно распределяем пространство */
+    height: 100%; /* Список занимает всю высоту панели */
+    width: 100%;
+    background-color: rgba(76, 85,114, 0.1);
+   opacity: 0.7;
+   font-size: 30px;
+    letter-spacing: 4px;
+}
+
+/* Стили для всех вместе элемента навигационного списка */
+nav ul li {
+
+    flex-grow: 1; /* Каждый элемент li растягивается на всё доступное пространство */
+}
+
+/* Стили для ссылок в навигационном меню */
+nav ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    height: 100%; /* Ссылка занимает всю высоту элемента списка */
+    width: 100%;
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    letter-spacing: 2px;
+}
+
+/* Эффект при наведении на ссылку: подчёркивание */
+nav ul li a:hover {
+    background-color: rgba(76, 85,114, 0.35); /* Эффект при наведении */
+}
+
+/* Стили для основного контента страницы */
+main {
+    width: 75%;
+    margin-left: 0px;
+    padding: 0px;
+    min-height: 100vh; /* Гарантируем, что основной контент занимает всю высоту окна */
+    background-color: none;
+
+}
+/* Сетка для товаров */
+.product-grid {
+    /* Используем CSS Grid для создания сетки */
+    display: column;
+    /* Автоматически подбираем количество колонок в зависимости от размера окна */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    /* Расстояние между элементами сетки */
+    gap: 20px;
+    /* Внутренние отступы */
+}
+
+/* Стили для карточек товаров */
+.product-card {
+    background-color: white;
+    text-align: center;
+    transition: transform 0.2s;
+    position: relative; /* Это важно для позиционирования текста */
+    overflow: hidden; /* Обрезаем всё, что выходит за границы карточки */
+}
+
+
+.product-card:hover img {
+    transform: scaleY(1.08) scaleX(1.05); /* Увеличиваем изображение при наведении */
+    filter: brightness(50%);
+}
+
+.product-card:hover h3, .product-card:hover p {
+    opacity: 1; /* Показываем текст */
+}
+
+/* Стили для изображений товаров */
+.product-card img {
+    max-width: 100%;
+    display: block;
+    transition: transform 3s ease, filter 0.27s ease-in-out
+
+}
+
+
+/* Стили для заголовков товаров */
+.product-card h3, .product-card p {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* Центрирование текста по вертикали и горизонтали */
+    color: white; /* Белый цвет текста для контраста */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Легкая тень для улучшения видимости на изображении */
+    margin: 0;
+    padding: 0;
+}
+
+
+.product-card p {
+    font-size: 21px;
+    margin-top: 27px;
+}
+.product-card h3 {
+    font-size: 34px;
+    letter-spacing: 4px
+}
+
+
+/* Эффект при наведении на кнопку */
+.product-card button:hover {
+    /* Темнее цвет фона кнопки при наведении */
+    background-color: #45a049;
+}
+
+/* Стили для нижней части страницы (footer) */
+footer {
+    background-color: #333; /* Фон футера */
+    color: white; /* Цвет текста футера */
+    text-align: center; /* Центрирование текста */
+    padding: 10px; /* Отступы сверху и снизу */
+    width: 100%; /* Ширина на всю страницу */
+    margin-top: 20px; /* Отступ сверху, чтобы футер не прилипал к контенту */
+    position: relative; /* Футер теперь будет относительным */
+}

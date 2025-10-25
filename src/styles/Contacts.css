@@ -1,0 +1,95 @@
+/* Простые и предсказуемые стили для страницы контактов */
+.contacts-page {
+    position: fixed;
+    top: 0; /* Начинаем с самого верха, перекрывая PageWrapper padding */
+    left: 0;
+    width: 100vw;
+    height: 100vh; /* Полная высота экрана */
+    background: #111722;
+    color: white;
+    font-family: Arial, sans-serif;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.contacts {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    padding-top: 67px; /* Реальная высота навигации */
+}
+
+.content {
+    width: 33.33%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Более специфичные стили для переопределения Wishlist.css */
+.contacts-page .image-container {
+    width: 66.67% !important;
+    background: #243047 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 0 !important; /* Переопределяем padding-top: 125% из Wishlist.css */
+    position: relative !important;
+    overflow: hidden !important; /* Обрезаем лишнее изображение */
+    border-radius: 0 !important;
+}
+
+.contacts-page .image-container img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 50% !important; /* Точное центрирование по вертикали */
+    position: static !important;
+}
+
+.contacts p {
+    font-size: 18px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.contacts p img {
+    width: 24px;
+    height: 24px;
+}
+
+.contacts a {
+    color: white;
+    text-decoration: none;
+}
+
+.contacts a:hover {
+    opacity: 0.8;
+}
+
+/* Мобильная версия */
+@media (max-width: 768px) {
+    .contacts {
+        flex-direction: column;
+    }
+    
+    .content {
+        width: 100%;
+        height: 50%;
+        padding: 30px;
+    }
+    
+    .contacts-page .image-container {
+        width: 100% !important;
+        height: 50% !important;
+    }
+}

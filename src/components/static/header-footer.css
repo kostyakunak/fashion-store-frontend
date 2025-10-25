@@ -1,0 +1,59 @@
+/* Общие переменные */
+:root {
+    --background-color: #111722;
+    --primary-color: #243047;
+    --text-color: white;
+    --hover-color: rgba(255, 255, 255, 0.7);
+    --font-family: 'Inter', 'Noto Sans', sans-serif;
+    --border-color: rgba(36, 48, 71, 0.6);
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Хедер */
+.head header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--background-color);
+    padding: 15px 40px;
+    /* border-bottom: 1px solid var(--border-color); */
+    box-shadow: var(--box-shadow);
+}
+
+/* Логотип (Название магазина) */
+.head .logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--text-color);
+}
+
+/* Контейнер навигации */
+.head .nav-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+/* Ссылки */
+.head .nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.head .nav-links a:hover {
+    color: var(--hover-color); /* Светло-серый цвет при наведении */
+}
+
+/* Футер */
+.foot footer {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 10px;
+    font-size: 0.875rem;
+    box-shadow: var(--box-shadow);
+}
+

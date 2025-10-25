@@ -1,0 +1,152 @@
+/* Глобальные стили */
+:root {
+    --background-color: #111722;
+    --primary-color: #243047;
+    --secondary-color: white;
+    --font-family: 'Inter', 'Noto Sans', sans-serif;
+    --border-color: rgba(36, 48, 71, 0.6);
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    --accent-color: #ff6f61;
+}
+
+.wishlist {
+    font-family: 'Inter', 'Noto Sans', sans-serif;
+    background-color: #111722;
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.wishlist h1 {
+    text-align: center;
+    margin: 30px 0;
+    color: #f7f7f7;
+    font-size: 28px;
+}
+
+/* Состояния загрузки и ошибки */
+.wishlist .loading, 
+.wishlist .error {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #f7f7f7;
+}
+
+.wishlist .error {
+    color: #ff6b6b;
+}
+
+/* Стили для пустого списка избранного */
+.wishlist .empty-wishlist {
+    text-align: center;
+    padding: 50px 20px;
+    font-size: 18px;
+}
+
+.wishlist .to-catalog-btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    margin-top: 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.wishlist .to-catalog-btn:hover {
+    background-color: #334667;
+}
+
+/* Сетка с элементами избранного */
+.wishlist .wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Стили для карточки товара в избранном */
+.wishlist .wishlist-item {
+    background-color: #243047;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
+}
+
+.wishlist .wishlist-item:hover {
+    transform: translateY(-5px);
+}
+
+.wishlist .wishlist-image {
+    position: relative;
+    overflow: hidden;
+    height: 250px;
+}
+
+.wishlist .wishlist-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.wishlist .wishlist-image img:hover {
+    transform: scale(1.05);
+}
+
+/* Новый стиль для кнопки удаления */
+.wishlist .delete-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.wishlist .delete-button:hover {
+    background-color: rgba(255, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+.wishlist .delete-button svg {
+    width: 50px;
+    height: 50px;
+}
+
+.wishlist .wishlist-info {
+    padding: 15px;
+}
+
+.wishlist .wishlist-info h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: white;
+}
+
+.wishlist .price {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 10px 0;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .wishlist .wishlist-grid {
+        grid-template-columns: 1fr;
+    }
+}

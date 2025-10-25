@@ -1,0 +1,29 @@
+.admin-users {
+    padding: 20px;
+}
+
+.admin-users h2 {
+    margin-bottom: 20px;
+}
+
+.admin-users table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.admin-users th,
+.admin-users td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-users th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.admin-users tr:hover {
+    background-color: #f5f5f5;
+} 

@@ -1,0 +1,209 @@
+:root {
+    --background-color: #111722;
+    --primary-color: #243047;
+    --secondary-color: white;
+    --font-family: 'Inter', 'Noto Sans', sans-serif;
+    --border-color: rgba(36, 48, 71, 0.6);
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+@font-face {
+    font-family: 'Atkinson';
+    src: url('fonts/PoiretOne-Regular.ttf');
+}
+.home{
+
+    font-family: Atkinson ,Arial, sans-serif;
+    /* Убираем отступы и поля страницы */
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+
+    background-color: #0c132c
+}
+/* Стили для заголовков на странице */
+.home h1,
+.home h2 {
+    /* Центрируем текст заголовков */
+    text-align: center;
+
+    color: #f7f7f7;
+}
+
+/* Стили для верхней части страницы (header) */
+.home header {
+
+    /* Цвет текста в шапке белый */
+    color: white;
+    display: flex;
+    justify-content: space-between; /* Размещаем элементы по краям */
+    align-items: center; /* Центрируем элементы по вертикали */
+    height: 8vh; /* Задаем высоту шапки на весь экран */
+    padding: 20px 0;
+    box-sizing: border-box
+
+}
+
+.home nav {
+    position: fixed; /* Фиксируем панель навигации */
+    top: 0;
+    right: 0; /* Если нужно справа, поменяй на right: 0; */
+    width: 25%; /* Ширина панели навигации */
+    height: 100vh; /* Высота панели на весь экран */
+
+    display: flex;
+    justify-content: center; /* Центрируем содержимое по горизонтали */
+    align-items: center; /* Центрируем содержимое по вертикали */
+}
+/* Стили для навигационного меню */
+.home nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Элементы располагаются по вертикали */
+    justify-content: space-between; /* Равномерно распределяем пространство */
+    height: 100%; /* Список занимает всю высоту панели */
+    width: 100%;
+    background-color: rgba(76, 85,114, 0.1);
+    opacity: 0.7;
+    font-size: 30px;
+    letter-spacing: 4px;
+}
+
+/* Стили для всех вместе элемента навигационного списка */
+.home nav ul li {
+
+    flex-grow: 1; /* Каждый элемент li растягивается на всё доступное пространство */
+}
+
+/* Стили для ссылок в навигационном меню */
+.home nav ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    height: 100%; /* Ссылка занимает всю высоту элемента списка */
+    width: 100%;
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    letter-spacing: 2px;
+}
+
+/* Эффект при наведении на ссылку: подчёркивание */
+.home nav ul li a:hover {
+    background-color: rgba(76, 85,114, 0.35); /* Эффект при наведении */
+}
+
+/* Стили для основного контента страницы */
+.home main {
+    width: 75%;
+    margin-left: 0px;
+    padding: 0px;
+    min-height: 100vh; /* Гарантируем, что основной контент занимает всю высоту окна */
+    background-color: none;
+
+}
+/* Сетка для товаров */
+.home .product-grid {
+    /* Используем CSS Grid для создания сетки */
+    display: column;
+    /* Автоматически подбираем количество колонок в зависимости от размера окна */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    /* Расстояние между элементами сетки */
+    gap: 20px;
+    /* Внутренние отступы */
+}
+
+/* Стили для карточек товаров */
+.home .product-card {
+    background-color: white;
+    text-align: center;
+    transition: transform 0.2s;
+    width: 100%;
+    max-height: 90vh; /* Вместо max-height — фиксируем высоту */
+    position: relative; /* Важно для позиционирования текста */
+    overflow: hidden; /* Обрезаем всё, что выходит за границы */
+}
+
+.home .product-card:hover img {
+    transform: scaleY(1.08) scaleX(1.05); /* Увеличиваем изображение при наведении */
+    filter: brightness(50%);
+}
+
+.home .product-card:hover h3, .product-card:hover p {
+    opacity: 1; /* Показываем текст */
+}
+
+/* Стили для изображений товаров */
+.home .product-card img {
+   /* Картинка занимает всю ширину карточки */
+    display: block;
+    object-position: center;
+    height: 100%;
+    width: 100%;
+
+    object-fit: cover;
+
+    transition: transform 3s ease, filter 0.27s ease-in-out;
+
+}
+
+/* Стили для заголовков товаров */
+.home .product-card h3,
+.home .product-card p {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* Центрирование текста по вертикали и горизонтали */
+    color: white; /* Белый цвет текста для контраста */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Легкая тень для улучшения видимости на изображении */
+    margin: 0;
+    padding: 0;
+}
+
+.home .product-card p {
+    font-size: 21px;
+    margin-top: 27px;
+}
+
+.home .product-card p.price {
+    font-size: 24px;
+    margin-top: 70px;
+    font-weight: bold;
+    color: #ffcc00; /* Желтый цвет для цены */
+}
+
+.home .product-card h3 {
+    font-size: 34px;
+    letter-spacing: 4px
+}
+
+/* Эффект при наведении на кнопку */
+.home .product-card button:hover {
+    /* Темнее цвет фона кнопки при наведении */
+    background-color: #45a049;
+}
+
+/* Стили для нижней части страницы (footer) */
+.home footer {
+    background-color: #333; /* Фон футера */
+    color: white; /* Цвет текста футера */
+    text-align: center; /* Центрирование текста */
+    padding: 10px; /* Отступы сверху и снизу */
+    width: 100%; /* Ширина на всю страницу */
+    margin-top: 20px; /* Отступ сверху, чтобы футер не прилипал к контенту */
+    position: relative; /* Футер теперь будет относительным */
+}
+
+.home {
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* height: 100vh; убрано */
+    /* overflow: hidden; убрано */
+    /* другие стили без overflow: hidden */
+}

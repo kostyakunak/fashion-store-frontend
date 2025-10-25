@@ -1,0 +1,27 @@
+.orders-table-container {
+    padding: 20px;
+}
+
+.orders-table-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.status-select {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.status-select:hover {
+    border-color: #999;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+} 

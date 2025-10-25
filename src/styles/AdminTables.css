@@ -1,0 +1,341 @@
+.admin-table-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-table-container h1 {
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.search-container {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.search-container input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.form-container {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.edit-field {
+    margin-bottom: 16px;
+}
+
+.edit-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+}
+
+.edit-field input,
+.edit-field select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.edit-field input:disabled,
+.edit-field select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-group button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.button-group button:first-child {
+    background-color: #2196f3;
+    color: white;
+}
+
+.button-group button:first-child:hover {
+    background-color: #1976d2;
+}
+
+.button-group button:last-child {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.button-group button:last-child:hover {
+    background-color: #e0e0e0;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-table th {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+.admin-table th:hover {
+    background-color: #e0e0e0;
+}
+
+.admin-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.admin-table td button {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.admin-table td button:first-child {
+    background-color: #2196F3;
+    color: white;
+}
+
+.admin-table td button:last-child {
+    background-color: #f44336;
+    color: white;
+}
+
+.admin-table td button:hover {
+    opacity: 0.9;
+}
+
+.add-button-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.add-button-container button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.add-button-container button:hover {
+    background-color: #45a049;
+}
+
+.sortable-header {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+.sortable-header:hover {
+    background-color: #f5f5f5;
+}
+
+.sortable-header::after {
+    content: '';
+    display: inline-block;
+    margin-left: 5px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #666;
+    opacity: 0.5;
+}
+
+.sortable-header.asc::after {
+    border-bottom: none;
+    border-top: 5px solid #666;
+}
+
+.sortable-header.desc::after {
+    border-bottom: 5px solid #666;
+    border-top: none;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ef9a9a;
+}
+
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-size: 16px;
+    color: #666;
+}
+
+.disabled-input {
+    background-color: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+    border: 1px solid #ddd;
+}
+
+.disabled-input:hover {
+    border: 1px solid #ddd;
+}
+
+/* Специфичные стили для заказов */
+.order-items-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.order-item-input {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.order-items-display {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.order-item-display {
+    padding: 5px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* Удаляем все стили для фильтров */
+.filters-container,
+.filter-group,
+.filter-group label,
+.filter-group select,
+.filter-group input,
+.filter-group input[type="number"],
+.clear-filters {
+    display: none;
+}
+
+.admin-table-container input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 300px;
+    transition: all 0.2s ease;
+}
+
+.admin-table-container input:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+.admin-table-container input.error {
+    border-color: #f44336;
+    background-color: #fff8f8;
+}
+
+.admin-table-container input.error:focus {
+    border-color: #f44336;
+    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+}
+
+.field-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+.form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+
+.form-container h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+} 
