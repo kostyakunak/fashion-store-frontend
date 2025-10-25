@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Generics | Orders</title>
+    <meta name="description" content="This is the orders page">
+    <link rel="stylesheet" href="../../../src/styles/MyOrders.css" />
+</head>
+<body>
+
+<div id="header-container"></div>
+
+<main>
+    <section class="container content-section">
+        <div class="order-list">
+            <!-- Заказ 1 -->
+            <div class="order-item">
+                <a href="/item">
+                    <img class="order-image" src="Images/image1.png" alt="Order Image">
+                </a>
+                <div class="order-details">
+                    <h3 class="order-title">Album 1</h3>
+                    <p class="order-price">$12.99</p>
+                    <p class="order-quantity">Quantity: 1</p>
+                </div>
+                <button class="order-button" onclick="window.location.href='orderdetails/order_details.html';">Order Details</button>
+            </div>
+            <div class="order-divider"></div>
+
+            <!-- Заказ 2 -->
+            <div class="order-item">
+                <a href="/item">
+                    <img class="order-image" src="Images/image2.png" alt="Order Image">
+                </a>
+                <div class="order-details">
+                    <h3 class="order-title">Album 2</h3>
+                    <p class="order-price">$14.99</p>
+                    <p class="order-quantity">Quantity: 2</p>
+                </div>
+                <button class="order-button" onclick="window.location.href='orderdetails/order_details.html';">Order Details</button>
+            </div>
+            <div class="order-divider"></div>
+
+            <!-- Заказ 3 -->
+            <div class="order-item">
+                <a href="/item">
+                    <img class="order-image" src="Images/image3.png" alt="Order Image">
+                </a>
+                <div class="order-details">
+                    <h3 class="order-title">Album 3</h3>
+                    <p class="order-price">$9.99</p>
+                    <p class="order-quantity">Quantity: 3</p>
+                </div>
+                <button class="order-button" onclick="window.location.href='orderdetails/order_details.html';">Order Details</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="footer-container"></div>
+<script src="/loadHeaderFooter.js"></script>
+
+</body>
+</html>

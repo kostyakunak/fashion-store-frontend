@@ -1,0 +1,65 @@
+@font-face {
+    font-family: 'Atkinson';
+    src: url('../../src/styles/fonts/PoiretOne-Regular.ttf');
+}
+
+body {
+    font-family: Atkinson, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #0c132c;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #f7f7f7;
+}
+
+.product-grid {
+    display: flex;
+}
+
+.product-card {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 353lh;
+}
+
+.column-1 {
+    width: 60%;
+}
+
+.column-2, .column-3 {
+    width: 20%;
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-width: 0px;
+    display: block;
+    margin: 5px;
+}
+
+.card-sizing-type-1 img {
+    height: 88lh;
+    width: 100%;
+    position: center;
+}
+
+.card-sizing-type-2 img {
+    height: 25lh;
+    width: 100%;
+    position: center;
+    margin-bottom: -1px;
+}
+
+.card-sizing-type-3 img {
+    height: 35lh;
+    width: 100%;
+    position: center;
+    margin-bottom: 6px;
+}

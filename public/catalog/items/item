@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Dynamic Image Resizing</title>
+</head>
+<body>
+
+<div id="header-container"></div>
+
+<main>
+    <div class="product-item">
+        <div class="product-card">
+            <h1>Calvin Klein 90's faded jeans</h1>
+            <div class="images-row" id="imagesRow">
+                <div class="card-sizing active">
+                    <img src="images/image1.png" alt="Calvin Klein Jeans" class="thumbnail">
+                </div>
+                <div class="card-sizing inactive">
+                    <img src="images/image2.png" alt="Calvin Klein Jeans" class="thumbnail">
+                </div>
+                <div class="card-sizing inactive">
+                    <img src="images/image3.png" alt="Calvin Klein Jeans" class="thumbnail">
+                </div>
+                <div class="card-sizing inactive">
+                    <img src="images/image4.png" alt="Calvin Klein Jeans" class="thumbnail">
+                </div>
+                <div class="card-sizing inactive">
+                    <img src="images/image5.png" alt="Calvin Klein Jeans" class="thumbnail">
+                </div>
+            </div>
+
+            <!-- Price and Wishlist -->
+            <div class="price-wishlist-container">
+                <div class="cost">$122</div>
+                <button class="wishlist-button">♥</button>
+            </div>
+
+            <!-- Details and Measurements -->
+            <div class="details-container">
+                <div class="details-left">
+                    <div class="product-details">
+                        <h3>Product details</h3>
+                        <p>Italian waterproof fabric</p>
+                        <p>Elastic waist</p>
+                        <p>Functional pockets</p>
+                        <p>Wide legs</p>
+                    </div>
+                </div>
+                <div class="details-right">
+                    <div class="measurements-container">
+                        <h3>Measurements</h3>
+                        <p>Model: height 186.5 cm / 6'1"</p>
+                        <p>Wearing size: M</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase container -->
+            <div class="purchase-container">
+                <div class="size-buttons">
+                    <button class="size-button">S</button>
+                    <button class="size-button">M</button>
+                    <button class="size-button">L</button>
+                </div>
+                <button class="add-to-bag">Add to bag</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="footer-container"></div>
+<script src="script.js"></script>
+<script src="/loadHeaderFooter.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+/* Подключение шрифта */
+@font-face {
+    font-family: 'Atkinson';
+    src: url('../../src/styles/fonts/PoiretOne-Regular.ttf');
+}
+
+/* Основные стили */
+body {
+    font-family: 'Atkinson', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #0c132c;
+    color: #f7f7f7;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #f7f7f7;
+    margin: 20px 0;
+}
+
+/* Контейнеры */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.content-section {
+    margin-bottom: 40px;
+    background-color: #1a243d;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.section-header {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+/* Магазин */
+.shop-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.shop-item {
+    background-color: #f7f7f7;
+    color: #333;
+    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 250px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.shop-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.shop-item img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.shop-item-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.shop-item-price {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Кнопки */
+.btn {
+    background-color: #45a049;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #3a8c3e;
+}
+
+/* Корзина */
+.cart-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.cart-column {
+    flex: 1;
+    text-align: center;
+}
+
+.cart-item-image {
+    width: 100px;
+    height: auto;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.cart-total {
+    text-align: right;
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+.btn-danger {
+    background-color: #e63946;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c92333;
+}
+
+.btn-purchase {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 30px;
+    font-size: 18px;
+}

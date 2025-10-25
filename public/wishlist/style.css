@@ -1,0 +1,29 @@
+body {
+    font-family: 'Inter', 'Noto Sans', sans-serif;
+    background-color: #111722;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* Стили для item-grid */
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.item-grid img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3; /* Соотношение сторон исправлено */
+    object-fit: cover; /* Обрезка изображений */
+    border-radius: 8px;
+}
+
+/* Ссылки */
+a {
+    text-decoration: none;
+}
