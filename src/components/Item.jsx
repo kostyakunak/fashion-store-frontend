@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Item.css";
 import "../styles/image-modal.css";
@@ -17,6 +17,8 @@ function Item() {
     const [error, setError] = useState(null);
     const [availableSizes, setAvailableSizes] = useState([]);
     const [showSizeChart, setShowSizeChart] = useState(false);
+    const [addingToCart, setAddingToCart] = useState(false);
+    const addToCartRef = useRef(false);
     const { toggleWishlistItem } = useWishlist();
     
     const location = useLocation();
@@ -115,6 +117,18 @@ function Item() {
             alert("Будь ласка, оберіть розмір");
             return;
         }
+        
+        console.log(`Adding to cart: productId=${product.id}, sizeId=${selectedSize}, quantity=${quantity}`);
+        
+        // Захист від множинних викликів
+        if (addToCartRef.current) {
+            console.log("Додавання в корзину вже виконується, ігноруємо повторний виклик");
+            return;
+        }
+        
+        addToCartRef.current = true;
+        setAddingToCart(true);
+        
         // Отримуємо userId з localStorage (передбачається, що користувач авторизований)
         const userId = localStorage.getItem("userId");
         if (!userId) {
@@ -143,6 +157,8 @@ function Item() {
             alert("Товар додано до кошика");
             // Після додавання переходимо в кошик
             navigate("/cart");
+            addToCartRef.current = false;
+            setAddingToCart(false);
             return;
         }
         // Якщо користувач авторизований, надсилаємо запит на сервер
@@ -173,6 +189,10 @@ function Item() {
         .catch(error => {
             console.error("Помилка додавання до кошика:", error);
             alert(`Помилка: ${error.message}`);
+        })
+        .finally(() => {
+            addToCartRef.current = false;
+            setAddingToCart(false);
         });
     };
 
@@ -289,6 +309,7 @@ function Item() {
                                     
                                     <div className="size-buttons">
                                         {availableSizes.map(size => {
+                                            console.log(`Size for product ${product.id}:`, size);
                                             // Проверяем наличие товара по полю inStock или quantity
                                             const isAvailable = size.inStock === true || (size.quantity != null && size.quantity > 0);
                                             
@@ -296,7 +317,10 @@ function Item() {
                                                 <button
                                                     key={size.id}
                                                     className={`size-button ${selectedSize === size.id ? "active" : ""} ${!isAvailable ? "disabled" : ""}`}
-                                                    onClick={() => isAvailable && setSelectedSize(size.id)}
+                                                    onClick={() => {
+                                                        console.log(`Selecting size ${size.id} (${size.name}) for product ${product.id}`);
+                                                        isAvailable && setSelectedSize(size.id);
+                                                    }}
                                                     disabled={!isAvailable}
                                                     title={!isAvailable ? "Розмір відсутній на складі" : ""}
                                                 >
@@ -363,8 +387,12 @@ function Item() {
                                         </div>
                                     </div>
                                 )}
-                                <button className="add-to-bag" onClick={addToCart}>
-                                    Додати до кошика
+                                <button 
+                                    className="add-to-bag" 
+                                    onClick={addToCart}
+                                    disabled={addingToCart}
+                                >
+                                    {addingToCart ? "Додавання..." : "Додати до кошика"}
                                 </button>
                             </div>
                         </div>

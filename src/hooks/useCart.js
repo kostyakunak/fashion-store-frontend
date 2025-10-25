@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { getProductSizes } from "../api/productApi";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
@@ -21,6 +21,9 @@ export default function useCart() {
     // Словник доступних розмірів для кожного товару
     const [productSizes, setProductSizes] = useState({});
     const [sizesLoading, setSizesLoading] = useState(false);
+    
+    // Ref для отслеживания процесса слияния корзины
+    const mergingRef = useRef(false);
     
     // Використовуємо AuthContext для отримання даних про користувача
     const auth = useContext(AuthContext);
@@ -51,39 +54,38 @@ export default function useCart() {
         setSizesLoading(true);
 
         // Завантажуємо розміри тільки для нових товарів
-        setProductSizes(prevProductSizes => {
-            const idsToFetch = productIdsToLoad.filter(productId => !prevProductSizes[productId]);
-            if (idsToFetch.length === 0) {
-                setSizesLoading(false);
-                return prevProductSizes;
-            }
-            Promise.all(idsToFetch.map(productId =>
-                getProductSizes(productId)
-                    .then(sizes => ({ productId, sizes }))
-                    .catch(error => {
-                        console.error(`Помилка при запиті розмірів для продукту ${productId}:`, error);
-                        return null;
-                    })
-            )).then(results => {
-                let updated = false;
-                const newProductSizes = { ...prevProductSizes };
+        const idsToFetch = productIdsToLoad.filter(productId => !productSizes[productId]);
+        if (idsToFetch.length === 0) {
+            setSizesLoading(false);
+            return;
+        }
+        
+        Promise.all(idsToFetch.map(productId =>
+            getProductSizes(productId)
+                .then(sizes => ({ productId, sizes }))
+                .catch(error => {
+                    console.error(`Помилка при запиті розмірів для продукту ${productId}:`, error);
+                    return null;
+                })
+        )).then(results => {
+            let updated = false;
+            const newProductSizes = { ...productSizes };
             results.forEach(result => {
                 if (result && result.sizes) {
+                    console.log(`Завантажено розміри для продукту ${result.productId}:`, result.sizes);
                     newProductSizes[result.productId] = result.sizes;
-                        updated = true;
+                    updated = true;
                 }
             });
-                if (updated) {
-            setProductSizes(newProductSizes);
-                }
-                setSizesLoading(false);
-            });
-            return prevProductSizes;
+            if (updated) {
+                setProductSizes(newProductSizes);
+            }
+            setSizesLoading(false);
         });
-    }, [cartItems, loading]); // productSizes і sizesLoading не в зависимостях
+    }, [cartItems, loading, productSizes]); // Включаем productSizes в зависимости
 
     // Завантаження кошика
-    const loadCart = () => {
+    const loadCart = useCallback(() => {
         setLoading(true);
         
         if (auth.isAuthenticated()) {
@@ -117,14 +119,22 @@ export default function useCart() {
             setCartItems(localCart);
             setLoading(false);
         }
-    };
+    }, [auth]);
     
     // Функція для об'єднання кошика після входу в систему
-    const mergeCart = async () => {
+    const mergeCart = useCallback(async () => {
         if (!auth.isAuthenticated()) return;
+        
+        // Защита от множественных вызовов
+        if (mergingRef.current) {
+            console.log("Слияние корзины уже выполняется, игнорируем повторный вызов");
+            return;
+        }
         
         const localCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
         if (localCart.length === 0) return;
+        
+        mergingRef.current = true;
         
         try {
             await axios.post(`${API_URL}/merge`, {
@@ -143,8 +153,10 @@ export default function useCart() {
         } catch (error) {
             console.error("Помилка при об'єднанні кошика:", error);
             setError(error.response?.data?.message || error.message);
+        } finally {
+            mergingRef.current = false;
         }
-    };
+    }, [auth, loadCart]);
 
     // Обновлення суми при зміні кошика
     useEffect(() => {
@@ -313,8 +325,11 @@ export default function useCart() {
 
     // Отримати доступні розміри для конкретного товару
     const getAvailableSizesForProduct = (productId) => {
+        console.log(`Getting sizes for product ${productId}:`, productSizes[productId]);
+        
         // Якщо розміри для продукту завантажені, возвращаем их
         if (productSizes[productId]) {
+            console.log(`Found sizes for product ${productId}:`, productSizes[productId]);
             // Возвращаем все размеры с правильным статусом доступности
             return productSizes[productId].map(size => ({
                 ...size,
@@ -323,6 +338,7 @@ export default function useCart() {
             }));
         }
         
+        console.log(`No sizes found for product ${productId}, using fallback`);
         // В случае, если размеры еще не загружены, возвращаем временные данные
         return availableSizes;
     };
@@ -340,6 +356,7 @@ export default function useCart() {
         total,
         loadCart,
         mergeCart,
-        clearCart
+        clearCart,
+        productSizes
     };
 }

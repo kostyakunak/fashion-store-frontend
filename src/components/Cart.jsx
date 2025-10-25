@@ -16,7 +16,8 @@ function Cart() {
         updateSize,
         getAvailableSizesForProduct,
         total,
-        mergeCart
+        mergeCart,
+        productSizes
     } = useCart();
     
     // Використовуємо контекст автентифікації
@@ -30,18 +31,31 @@ function Cart() {
     // Перевіряємо доступність обраних розмірів при завантаженні та зміні кошика
     useEffect(() => {
         if (!loading && cartItems.length > 0) {
+            console.log('Checking size availability for cart items:', cartItems);
             const warnings = {};
             cartItems.forEach(item => {
-                // getAvailableSizesForProduct — только чистая функция, не вызывает setState!
-                const availableSizes = getAvailableSizesForProduct(item.productId);
-                const sizeExists = availableSizes.some(size => size.id === item.sizeId);
-                if (!sizeExists) {
-                    warnings[item.id] = true;
+                console.log(`Checking item ${item.id}, productId: ${item.productId}, sizeId: ${item.sizeId}`);
+                
+                // Проверяем, загружены ли размеры для этого товара
+                if (productSizes[item.productId]) {
+                    console.log(`Sizes loaded for product ${item.productId}:`, productSizes[item.productId]);
+                    const availableSizes = getAvailableSizesForProduct(item.productId);
+                    console.log(`Available sizes for product ${item.productId}:`, availableSizes);
+                    const sizeExists = availableSizes.some(size => size.id === item.sizeId);
+                    console.log(`Size ${item.sizeId} exists:`, sizeExists);
+                    if (!sizeExists) {
+                        warnings[item.id] = true;
+                        console.log(`Setting warning for item ${item.id}`);
+                    }
+                } else {
+                    console.log(`Sizes not yet loaded for product ${item.productId}, skipping warning`);
+                    // Не показываем предупреждение, если размеры еще не загружены
                 }
             });
+            console.log('Size warnings:', warnings);
             setSizeWarnings(warnings);
         }
-    }, [cartItems, loading]); // убираем getAvailableSizesForProduct из зависимостей
+    }, [cartItems, loading, productSizes]); // добавляем productSizes в зависимости
     
     // Об'єднуємо кошик при вході користувача в систему
     useEffect(() => {
@@ -172,10 +186,7 @@ function Cart() {
                                                 onClick={() => removeFromCart(item.id)}
                                                 title="Видалити з кошика"
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                                    <path fill="none" d="M0 0h24v24H0z"/>
-                                                    <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                                                </svg>
+                                                <i className="fas fa-trash"></i>
                                             </button>
                                         </div>
                                     </div>

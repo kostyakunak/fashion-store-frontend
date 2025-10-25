@@ -261,9 +261,9 @@
     transform: scale(1.1);
 }
 
-.cart .remove-btn svg {
-    width: 20px;
-    height: 20px;
+.cart .remove-btn i {
+    font-size: 14px;
+    color: white;
 }
 
 /* Итог корзины */
