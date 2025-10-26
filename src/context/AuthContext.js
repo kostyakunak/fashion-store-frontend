@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { getUserByEmail } from '../utils/userApi';
@@ -207,7 +207,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Проверка авторизации пользователя
-  const isAuthenticated = () => {
+  const isAuthenticated = useCallback(() => {
     const token = localStorage.getItem('token');
     const isValid = !!token && isTokenValid(token);
     console.log('🔐 isAuthenticated called:', { 
@@ -217,10 +217,10 @@ export const AuthProvider = ({ children }) => {
       timestamp: Date.now() 
     });
     return isValid;
-  };
+  }, [user]);
   
   // Проверка наличия роли администратора
-  const isAdmin = () => {
+  const isAdmin = useCallback(() => {
     const hasUser = !!user;
     const hasRoles = !!user?.roles;
     const isAdminRole = hasUser && hasRoles && (user.roles.includes('ROLE_ADMIN') || user.role === 'ADMIN');
@@ -233,16 +233,16 @@ export const AuthProvider = ({ children }) => {
       timestamp: Date.now() 
     });
     return isAdminRole;
-  };
+  }, [user]);
   
   // Получение ID пользователя
-  const getUserId = () => {
+  const getUserId = useCallback(() => {
     if (!user) return null;
     // Используем числовой id, если есть, иначе null
     if (user.id && !isNaN(Number(user.id))) return Number(user.id);
     if (user.userId && !isNaN(Number(user.userId))) return Number(user.userId);
     return null;
-  };
+  }, [user]);
 
   useEffect(() => {
     console.log('AuthContext user:', user);
