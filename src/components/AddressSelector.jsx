@@ -80,33 +80,16 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
     );
     
     if (error) return (
-        <div style={{ 
-            padding: 12, 
-            backgroundColor: '#ffebee', 
-            border: '1px solid #f44336', 
-            borderRadius: 4, 
-            color: '#d32f2f'
-        }}>
-            ⚠️ {error}
-        </div>
+        <p style={{ color: '#ff5a5f', marginBottom: 12 }}>{error}</p>
     );
 
     return (
         <div>
             {addresses.length === 0 && !showForm && allowCreate && (
-                <div>
-                    <div style={{ 
-                        padding: 12, 
-                        backgroundColor: '#fff3e0', 
-                        border: '1px solid #ff9800', 
-                        borderRadius: 4,
-                        marginBottom: 12,
-                        color: '#e65100'
-                    }}>
-                        ℹ️ У вас немає збережених адрес. Додайте адресу доставки для оформлення замовлення.
-                    </div>
+                <div style={{ marginBottom: 12 }}>
+                    <p style={{ marginBottom: 12, opacity: 0.7, fontSize: 14 }}>Виберіть або додайте адресу доставки</p>
                     <button className="checkout-btn" onClick={() => setShowForm(true)}>
-                        ➕ Додати адресу доставки
+                        Додати адресу
                     </button>
                 </div>
             )}

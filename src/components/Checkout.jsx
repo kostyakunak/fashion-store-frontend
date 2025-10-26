@@ -120,31 +120,6 @@ const Checkout = () => {
                                 selectedAddressId={selectedAddressId}
                                 onSelect={setSelectedAddressId}
                             />
-                            {!selectedAddressId && (
-                                <div style={{ 
-                                    marginTop: 12, 
-                                    padding: 12, 
-                                    backgroundColor: '#ffebee', 
-                                    border: '1px solid #f44336', 
-                                    borderRadius: 4,
-                                    color: '#d32f2f'
-                                }}>
-                                    ⚠️ <strong>Адресу не вибрано!</strong> Будь ласка, додайте або оберіть адресу доставки перед оформленням замовлення.
-                                </div>
-                            )}
-                            {selectedAddressId && (
-                                <div style={{ 
-                                    marginTop: 8, 
-                                    padding: 8, 
-                                    backgroundColor: '#e8f5e9', 
-                                    border: '1px solid #4caf50', 
-                                    borderRadius: 4,
-                                    color: '#2e7d32',
-                                    fontSize: 14
-                                }}>
-                                    ✅ Адресу вибрано
-                                </div>
-                            )}
                         </div>
                     </section>
 
@@ -173,28 +148,9 @@ const Checkout = () => {
                             <p className="checkout-total" style={{ fontWeight: 'bold', fontSize: '18px' }}>{total} грн.</p>
                         </div>
                         
-                        {/* Показываем причину, почему кнопка неактивна */}
-                        {!isCartEmpty && !loading && !selectedAddressId && (
-                            <div style={{ 
-                                marginTop: 12, 
-                                padding: 12, 
-                                backgroundColor: '#fff3e0', 
-                                border: '1px solid #ff9800', 
-                                borderRadius: 4,
-                                color: '#e65100'
-                            }}>
-                                ℹ️ Для оформлення замовлення необхідно вибрати адресу доставки вище.
-                            </div>
-                        )}
-                        
                         <button
                             className="checkout-btn"
-                            style={{ 
-                                width: '100%', 
-                                marginTop: '20px',
-                                opacity: (isCartEmpty || loading || !selectedAddressId || !selectedPayment || orderLoading) ? 0.5 : 1,
-                                cursor: (isCartEmpty || loading || !selectedAddressId || !selectedPayment || orderLoading) ? 'not-allowed' : 'pointer'
-                            }}
+                            style={{ width: '100%', marginTop: '20px' }}
                             disabled={isCartEmpty || loading || !selectedAddressId || !selectedPayment || orderLoading}
                             onClick={handleOrder}
                         >
