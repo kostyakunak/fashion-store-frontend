@@ -22,7 +22,8 @@ function OrderDetails() {
 
     useEffect(() => {
         // Redirect if not authenticated
-        if (!isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (!token || !user) {
             navigate('/login');
             return;
         }
