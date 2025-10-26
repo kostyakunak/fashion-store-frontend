@@ -13,20 +13,20 @@ import './AdminPanel.css';
  * Central hub for all administrative functions
  */
 const AdminPanel = () => {
-  const { user, isAdmin } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [moduleStatus, setModuleStatus] = useState({});
+  const [hasCheckedStatus, setHasCheckedStatus] = useState(false);
   const navigate = useNavigate();
-
-  // Create API client for status checks
-  const statusClient = createAdminApiClient(
-    { baseURL: API_CONFIG.ADMIN_API_URL },
-    (error) => setError('Authentication error: ' + error.message)
-  );
 
   // Check the status of various admin modules
   const checkModuleStatus = useCallback(async () => {
+    // Create API client for status checks
+    const statusClient = createAdminApiClient(
+      {},
+      (error) => setError('Authentication error: ' + error.message)
+    );
     setLoading(true);
     try {
       // Check basic connectivity to admin endpoints
@@ -58,9 +58,9 @@ const AdminPanel = () => {
     } finally {
       setLoading(false);
     }
-  }, [statusClient]);
+  }, []);
 
-  // Authentication check - more robust with isAdmin from AuthContext
+  // Authentication check - completely static, no function calls
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -68,17 +68,13 @@ const AdminPanel = () => {
       return;
     }
 
-    // Check if user has admin role
-    if (!isAdmin()) {
-      setError('Access denied. You need administrative permissions to view this page.');
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
-    } else if (user) {
-      // Only check module status if user is loaded
+    // Only proceed if user is loaded and has admin role, and we haven't checked status yet
+    if (user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.role === 'ADMIN') && !hasCheckedStatus) {
+      console.log('🚀 AdminPanel: Starting status check for user:', user.email);
+      setHasCheckedStatus(true);
       checkModuleStatus();
     }
-  }, [user, navigate, checkModuleStatus]);
+  }, [user, navigate, checkModuleStatus, hasCheckedStatus]);
 
 
   // Define admin modules

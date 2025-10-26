@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
+  const [isFetchingUserByEmail, setIsFetchingUserByEmail] = useState(false);
 
   // Проверка наличия токена при загрузке
   useEffect(() => {
@@ -53,8 +54,9 @@ export const AuthProvider = ({ children }) => {
           });
           // Если id не число, пробуем получить id по email или sub
           const email = decoded.email || decoded.sub;
-          if (!isSubNumber && email) {
+          if (!isSubNumber && email && !isFetchingUserByEmail) {
             console.log('Вызов getUserByEmail с email:', email);
+            setIsFetchingUserByEmail(true);
             try {
               getUserByEmail(email).then(userData => {
                 console.log('userData from getUserByEmail:', userData);
@@ -67,11 +69,14 @@ export const AuthProvider = ({ children }) => {
                 } else {
                   console.error('Не удалось получить числовой id по email:', userData);
                 }
+                setIsFetchingUserByEmail(false);
               }).catch(err => {
                 console.error('Ошибка при получении id по email (then):', err);
+                setIsFetchingUserByEmail(false);
               });
             } catch (err) {
               console.error('Ошибка при вызове getUserByEmail (try):', err);
+              setIsFetchingUserByEmail(false);
             }
           }
           
