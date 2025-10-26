@@ -50,7 +50,18 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
         setCreating(true);
         setError(null);
         try {
-            const newAddr = await createAddress({ ...form, userId });
+            // Формируем правильный формат данных для API
+            const addressData = {
+                city: form.city,
+                street: form.street,
+                house: form.house,
+                apartment: form.apartment,
+                is_main: form.is_main,
+                user: {
+                    id: userId  // API ожидает объект user с полем id
+                }
+            };
+            const newAddr = await createAddress(addressData);
             setAddresses(prev => [...prev, newAddr]);
             setShowForm(false);
             setForm({ city: '', street: '', house: '', apartment: '', is_main: false });
@@ -62,13 +73,42 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
         }
     };
 
-    if (loading) return <p style={{ opacity: 0.7 }}>Завантаження адрес...</p>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
+    if (loading) return (
+        <div style={{ padding: 12, textAlign: 'center' }}>
+            <p style={{ opacity: 0.7 }}>Завантаження адрес...</p>
+        </div>
+    );
+    
+    if (error) return (
+        <div style={{ 
+            padding: 12, 
+            backgroundColor: '#ffebee', 
+            border: '1px solid #f44336', 
+            borderRadius: 4, 
+            color: '#d32f2f'
+        }}>
+            ⚠️ {error}
+        </div>
+    );
 
     return (
         <div>
             {addresses.length === 0 && !showForm && allowCreate && (
-                <button className="checkout-btn" onClick={() => setShowForm(true)}>Додати адресу</button>
+                <div>
+                    <div style={{ 
+                        padding: 12, 
+                        backgroundColor: '#fff3e0', 
+                        border: '1px solid #ff9800', 
+                        borderRadius: 4,
+                        marginBottom: 12,
+                        color: '#e65100'
+                    }}>
+                        ℹ️ У вас немає збережених адрес. Додайте адресу доставки для оформлення замовлення.
+                    </div>
+                    <button className="checkout-btn" onClick={() => setShowForm(true)}>
+                        ➕ Додати адресу доставки
+                    </button>
+                </div>
             )}
             {addresses.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
