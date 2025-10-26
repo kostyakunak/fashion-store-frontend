@@ -1,9 +1,10 @@
 import axios from "axios";
+import { API_CONFIG } from '../config/apiConfig';
 
 // Admin API endpoint for backend management
-const ADMIN_API_URL = "http://localhost:8080/api/admin/wishlist";
+const ADMIN_API_URL = API_CONFIG.ADMIN_API_URL + "/wishlist";
 // Public API endpoint for frontend user interactions
-const PUBLIC_API_URL = "http://localhost:8080/api/wishlist";
+const PUBLIC_API_URL = API_CONFIG.API_URL + "/wishlist";
 
 // Create admin axios instance
 const adminAxiosInstance = axios.create({

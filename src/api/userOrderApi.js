@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = "http://localhost:8080/api/orders";
+const API_URL = API_CONFIG.API_URL + "/orders";
 
 // Create an axios instance with necessary configuration
 const axiosInstance = axios.create({

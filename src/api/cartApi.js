@@ -1,9 +1,10 @@
 import axios from "axios";
+import { API_CONFIG } from '../config/apiConfig';
 
 // Admin API endpoint for backend management
-const ADMIN_API_URL = "http://localhost:8080/api/admin/cart";
+const ADMIN_API_URL = API_CONFIG.ADMIN_API_URL + "/cart";
 // Public API endpoint for frontend user interactions
-const PUBLIC_API_URL = "http://localhost:8080/api/cart";
+const PUBLIC_API_URL = API_CONFIG.API_URL + "/cart";
 
 // Create admin axios instance
 const adminAxiosInstance = axios.create({

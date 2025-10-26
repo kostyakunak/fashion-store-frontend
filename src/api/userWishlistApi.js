@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = "http://localhost:8080/api/wishlist";
+const API_URL = API_CONFIG.API_URL + "/wishlist";
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
