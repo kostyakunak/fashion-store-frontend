@@ -99,12 +99,12 @@ const Checkout = () => {
                                     cartItems.map((item, idx) => (
                                         <div key={idx} className="checkout-item" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
                                             <img src={item.imageUrl} alt={item.name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, marginRight: 12 }} />
-                                            <div style={{ flex: 1 }}>
-                                                <div style={{ fontWeight: 500 }}>{item.name}</div>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <div style={{ fontWeight: 500, marginBottom: 4 }}>{item.name}</div>
                                                 <div style={{ fontSize: 13, opacity: 0.7 }}>Розмір: {getSizeName(item)}</div>
                                             </div>
-                                            <div style={{ minWidth: 60, textAlign: 'right' }}>{item.quantity} × {item.price} грн.</div>
-                                            <div style={{ minWidth: 70, textAlign: 'right', marginLeft: 16, fontWeight: 500 }}>{(item.price * item.quantity).toFixed(2)} грн.</div>
+                                            <div style={{ minWidth: 50, textAlign: 'center', marginRight: 16, opacity: 0.7, fontSize: 14 }}>{item.quantity}x</div>
+                                            <div style={{ minWidth: 80, textAlign: 'right', fontWeight: 500, fontSize: 15 }}>{(item.price * item.quantity).toFixed(2)} грн.</div>
                                         </div>
                                     ))
                                 )}
