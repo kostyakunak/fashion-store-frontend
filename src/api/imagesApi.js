@@ -1,5 +1,6 @@
 import axios from "axios";
-const API_URL = "http://localhost:8080/api/admin/images";
+import { API_CONFIG } from '../config/apiConfig';
+const API_URL = API_CONFIG.ADMIN_API_URL + "/images";
 
 export const getAllImages = async () => {
     try {
@@ -52,7 +53,7 @@ export const deleteImage = async (id) => {
 
 export const getProducts = async () => {
     try {
-        const response = await axios.get("http://localhost:8080/api/admin/products");
+        const response = await axios.get(`${API_CONFIG.ADMIN_API_URL}/products`);
         return response.data;
     } catch (error) {
         console.error("Ошибка при получении товаров:", error);

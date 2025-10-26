@@ -1,7 +1,7 @@
 import axios from "axios";
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
-const USERS_API_URL = `${API_URL}/api/admin/users`;
+const USERS_API_URL = API_CONFIG.ADMIN_API_URL + "/users";
 
 const axiosInstance = axios.create({
     baseURL: USERS_API_URL,

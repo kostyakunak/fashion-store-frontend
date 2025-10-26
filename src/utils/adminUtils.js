@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/apiConfig';
 
 /**
  * Utility functions for admin account management
@@ -29,7 +30,7 @@ export const enableAdminAccount = async (userId) => {
     
     // First, get current user data
     const userResponse = await axios.get(
-      `http://localhost:8080/api/admin/users/${userId}`, 
+      `${API_CONFIG.ADMIN_API_URL}/users/${userId}`, 
       config
     );
     
@@ -37,7 +38,7 @@ export const enableAdminAccount = async (userId) => {
     
     // Update the user to ensure enabled is true
     const updateResponse = await axios.put(
-      `http://localhost:8080/api/admin/users/${userId}`,
+      `${API_CONFIG.ADMIN_API_URL}/users/${userId}`,
       {
         ...userData,
         enabled: true
@@ -82,7 +83,7 @@ export const findAdminAccounts = async () => {
     }
     
     const response = await axios.get(
-      'http://localhost:8080/api/admin/users',
+      `${API_CONFIG.ADMIN_API_URL}/users`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,

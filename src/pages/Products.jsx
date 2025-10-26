@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_CONFIG } from '../config/apiConfig';
 import '../styles/Products.css';
 
 const Products = () => {
@@ -11,7 +12,7 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/products');
+            const response = await fetch(`${API_CONFIG.API_URL}/products`);
             const data = await response.json();
             setProducts(data);
         } catch (error) {

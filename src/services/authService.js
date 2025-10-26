@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = 'http://localhost:8080/api/auth';
+const API_URL = API_CONFIG.API_URL + '/auth';
 
 const handleError = (error) => {
     if (error.response) {

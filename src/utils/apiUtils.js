@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/apiConfig';
 
 /**
  * Configuration for axios instances
  */
 const defaultConfig = {
-  baseURL: 'http://localhost:8080',
+  baseURL: API_CONFIG.BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -101,7 +102,7 @@ export const createApiClient = (options = {}) => {
  */
 export const createAdminApiClient = (options = {}, onAuthError) => {
   return createApiClient({
-    baseURL: 'http://localhost:8080/api/admin',
+    baseURL: API_CONFIG.ADMIN_API_URL,
     requireAuth: true,
     isAdmin: true,
     onAuthError,

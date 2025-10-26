@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = 'http://localhost:8080/api/admin/order-details';
+const API_URL = API_CONFIG.ADMIN_API_URL + '/order-details';
 
 export const getOrderDetails = async () => {
     console.log('API: Запрос деталей заказов');
@@ -26,21 +27,21 @@ export const deleteOrderDetail = async (id) => {
 // Вспомогательные функции для получения связанных данных
 export const getOrders = async () => {
     console.log('API: Запрос списка заказов');
-    const response = await axios.get('http://localhost:8080/api/admin/orders');
+    const response = await axios.get(`${API_CONFIG.ADMIN_API_URL}/orders`);
     console.log('API: Получены заказы:', response.data);
     return response.data;
 };
 
 export const getProducts = async () => {
     console.log('API: Запрос списка товаров');
-    const response = await axios.get('http://localhost:8080/api/admin/products');
+    const response = await axios.get(`${API_CONFIG.ADMIN_API_URL}/products`);
     console.log('API: Получены товары:', response.data);
     return response.data;
 };
 
 export const getSizes = async () => {
     console.log('API: Запрос списка размеров');
-    const response = await axios.get('http://localhost:8080/api/admin/sizes');
+    const response = await axios.get(`${API_CONFIG.ADMIN_API_URL}/sizes`);
     console.log('API: Получены размеры:', response.data);
     return response.data;
 }; 

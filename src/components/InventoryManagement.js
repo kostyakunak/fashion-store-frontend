@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_CONFIG } from '../config/apiConfig';
 
 const InventoryManagement = () => {
   const [items, setItems] = useState([]);
@@ -18,10 +19,10 @@ const InventoryManagement = () => {
   const fetchData = async () => {
     try {
       const [warehouseResponse, categoriesResponse, productsResponse, sizesResponse] = await Promise.all([
-        axios.get('http://localhost:8080/api/warehouse'),
-        axios.get('http://localhost:8080/api/categories'),
-        axios.get('http://localhost:8080/api/products'),
-        axios.get('http://localhost:8080/api/sizes')
+        axios.get(`${API_CONFIG.API_URL}/warehouse`),
+        axios.get(`${API_CONFIG.API_URL}/categories`),
+        axios.get(`${API_CONFIG.API_URL}/products`),
+        axios.get(`${API_CONFIG.API_URL}/sizes`)
       ]);
       setItems(warehouseResponse.data);
       setCategories(categoriesResponse.data);
@@ -72,7 +73,7 @@ const InventoryManagement = () => {
   const handleSave = async () => {
     try {
       if (editingItem) {
-        await axios.put(`http://localhost:8080/api/warehouse/${editingItem.id}`, {
+        await axios.put(`${API_CONFIG.API_URL}/warehouse/${editingItem.id}`, {
           productId: parseInt(selectedProduct),
           sizeId: parseInt(selectedSize),
           quantity: parseInt(quantity)
@@ -85,7 +86,7 @@ const InventoryManagement = () => {
           return;
         }
 
-        await axios.post('http://localhost:8080/api/warehouse', {
+        await axios.post(`${API_CONFIG.API_URL}/warehouse`, {
           id: parseInt(newId),
           productId: parseInt(selectedProduct),
           sizeId: parseInt(selectedSize),

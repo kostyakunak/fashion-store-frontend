@@ -4,6 +4,7 @@ import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
 import useCart from "../hooks/useCart";
 import { AuthContext } from "../context/AuthContext";
+import { API_CONFIG } from '../config/apiConfig';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AddressSelector from "./AddressSelector";
@@ -46,7 +47,7 @@ const Checkout = () => {
                 }))
             };
             const token = localStorage.getItem('token');
-            await axios.post("http://localhost:8080/api/orders", payload, {
+            await axios.post(`${API_CONFIG.API_URL}/orders`, payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             clearCart();

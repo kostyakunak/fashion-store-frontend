@@ -1,7 +1,8 @@
 import { createAdminApiClient } from "../utils/apiUtils";
+import { API_CONFIG } from '../config/apiConfig';
 
 const apiClient = createAdminApiClient({
-  baseURL: "http://localhost:8080/api/admin/sizes"
+  baseURL: API_CONFIG.ADMIN_API_URL + "/sizes"
 });
 
 export const getSizes = async () => {

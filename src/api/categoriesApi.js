@@ -1,8 +1,9 @@
 import { createAdminApiClient, handleApiError } from '../utils/apiUtils';
+import { API_CONFIG } from '../config/apiConfig';
 
 // Create API client for categories
 const categoriesClient = createAdminApiClient(
-  { baseURL: 'http://localhost:8080/api/admin' },
+  { baseURL: API_CONFIG.ADMIN_API_URL },
   (error) => console.error('Categories API Auth Error:', error)
 );
 

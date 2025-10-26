@@ -1,5 +1,6 @@
 import axios from "axios";
-const API_URL = "http://localhost:8080/api/admin/prices";
+import { API_CONFIG } from '../config/apiConfig';
+const API_URL = API_CONFIG.ADMIN_API_URL + "/prices";
 
 export const createPrice = async (priceData) => {
     try {

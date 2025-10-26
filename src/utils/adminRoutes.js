@@ -5,7 +5,9 @@
  * making it easier to maintain consistent navigation throughout the admin interface.
  */
 
-const API_BASE_URL = "http://localhost:8080/api/admin";
+import { API_CONFIG } from '../config/apiConfig';
+
+const API_BASE_URL = API_CONFIG.ADMIN_API_URL;
 
 // Route definitions for admin pages
 export const AdminRoutes = {

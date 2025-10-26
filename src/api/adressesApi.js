@@ -1,5 +1,6 @@
 import axios from "axios";
-const API_URL = "http://localhost:8080/api/admin/addresses";
+import { API_CONFIG } from '../config/apiConfig';
+const API_URL = API_CONFIG.ADMIN_API_URL + "/addresses";
 
 export const createAddress = async (addressData) => {
     try {

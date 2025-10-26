@@ -1,9 +1,10 @@
 import { createAdminApiClient, handleApiError } from '../utils/apiUtils';
+import { API_CONFIG } from '../config/apiConfig';
 import axios from 'axios';
 
 // Create API client for addresses
 const addressesClient = createAdminApiClient(
-  { baseURL: 'http://localhost:8080/api/admin' },
+  { baseURL: API_CONFIG.ADMIN_API_URL },
   (error) => console.error('Address API Auth Error:', error)
 );
 
@@ -77,7 +78,7 @@ export const createAddress = async (address) => {
   }
   console.log('[createAddress] user.id:', address.user.id, 'payload:', address);
   const response = await axios.post(
-    'http://localhost:8080/api/admin/addresses',
+    `${API_CONFIG.ADMIN_API_URL}/addresses`,
     address,
     {
       headers: {

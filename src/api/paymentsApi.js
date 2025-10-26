@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = "http://localhost:8080/api/admin/payments"; // Проверяем, что URL верный
+const API_URL = API_CONFIG.ADMIN_API_URL + "/payments"; // Проверяем, что URL верный
 
 // ✅ Создать новый платеж
 export const createPayment = async (paymentData) => {

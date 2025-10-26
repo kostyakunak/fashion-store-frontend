@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { API_CONFIG } from '../config/apiConfig';
 import useWishlist from '../hooks/useWishlist';
 import useCart from '../hooks/useCart';
 import './Wishlist.css';
@@ -23,7 +24,7 @@ function Wishlist() {
             const newSizesMap = {};
             for (const item of wishlistItems) {
                 try {
-                    const res = await fetch(`http://localhost:8080/api/public/warehouse/product/${item.productId}/sizes`);
+                    const res = await fetch(`${API_CONFIG.PUBLIC_API_URL}/warehouse/product/${item.productId}/sizes`);
                     if (res.ok) {
                         const sizes = await res.json();
                         newSizesMap[item.productId] = sizes;

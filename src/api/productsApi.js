@@ -1,7 +1,8 @@
 import { createAdminApiClient, handleApiError } from "../utils/apiUtils";
+import { API_CONFIG } from '../config/apiConfig';
 
 const apiClient = createAdminApiClient({
-  baseURL: "http://localhost:8080/api/admin/products"
+  baseURL: API_CONFIG.ADMIN_API_URL + "/products"
 });
 
 export const getProducts = async () => {
