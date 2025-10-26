@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { API_CONFIG } from '../../config/apiConfig';
@@ -25,27 +25,8 @@ const AdminPanel = () => {
     (error) => setError('Authentication error: ' + error.message)
   );
 
-  // Authentication check - more robust with isAdmin from AuthContext
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate('/login', { state: { message: 'Please login to access admin dashboard' } });
-      return;
-    }
-
-    // Check if user has admin role
-    if (!isAdmin()) {
-      setError('Access denied. You need administrative permissions to view this page.');
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
-    } else {
-      // If admin, check status of various modules
-      checkModuleStatus();
-    }
-  }, [user, navigate]);
-
   // Check the status of various admin modules
-  const checkModuleStatus = async () => {
+  const checkModuleStatus = useCallback(async () => {
     setLoading(true);
     try {
       // Check basic connectivity to admin endpoints
@@ -77,7 +58,27 @@ const AdminPanel = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusClient]);
+
+  // Authentication check - more robust with isAdmin from AuthContext
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate('/login', { state: { message: 'Please login to access admin dashboard' } });
+      return;
+    }
+
+    // Check if user has admin role
+    if (!isAdmin()) {
+      setError('Access denied. You need administrative permissions to view this page.');
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    } else {
+      // If admin, check status of various modules
+      checkModuleStatus();
+    }
+  }, [user, navigate, checkModuleStatus]);
+
 
   // Define admin modules
   const adminModules = [
