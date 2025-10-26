@@ -32,10 +32,19 @@ function MyOrders() {
 
     const handleCancelOrder = async (orderId) => {
         if (window.confirm('Ви впевнені, що хочете скасувати це замовлення?')) {
-            const success = await cancelOrder(orderId);
-            if (success) {
-                // Order was successfully cancelled
-                loadOrders(); // Refresh the orders list
+            try {
+                console.log('Attempting to cancel order:', orderId);
+                const success = await cancelOrder(orderId);
+                console.log('Cancel order result:', success);
+                if (success) {
+                    // Order was successfully cancelled
+                    loadOrders(); // Refresh the orders list
+                } else {
+                    alert('Не вдалося скасувати замовлення');
+                }
+            } catch (err) {
+                console.error('Error cancelling order:', err);
+                alert('Помилка при скасуванні замовлення: ' + (err.message || 'Невідома помилка'));
             }
         }
     };
