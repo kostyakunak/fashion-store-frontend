@@ -108,14 +108,69 @@ const Checkout = () => {
                                     <p style={{ opacity: 0.7 }}>Кошик порожній</p>
                                 ) : (
                                     cartItems.map((item, idx) => (
-                                        <div key={idx} className="checkout-item" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-                                            <img src={item.imageUrl} alt={item.name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, marginRight: 12 }} />
-                                            <div style={{ flex: 1, minWidth: 0 }}>
-                                                <div style={{ fontWeight: 500, marginBottom: 4 }}>{item.name}</div>
-                                                <div style={{ fontSize: 13, opacity: 0.7 }}>Розмір: {getSizeName(item)}</div>
+                                        <div key={idx} className="checkout-item" style={{ 
+                                            display: 'flex', 
+                                            alignItems: 'flex-start', 
+                                            marginBottom: 16,
+                                            padding: 12,
+                                            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                                            borderRadius: 8
+                                        }}>
+                                            <img 
+                                                src={item.imageUrl} 
+                                                alt={item.name} 
+                                                style={{ 
+                                                    width: 64, 
+                                                    height: 64, 
+                                                    objectFit: 'cover', 
+                                                    borderRadius: 6, 
+                                                    marginRight: 16,
+                                                    flexShrink: 0
+                                                }} 
+                                            />
+                                            <div style={{ flex: 1, minWidth: 0, marginRight: 16 }}>
+                                                <div style={{ 
+                                                    fontWeight: 500, 
+                                                    marginBottom: 6,
+                                                    fontSize: 15,
+                                                    lineHeight: 1.4,
+                                                    wordWrap: 'break-word',
+                                                    hyphens: 'auto'
+                                                }}>
+                                                    {item.name}
+                                                </div>
+                                                <div style={{ 
+                                                    fontSize: 13, 
+                                                    opacity: 0.7,
+                                                    marginBottom: 4
+                                                }}>
+                                                    Розмір: {getSizeName(item)}
+                                                </div>
                                             </div>
-                                            <div style={{ minWidth: 50, textAlign: 'center', marginRight: 16, opacity: 0.7, fontSize: 14 }}>{item.quantity}x</div>
-                                            <div style={{ minWidth: 80, textAlign: 'right', fontWeight: 500, fontSize: 15 }}>{(item.price * item.quantity).toFixed(2)} грн.</div>
+                                            <div style={{ 
+                                                minWidth: 60, 
+                                                textAlign: 'right',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'flex-end',
+                                                justifyContent: 'flex-start',
+                                                gap: 4
+                                            }}>
+                                                <div style={{ 
+                                                    fontSize: 14, 
+                                                    opacity: 0.7,
+                                                    marginBottom: 4
+                                                }}>
+                                                    {item.quantity}x
+                                                </div>
+                                                <div style={{ 
+                                                    fontWeight: 600, 
+                                                    fontSize: 16,
+                                                    color: '#fff'
+                                                }}>
+                                                    {(item.price * item.quantity).toFixed(2)} грн.
+                                                </div>
+                                            </div>
                                         </div>
                                     ))
                                 )}
