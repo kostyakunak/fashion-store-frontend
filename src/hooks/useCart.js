@@ -39,7 +39,8 @@ export default function useCart() {
 
     // Завантаження кошика при першому рендері або зміні статусу автентифікації
     useEffect(() => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             loadCart();
         }
     }, [auth.user]);
@@ -90,8 +91,9 @@ export default function useCart() {
     // Завантаження кошика
     const loadCart = useCallback(() => {
         setLoading(true);
+        const token = localStorage.getItem('token');
         
-        if (auth.isAuthenticated()) {
+        if (token && auth.user) {
             // Якщо користувач авторизований, завантажуємо кошик з сервера
             axios.get(`${API_URL}/my`, {
                 headers: {
@@ -126,7 +128,8 @@ export default function useCart() {
     
     // Функція для об'єднання кошика після входу в систему
     const mergeCart = useCallback(async () => {
-        if (!auth.isAuthenticated()) return;
+        const token = localStorage.getItem('token');
+        if (!token || !auth.user) return;
         
         // Защита от множественных вызовов
         if (mergingRef.current) {
@@ -168,7 +171,8 @@ export default function useCart() {
 
     // Додати в кошик
     const addToCart = (item) => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             // Якщо користувач авторизований, відправляємо запит на сервер
             axios.post(API_URL, {
                 productId: item.productId || item.id,
@@ -224,7 +228,8 @@ export default function useCart() {
 
     // Видалити з кошика
     const removeFromCart = (itemId) => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             // Якщо користувач авторизований, видаляємо з сервера
             axios.delete(`${API_URL}/${itemId}`, {
                 headers: {
@@ -254,7 +259,8 @@ export default function useCart() {
     const updateQuantity = (itemId, quantity) => {
         if (quantity < 1) return; // Не допускаємо від'ємну кількість
         
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             // Якщо користувач авторизований, оновлюємо на сервері
             axios.put(`${API_URL}/${itemId}`, {
                 quantity: quantity
@@ -288,7 +294,8 @@ export default function useCart() {
 
     // Оновити розмір товару
     const updateSize = (itemId, sizeId) => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             // Якщо користувач авторизований, оновлюємо на сервері
             axios.put(`${API_URL}/${itemId}/size`, {
                 sizeId: sizeId

@@ -16,8 +16,9 @@ export default function useWishlist() {
     // Завантаження списку бажань
     const loadWishlist = useCallback(() => {
         setLoading(true);
+        const token = localStorage.getItem('token');
         
-        if (auth.isAuthenticated()) {
+        if (token && auth.user) {
             // Якщо користувач авторизований, завантажуємо список бажань з сервера
             axios.get(`${API_URL}/my`, {
                 headers: {
@@ -53,7 +54,8 @@ export default function useWishlist() {
 
     // Додати до списку бажань
     const addToWishlistHandler = (product) => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             // Якщо користувач авторизований, відправляємо запит на сервер
             axios.post(API_URL, {
                 productId: product.productId || product.id
@@ -80,7 +82,8 @@ export default function useWishlist() {
 
     // Видалити зі списку бажань за ID елемента
     const removeFromWishlistHandler = (itemId) => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             // Якщо користувач авторизований, видаляємо з сервера
             axios.delete(`${API_URL}/${itemId}`, {
                 headers: {
@@ -101,7 +104,8 @@ export default function useWishlist() {
 
     // Видалити зі списку бажань за ID продукту
     const removeProductFromWishlistHandler = (productId) => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             // Оптимістично прибираємо з локального стейту
             setWishlistItems(prevItems => prevItems.filter(item => item.productId !== productId));
             axios.delete(`${API_URL}/product/${productId}`, {

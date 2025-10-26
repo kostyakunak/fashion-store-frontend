@@ -59,7 +59,8 @@ function Cart() {
     
     // Об'єднуємо кошик при вході користувача в систему
     useEffect(() => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             mergeCart();
         }
     }, [auth.user, mergeCart]);
