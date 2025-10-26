@@ -14,7 +14,7 @@ const Checkout = () => {
     const isCartEmpty = !cartItems || cartItems.length === 0;
 
     const auth = useContext(AuthContext);
-    const userId = auth?.getUserId ? auth.getUserId() : null;
+    const { user, loading: authLoading } = auth;
     const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [selectedPayment, setSelectedPayment] = useState('CARD');
     const paymentOptions = [
@@ -29,8 +29,13 @@ const Checkout = () => {
     const { clearCart } = useCart();
 
     useEffect(() => {
-        // console.log('Checkout userId:', userId); // удалено
-    }, [userId]);
+        if (!authLoading && !user) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate('/login', { state: { message: 'Будь ласка, увійдіть для оформлення замовлення' } });
+            }
+        }
+    }, [authLoading, user, navigate]);
 
     const handleOrder = async () => {
         setOrderLoading(true);
@@ -66,7 +71,8 @@ const Checkout = () => {
         return size ? size.name : item.sizeId;
     };
 
-    if (!userId) {
+    // Показываем загрузку пока аутентификация не загрузилась
+    if (authLoading) {
         return (
             <div className="account-details">
                 <Header />
@@ -78,6 +84,11 @@ const Checkout = () => {
                 <Footer />
             </div>
         );
+    }
+
+    // Перенаправляем на страницу входа если не авторизован
+    if (!user) {
+        return null; // useEffect уже перенаправит на /login
     }
 
     return (
@@ -115,11 +126,11 @@ const Checkout = () => {
                     <section className="account-section">
                         <h2>Адреса доставки</h2>
                         <div className="field">
-                            <AddressSelector
-                                userId={userId}
-                                selectedAddressId={selectedAddressId}
-                                onSelect={setSelectedAddressId}
-                            />
+                        <AddressSelector
+                            userId={user.id}
+                            selectedAddressId={selectedAddressId}
+                            onSelect={setSelectedAddressId}
+                        />
                         </div>
                     </section>
 
