@@ -13,7 +13,7 @@ import './AdminPanel.css';
  * Central hub for all administrative functions
  */
 const AdminPanel = () => {
-  const { user, isAdmin, isAuthenticated } = useContext(AuthContext);
+  const { user, isAdmin } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [moduleStatus, setModuleStatus] = useState({});
@@ -62,7 +62,8 @@ const AdminPanel = () => {
 
   // Authentication check - more robust with isAdmin from AuthContext
   useEffect(() => {
-    if (!isAuthenticated()) {
+    const token = localStorage.getItem('token');
+    if (!token) {
       navigate('/login', { state: { message: 'Please login to access admin dashboard' } });
       return;
     }
