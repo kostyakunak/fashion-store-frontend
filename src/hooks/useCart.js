@@ -2,8 +2,9 @@ import { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { getProductSizes } from "../api/productApi";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = "http://localhost:8080/api/cart";
+const API_URL = API_CONFIG.API_URL + "/cart";
 
 export default function useCart() {
     const [cartItems, setCartItems] = useState([]);

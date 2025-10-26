@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { API_CONFIG } from '../config/apiConfig';
 import "../styles/Item.css";
 import "../styles/image-modal.css";
 import ImageRoller from "../hooks/ImageRoller";
@@ -53,7 +54,7 @@ function Item() {
         }
         // Завантажуємо дані про товар
         setLoading(true);
-        fetch(`http://localhost:8080/products/${productId}`)
+        fetch(`${API_CONFIG.PRODUCTS_URL}/${productId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP помилка! Статус: ${response.status}`);
@@ -64,7 +65,7 @@ function Item() {
                 console.log("Дані про товар:", data);
                 setProduct(data);
                 // Завантажуємо доступні розміри для товару (тепер публічний endpoint)
-                return fetch(`http://localhost:8080/api/public/warehouse/product/${productId}/sizes`);
+                return fetch(`${API_CONFIG.PUBLIC_API_URL}/warehouse/product/${productId}/sizes`);
             })
             .then(response => {
                 if (!response.ok) {
@@ -162,7 +163,7 @@ function Item() {
             return;
         }
         // Якщо користувач авторизований, надсилаємо запит на сервер
-        fetch("http://localhost:8080/api/cart", {
+        fetch(`${API_CONFIG.API_URL}/cart`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

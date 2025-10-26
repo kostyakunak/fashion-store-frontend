@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext, useCallback } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { API_CONFIG } from '../config/apiConfig';
 
-const API_URL = "http://localhost:8080/api/wishlist";
+const API_URL = API_CONFIG.API_URL + "/wishlist";
 
 export default function useWishlist() {
     const [wishlistItems, setWishlistItems] = useState([]);
