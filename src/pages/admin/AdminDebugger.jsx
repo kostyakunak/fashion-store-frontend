@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
+import { API_CONFIG } from '../../config/apiConfig';
 import { enableAdminAccount, findAdminAccounts } from '../../utils/adminUtils';
 import axios from 'axios';
 
@@ -71,7 +72,7 @@ const AdminDebugger = () => {
         throw new Error('No authentication token found');
       }
       
-      const response = await axios.get(`http://localhost:8080${endpoint.url}`, {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${endpoint.url}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

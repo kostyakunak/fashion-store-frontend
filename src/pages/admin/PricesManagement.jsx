@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_CONFIG } from '../../config/apiConfig';
 import "../../styles/AdminTables.css";
 
 const PricesManagement = () => {
@@ -30,7 +31,7 @@ const PricesManagement = () => {
 
     const fetchPrices = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/admin/prices");
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/prices`);
             if (!response.ok) {
                 throw new Error('Failed to fetch prices');
             }
@@ -44,7 +45,7 @@ const PricesManagement = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/admin/products");
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/products`);
             if (!response.ok) {
                 throw new Error('Failed to fetch products');
             }
@@ -150,11 +151,11 @@ const PricesManagement = () => {
             let response;
             if (idChanged) {
                 try {
-                    await fetch(`http://localhost:8080/api/admin/prices/${originalId}`, {
+                    await fetch(`${API_CONFIG.ADMIN_API_URL}/prices/${originalId}`, {
                         method: 'DELETE'
                     });
                     
-                    response = await fetch("http://localhost:8080/api/admin/prices", {
+                    response = await fetch(`${API_CONFIG.ADMIN_API_URL}/prices`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -166,7 +167,7 @@ const PricesManagement = () => {
                     throw new Error('Failed to delete old record: ' + error.message);
                 }
             } else {
-                response = await fetch(`http://localhost:8080/api/admin/prices/${originalId}`, {
+                response = await fetch(`${API_CONFIG.ADMIN_API_URL}/prices/${originalId}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -184,7 +185,7 @@ const PricesManagement = () => {
             const updatedPrice = await response.json();
             
             // Получаем обновленную информацию о продукте
-            const productResponse = await fetch(`http://localhost:8080/api/admin/products/${updatedPrice.product.id}`);
+            const productResponse = await fetch(`${API_CONFIG.ADMIN_API_URL}/products/${updatedPrice.product.id}`);
             if (productResponse.ok) {
                 const updatedProduct = await productResponse.json();
                 updatedPrice.product = updatedProduct;
@@ -213,7 +214,7 @@ const PricesManagement = () => {
         if (!window.confirm('Are you sure you want to delete this price?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/admin/prices/${id}`, {
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/prices/${id}`, {
                 method: 'DELETE',
             });
 
@@ -247,7 +248,7 @@ const PricesManagement = () => {
 
             console.log("Отправляемые данные:", requestData);
 
-            const response = await fetch("http://localhost:8080/api/admin/prices", {
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/prices`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -264,7 +265,7 @@ const PricesManagement = () => {
             const addedPrice = await response.json();
             
             // Получаем обновленную информацию о продукте
-            const productResponse = await fetch(`http://localhost:8080/api/admin/products/${addedPrice.product.id}`);
+            const productResponse = await fetch(`${API_CONFIG.ADMIN_API_URL}/products/${addedPrice.product.id}`);
             if (productResponse.ok) {
                 const updatedProduct = await productResponse.json();
                 addedPrice.product = updatedProduct;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_CONFIG } from '../../config/apiConfig';
 import "../../styles/AdminTables.css";
 import { getWarehouse } from "../../api/warehouseApi";
 import { getProducts } from "../../api/productsApi";
@@ -87,7 +88,7 @@ const InventoryManagement = () => {
                 throw new Error('Количество не может быть отрицательным');
             }
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:8080/api/admin/warehouse/${id}`, {
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/warehouse/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,7 +123,7 @@ const InventoryManagement = () => {
         }
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:8080/api/admin/warehouse/${id}`, {
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/warehouse/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -145,7 +146,7 @@ const InventoryManagement = () => {
                 throw new Error('Количество не может быть отрицательным');
             }
             const token = localStorage.getItem('token');
-            const response = await fetch("http://localhost:8080/api/admin/warehouse", {
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/warehouse`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

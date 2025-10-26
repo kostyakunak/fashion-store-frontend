@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { API_CONFIG } from '../../config/apiConfig';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
 import { AdminRoutes } from '../../utils/adminRoutes';
@@ -20,7 +21,7 @@ const AdminPanel = () => {
 
   // Create API client for status checks
   const statusClient = createAdminApiClient(
-    { baseURL: 'http://localhost:8080/api/admin' },
+    { baseURL: API_CONFIG.ADMIN_API_URL },
     (error) => setError('Authentication error: ' + error.message)
   );
 

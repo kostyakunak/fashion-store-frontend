@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_CONFIG } from '../../config/apiConfig';
 import "../../styles/AdminUsers.css";
 
-const API_URL = "http://localhost:8080/api/admin";
+const API_URL = API_CONFIG.ADMIN_API_URL;
 
 const AdminUsers = () => {
     const [users, setUsers] = useState([]);

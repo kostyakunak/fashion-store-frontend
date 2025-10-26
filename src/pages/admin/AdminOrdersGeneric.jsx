@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_CONFIG } from '../../config/apiConfig';
 import GenericTableManager from '../../components/generic/GenericTableManager';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
@@ -7,7 +8,7 @@ import { createAdminApiClient } from '../../utils/apiUtils';
 import { getAddressesByUser } from '../../api/addressesApi';
 
 // Создаём API-клиент для заказов
-const API_URL = "http://localhost:8080/api/admin/orders";
+const API_URL = API_CONFIG.ADMIN_API_URL + "/orders";
 const apiClient = createAdminApiClient({ baseURL: API_URL });
 
 const AdminOrdersGeneric = () => {
@@ -27,7 +28,7 @@ const AdminOrdersGeneric = () => {
             setLoading(true);
             try {
                 // Создаём API-клиент для пользователей
-                const usersClient = createAdminApiClient({ baseURL: "http://localhost:8080/api/admin/users" });
+                const usersClient = createAdminApiClient({ baseURL: API_CONFIG.ADMIN_API_URL + "/users" });
                 const response = await usersClient.get("");
                 setUsers(response.data);
             } catch (err) {

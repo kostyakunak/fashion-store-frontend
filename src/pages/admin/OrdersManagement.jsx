@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_CONFIG } from '../../config/apiConfig';
 import "../../styles/AdminTables.css";
 
 const OrdersManagement = () => {
@@ -29,7 +30,7 @@ const OrdersManagement = () => {
 
     const fetchOrders = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/admin/orders");
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/orders`);
             if (!response.ok) {
                 throw new Error('Failed to fetch orders');
             }
@@ -43,7 +44,7 @@ const OrdersManagement = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/admin/users");
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/users`);
             if (!response.ok) {
                 throw new Error('Failed to fetch users');
             }
@@ -154,11 +155,11 @@ const OrdersManagement = () => {
             let response;
             if (idChanged) {
                 try {
-                    await fetch(`http://localhost:8080/api/admin/orders/${originalId}`, {
+                    await fetch(`${API_CONFIG.ADMIN_API_URL}/orders/${originalId}`, {
                         method: 'DELETE'
                     });
                     
-                    response = await fetch("http://localhost:8080/api/admin/orders", {
+                    response = await fetch(`${API_CONFIG.ADMIN_API_URL}/orders`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -170,7 +171,7 @@ const OrdersManagement = () => {
                     throw new Error('Failed to delete old record: ' + error.message);
                 }
             } else {
-                response = await fetch(`http://localhost:8080/api/admin/orders/${originalId}`, {
+                response = await fetch(`${API_CONFIG.ADMIN_API_URL}/orders/${originalId}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -210,7 +211,7 @@ const OrdersManagement = () => {
         if (!window.confirm('Are you sure you want to delete this order?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/admin/orders/${id}`, {
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/orders/${id}`, {
                 method: 'DELETE',
             });
 
@@ -242,7 +243,7 @@ const OrdersManagement = () => {
                 status: newOrder.status
             };
 
-            const response = await fetch("http://localhost:8080/api/admin/orders", {
+            const response = await fetch(`${API_CONFIG.ADMIN_API_URL}/orders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
