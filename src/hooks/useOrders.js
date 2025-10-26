@@ -14,7 +14,8 @@ export default function useOrders() {
 
     // Load orders when the component mounts or auth status changes
     useEffect(() => {
-        if (auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (token && auth.user) {
             loadOrders();
         } else {
             setOrders([]);
@@ -26,7 +27,8 @@ export default function useOrders() {
 
     // Load all orders for the authenticated user
     const loadOrders = useCallback(async () => {
-        if (!auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (!token || !auth.user) {
             setError("You must be logged in to view orders");
             setLoading(false);
             return;
@@ -52,7 +54,8 @@ export default function useOrders() {
 
     // Load a specific order by ID
     const loadOrderById = async (orderId) => {
-        if (!auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (!token || !auth.user) {
             setError("You must be logged in to view order details");
             return;
         }
@@ -81,7 +84,8 @@ export default function useOrders() {
 
     // Load order details for a specific order
     const loadOrderDetails = async (orderId) => {
-        if (!auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (!token || !auth.user) {
             setError("You must be logged in to view order details");
             return;
         }
@@ -106,7 +110,8 @@ export default function useOrders() {
 
     // Cancel an order
     const cancelUserOrder = async (orderId) => {
-        if (!auth.isAuthenticated()) {
+        const token = localStorage.getItem('token');
+        if (!token || !auth.user) {
             setError("You must be logged in to cancel an order");
             return false;
         }
