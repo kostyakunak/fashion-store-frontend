@@ -6,7 +6,15 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
-    const [form, setForm] = useState({ city: '', street: '', house: '', apartment: '', is_main: false });
+    const [form, setForm] = useState({ 
+        recipientFirstName: '', 
+        recipientLastName: '', 
+        city: '', 
+        street: '', 
+        postalCode: '', 
+        country: 'Ukraine', 
+        is_main: false 
+    });
     const [creating, setCreating] = useState(false);
 
     useEffect(() => {
@@ -52,11 +60,13 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
         try {
             // Формируем правильный формат данных для API
             const addressData = {
+                recipientFirstName: form.recipientFirstName,
+                recipientLastName: form.recipientLastName,
                 city: form.city,
                 street: form.street,
-                house: form.house,
-                apartment: form.apartment,
-                is_main: form.is_main,
+                postalCode: form.postalCode,
+                country: form.country,
+                isMain: form.is_main,
                 user: {
                     id: userId  // API ожидает объект user с полем id
                 }
@@ -64,7 +74,7 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
             const newAddr = await createAddress(addressData);
             setAddresses(prev => [...prev, newAddr]);
             setShowForm(false);
-            setForm({ city: '', street: '', house: '', apartment: '', is_main: false });
+            setForm({ recipientFirstName: '', recipientLastName: '', city: '', street: '', postalCode: '', country: 'Ukraine', is_main: false });
             onSelect(newAddr.id);
         } catch (e) {
             setError(e.message || "Помилка створення адреси");
@@ -113,16 +123,22 @@ const AddressSelector = ({ userId, selectedAddressId, onSelect, allowCreate = tr
                 </div>
             )}
             {showForm && allowCreate && (
-                <form onSubmit={handleCreate} style={{ marginTop: 8 }}>
-                    <input name="city" placeholder="Місто" value={form.city} onChange={handleFormChange} required style={{ marginRight: 8 }} />
-                    <input name="street" placeholder="Вулиця" value={form.street} onChange={handleFormChange} required style={{ marginRight: 8 }} />
-                    <input name="house" placeholder="Будинок" value={form.house} onChange={handleFormChange} required style={{ marginRight: 8 }} />
-                    <input name="apartment" placeholder="Квартира" value={form.apartment} onChange={handleFormChange} style={{ marginRight: 8 }} />
-                    <label style={{ marginRight: 8 }}>
-                        <input type="checkbox" name="is_main" checked={form.is_main} onChange={handleFormChange} /> Зробити основною
-                    </label>
-                    <button type="submit" className="checkout-btn" disabled={creating}>Зберегти</button>
-                    <button type="button" className="checkout-btn" style={{ marginLeft: 8 }} onClick={() => setShowForm(false)}>Скасувати</button>
+                <form onSubmit={handleCreate} style={{ marginTop: 12 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <input name="recipientFirstName" placeholder="Ім'я отримувача" value={form.recipientFirstName} onChange={handleFormChange} required />
+                        <input name="recipientLastName" placeholder="Прізвище отримувача" value={form.recipientLastName} onChange={handleFormChange} required />
+                        <input name="city" placeholder="Місто" value={form.city} onChange={handleFormChange} required />
+                        <input name="street" placeholder="Вулиця, будинок" value={form.street} onChange={handleFormChange} required />
+                        <input name="postalCode" placeholder="Поштовий індекс" value={form.postalCode} onChange={handleFormChange} required />
+                        <input name="country" placeholder="Країна" value={form.country} onChange={handleFormChange} required />
+                        <label>
+                            <input type="checkbox" name="is_main" checked={form.is_main} onChange={handleFormChange} /> Зробити основною адресою
+                        </label>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <button type="submit" className="checkout-btn" disabled={creating} style={{ flex: 1 }}>Зберегти</button>
+                            <button type="button" className="checkout-btn" onClick={() => setShowForm(false)} style={{ flex: 1 }}>Скасувати</button>
+                        </div>
+                    </div>
                 </form>
             )}
         </div>
