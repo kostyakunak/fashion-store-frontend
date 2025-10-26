@@ -10,7 +10,7 @@ function Home() {
 
     useEffect(() => {
         setLoading(true);
-        fetch("http://localhost:8080/products")
+        fetch(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/products`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP ошибка! Статус: ${response.status}`);
