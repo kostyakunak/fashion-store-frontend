@@ -3,8 +3,6 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { getUserByEmail } from '../utils/userApi';
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
-
 export const AuthContext = createContext();
 
 function mapUserApiToClient(user) {
@@ -127,7 +125,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setAuthError(null);
-      const response = await axios.post(`${API_URL}/api/auth/login`, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/api/auth/login`, {
         email,
         password
       });
@@ -188,7 +186,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       // Вызываем API для выхода
-      await axios.post(`${API_URL}/api/auth/logout`);
+      await axios.post(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/api/auth/logout`);
     } catch (error) {
       console.error('Ошибка при выходе:', error);
     } finally {
