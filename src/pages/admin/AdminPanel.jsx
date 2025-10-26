@@ -73,8 +73,8 @@ const AdminPanel = () => {
       setTimeout(() => {
         navigate('/');
       }, 3000);
-    } else {
-      // If admin, check status of various modules
+    } else if (user) {
+      // Only check module status if user is loaded
       checkModuleStatus();
     }
   }, [user, navigate, checkModuleStatus]);
