@@ -9,7 +9,7 @@ import { Header } from "../scripts/Header";
 function OrderDetails() {
     const { orderId } = useParams();
     const navigate = useNavigate();
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, user } = useContext(AuthContext);
     const { 
         selectedOrder, 
         orderDetails, 
@@ -31,7 +31,7 @@ function OrderDetails() {
         if (orderId) {
             loadOrderById(orderId);
         }
-    }, [isAuthenticated, navigate, orderId, loadOrderById]);
+    }, [user, navigate, orderId, loadOrderById]);
 
     const handleCancelOrder = async () => {
         if (window.confirm('Ви впевнені, що хочете скасувати це замовлення?')) {

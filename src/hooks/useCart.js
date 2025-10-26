@@ -39,8 +39,10 @@ export default function useCart() {
 
     // Завантаження кошика при першому рендері або зміні статусу автентифікації
     useEffect(() => {
-        loadCart();
-    }, [auth.isAuthenticated()]);
+        if (auth.isAuthenticated()) {
+            loadCart();
+        }
+    }, [auth.user]);
 
     // Оптимізоване завантаження розмірів для товарів
     useEffect(() => {

@@ -44,7 +44,7 @@ export default function useWishlist() {
     // Завантаження списку бажань при першому рендері або зміні статусу автентифікації
     useEffect(() => {
         loadWishlist();
-    }, [auth.isAuthenticated, loadWishlist]);
+    }, [auth.user, loadWishlist]);
 
     // Перевірка, чи знаходиться продукт у списку бажань
     const isInWishlist = (productId) => {

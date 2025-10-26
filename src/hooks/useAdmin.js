@@ -27,7 +27,7 @@ const useAdmin = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const { isAdmin, isAuthenticated } = useContext(AuthContext);
+  const { isAdmin, isAuthenticated, user } = useContext(AuthContext);
   const navigate = useNavigate();
   
   console.log('🔄 useAdmin state:', { 
@@ -94,7 +94,7 @@ const useAdmin = ({
       setError('You do not have permission to access this page');
       setTimeout(() => navigate('/'), 2000);
     }
-  }, [isAdmin, isAuthenticated, navigate]);
+  }, [user, navigate]);
 
   // Initial data fetch
   useEffect(() => {
@@ -119,7 +119,7 @@ const useAdmin = ({
                 hasLoaded ? 'already loaded' : 'unknown'
       });
     }
-  }, [isAuthenticated, isAdmin, loadItems, hasLoaded]);
+  }, [user, loadItems, hasLoaded]);
 
   /**
    * Create a new item

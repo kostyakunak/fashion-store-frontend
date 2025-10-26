@@ -62,7 +62,7 @@ function Cart() {
         if (auth.isAuthenticated()) {
             mergeCart();
         }
-    }, [auth.isAuthenticated, mergeCart]);
+    }, [auth.user, mergeCart]);
 
     // Функція для відображення розмірів товару
     const renderSizeSelect = (item) => {

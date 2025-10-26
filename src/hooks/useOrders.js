@@ -22,7 +22,7 @@ export default function useOrders() {
             setOrderDetails([]);
             setLoading(false);
         }
-    }, [auth.isAuthenticated()]);
+    }, [auth.user]);
 
     // Load all orders for the authenticated user
     const loadOrders = useCallback(async () => {

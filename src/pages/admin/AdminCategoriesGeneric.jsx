@@ -15,7 +15,7 @@ const AdminCategoriesGeneric = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { isAdmin, isAuthenticated } = useContext(AuthContext);
+    const { isAdmin, isAuthenticated, user } = useContext(AuthContext);
     
     // Authentication & authorization check
     useEffect(() => {
@@ -32,7 +32,7 @@ const AdminCategoriesGeneric = () => {
         
         // Clear errors when component mounts
         setError(null);
-    }, [isAdmin, isAuthenticated, navigate]);
+    }, [user, navigate]);
 
     const apiClient = {
         getAll: async () => {

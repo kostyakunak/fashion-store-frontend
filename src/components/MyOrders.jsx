@@ -7,7 +7,7 @@ import { Header } from "../scripts/Header";
 import { Footer } from "../scripts/Footer";
 
 function MyOrders() {
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, user } = useContext(AuthContext);
     const navigate = useNavigate();
     const { 
         orders, 
@@ -27,7 +27,7 @@ function MyOrders() {
         }
         // Load orders on component mount
         loadOrders();
-    }, [isAuthenticated, navigate]);
+    }, [user, navigate, loadOrders]);
 
     const handleCancelOrder = async (orderId) => {
         if (window.confirm('Ви впевнені, що хочете скасувати це замовлення?')) {

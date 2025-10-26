@@ -42,7 +42,7 @@ const AdminPanel = () => {
       // If admin, check status of various modules
       checkModuleStatus();
     }
-  }, [isAuthenticated, isAdmin, navigate]);
+  }, [user, navigate]);
 
   // Check the status of various admin modules
   const checkModuleStatus = async () => {

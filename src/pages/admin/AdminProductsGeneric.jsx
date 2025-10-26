@@ -31,7 +31,7 @@ const AdminProductsGeneric = () => {
             user: user,
             timestamp: Date.now()
         });
-    }, [isAuthenticated, isAdmin, user]);
+    }, [user]);
     
     // Use our custom admin hook for product operations
     const {
@@ -104,7 +104,7 @@ const AdminProductsGeneric = () => {
         
         clearError();
         setCategoryError(null);
-    }, [navigate, isAuthenticated, isAdmin, clearError]);
+    }, [navigate, user, clearError]);
 
     // Categories loading useEffect - only runs after authentication
     useEffect(() => {
@@ -128,7 +128,7 @@ const AdminProductsGeneric = () => {
                         categoryLoading ? 'already loading' : 'unknown'
             });
         }
-    }, [isAuthenticated, isAdmin, loadCategories, categoriesLoaded, categoryLoading]);
+    }, [user, loadCategories, categoriesLoaded, categoryLoading]);
 
     // Handler for transforming data during editing
     const handleOnEdit = (item) => {
