@@ -1,44 +1,44 @@
 # Frontend - Fashion Store React Application
 
-> Современный React frontend для интернет-магазина модной одежды
+> Modern React frontend for fashion e-commerce platform
 
 [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
 [![Material-UI](https://img.shields.io/badge/Material--UI-5.15.10-007FFF.svg)](https://mui.com/)
 [![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7.svg)](https://netlify.com/)
 
-## 🌐 Живой Сайт
+## 🌐 Live Site
 
-**Production URL**: https://kounakwebstore.netlify.app
+**Production URL**: https://kounak.netlify.app
 
-## 🎯 Основные Возможности
+## 🎯 Key Features
 
-### 👤 Пользовательский Интерфейс
-- **Главная страница** с популярными товарами
-- **Каталог товаров** с фильтрацией и поиском
-- **Детальная страница товара** с изображениями
-- **Корзина покупок** с динамическим обновлением
-- **Wishlist** для сохранения понравившихся товаров
-- **Личный кабинет** с историей заказов
-- **Checkout** для оформления заказа
+### 👤 User Interface
+- **Homepage** with popular products
+- **Product catalog** with filtering and search
+- **Product details page** with images
+- **Shopping cart** with dynamic updates
+- **Wishlist** for saving favorite products
+- **User profile** with order history
+- **Checkout** for order placement
 
-### 🔐 Аутентификация
-- Регистрация новых пользователей
-- Вход в систему с JWT токенами
-- Выход из системы
-- Context API для управления состоянием авторизации
-- Защищенные маршруты
+### 🔐 Authentication
+- User registration
+- JWT token-based login
+- Logout functionality
+- Context API for auth state management
+- Protected routes
 
-### 🛒 Покупки
-- Добавление/удаление из корзины
-- Изменение количества товаров
-- Сохранение корзины между сеансами
-- Wishlist функционал
-- Оформление заказа с адресом доставки
+### 🛒 Shopping
+- Add/remove from cart
+- Update product quantities
+- Cart persistence between sessions
+- Wishlist functionality
+- Order placement with delivery address
 
-### 📱 Адаптивность
-- Responsive дизайн для всех устройств
-- Mobile-first подход
-- Оптимизация для планшетов и десктопов
+### 📱 Responsive Design
+- Responsive design for all devices
+- Mobile-first approach
+- Optimized for tablets and desktops
 
 ## 🏗️ Архитектура
 
