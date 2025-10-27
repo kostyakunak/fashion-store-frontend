@@ -1,30 +1,51 @@
 # Fashion Store Frontend
 
-React-based e-commerce platform for fashion products. This project was developed from scratch as part of a university diploma and has evolved into a full-featured online store.
+React-based e-commerce platform for fashion products. This project was developed **completely from scratch** as a university diploma project in Ukraine and has evolved into a full-featured production-ready online store.
 
 ## Live Demo
 
-[**kounak.netlify.app**](https://kounak.netlify.app)
+**[kounak.netlify.app](https://kounak.netlify.app)**
 
 **Demo Account**: `admin@kounak.com` / `admin123`
 
+## About This Project
+
+This is a large-scale full-stack e-commerce application built using modern best practices. No templates, skeletons, or pre-built components were used - everything was built from the ground up following standard professional development practices.
+
+Originally developed as a university diploma project, it has now become a fully functional e-commerce platform ready for production use with any product catalog.
+
 ## Tech Stack
 
-- **React 18.2.0** - UI library
-- **React Router** - Routing
-- **Material-UI** - Components
+- **React 18.2.0** - Modern UI library
+- **React Router** - Client-side routing
+- **Material-UI** - Professional UI components
 - **Axios** - HTTP client
-- **JWT Decode** - Authentication
+- **JWT Authentication** - Secure user sessions
+- **Context API** - State management
+- **Deployed on Netlify** - Fast global CDN
 
-## Features
+## Key Features
 
-- Product catalog with filtering
-- Shopping cart
-- Wishlist
-- User authentication
-- Order management
-- Admin panel
-- Responsive design
+### User Features
+- Product catalog with categories and search
+- Shopping cart with persistence
+- Wishlist functionality  
+- User registration and authentication
+- Order management and history
+- Address management
+- Responsive design for all devices
+
+### Admin Panel
+- Complete product management (CRUD)
+- Category management
+- Order tracking and fulfillment
+- User management
+- Real-time statistics
+
+### Payment Processing
+- Simulated payment flow
+- Order confirmation system
+- Secure checkout process
 
 ## Getting Started
 
@@ -33,21 +54,24 @@ npm install
 npm start
 ```
 
-## Project Structure
+## Project Architecture
 
 ```
 src/
-├── api/          # API clients
-├── components/   # React components
-├── pages/        # Application pages
-├── context/      # Context API
-├── hooks/        # Custom hooks
-└── config/       # Configuration
+├── api/          # 21 API client files
+├── components/   # 41 React components
+├── pages/        # 29 application pages
+├── context/      # AuthContext for state management
+├── hooks/        # Custom hooks (useCart, useWishlist, etc.)
+├── config/       # API configuration
+└── styles/       # Component styling
 ```
 
 ## Author
 
-**Kostya Kunak** - Built from scratch
+**Kostya Kunak** - Full-stack developer, university student in Ukraine
+
+Built completely from scratch, no templates or skeletons used.
 
 ---
 
