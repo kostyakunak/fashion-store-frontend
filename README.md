@@ -127,6 +127,10 @@ fashion-store-frontend/
 - **React Helmet Async** - SEO оптимизация
 - **@emotion/react** - Styled components
 
+### Демо Аккаунт
+
+Админка: **admin@kounak.com** / **admin123**
+
 ## 🚀 Запуск
 
 ### Установка
