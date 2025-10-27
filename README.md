@@ -6,9 +6,9 @@
 [![Material-UI](https://img.shields.io/badge/Material--UI-5.15.10-007FFF.svg)](https://mui.com/)
 [![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7.svg)](https://netlify.com/)
 
-## 🌐 Live Site
+## Live Demo
 
-**Production URL**: https://kounak.netlify.app
+**URL**: https://kounak.netlify.app
 
 ## 🎯 Key Features
 
