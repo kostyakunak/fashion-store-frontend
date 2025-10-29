@@ -79,6 +79,12 @@ function Catalog() {
 
     const [column1Products, column2Products, column3Products] = balancedColumns;
 
+    // Calculate the maximum height across all columns to ensure equal heights
+    const maxColumnHeight = Math.max(
+        column1Products.length * 200,
+        column2Products.length * 200,
+        column3Products.length * 200
+    );
 
     if (loading) {
         return (
@@ -166,21 +172,21 @@ function Catalog() {
                         cardType="card-sizing-type-1"
                         speed={getAnimationConfig(1).speed}
                         direction={getAnimationConfig(1).direction}
-                        height={column1Products.length * 200}
+                        height={maxColumnHeight}
                     />
                     <AnimatedColumn
                         products={column2Products}
                         cardType="card-sizing-type-2"
                         speed={getAnimationConfig(2).speed}
                         direction={getAnimationConfig(2).direction}
-                        height={column2Products.length * 200}
+                        height={maxColumnHeight}
                     />
                     <AnimatedColumn
                         products={column3Products}
                         cardType="card-sizing-type-3"
                         speed={getAnimationConfig(3).speed}
                         direction={getAnimationConfig(3).direction}
-                        height={column3Products.length * 200}
+                        height={maxColumnHeight}
                     />
                 </div>
             </main>
