@@ -107,7 +107,7 @@ npm run build
 - **Context-based state** - Global authentication management
 
 ### Shopping Features  
-- **Product catalog** - Browse with categories and filters
+- **Product catalog** - Infinite scrolling with multi-speed animated columns
 - **Shopping cart** - Persistent across sessions
 - **Wishlist** - Save favorite items
 - **Checkout flow** - Multi-step order placement
@@ -120,6 +120,64 @@ npm run build
 - **Category management** - Organize product catalog
 - **Order management** - Process and fulfill orders
 - **User management** - View customer accounts
+
+## 🎬 Infinite Scrolling Catalog Animation
+
+The catalog features a sophisticated infinite scrolling animation system that creates an immersive browsing experience with three columns moving at different speeds and directions.
+
+### Core Features
+
+#### Multi-Speed Column Animation
+- **Left column**: Speed 0.5, direction "up"
+- **Middle column**: Speed 1.2, direction "down"  
+- **Right column**: Speed 0.8, direction "up"
+- Smooth 60fps animations using `requestAnimationFrame` for optimal performance
+
+#### Teleport Mechanism
+- Seamless looping where cards appear simultaneously at top/bottom
+- Direction-aware teleportation with proper buffer management
+- No visual artifacts during transitions
+- Creates the illusion of endless content
+
+#### Interactive Controls
+- **Pause on Hover**: All columns pause when hovered over
+- **Smooth Resume**: Seamless continuation when cursor moves away
+- **Independent Control**: Each column can be controlled independently
+
+#### Responsive Adaptation
+- **Mobile** (< 768px): Slower speeds, single direction for better performance
+- **Tablet** (768px - 1024px): Medium speeds, mixed directions
+- **Desktop** (> 1024px): Full speed variety with all animation features
+
+### Technical Implementation
+
+#### Backend Support
+- `/products/chunked` endpoint with pagination support
+- Environment variable configuration (no hardcoded URLs)
+- Direction-aware sorting for seamless teleport functionality
+
+#### Frontend Components
+- **`useInfiniteScroll`** hook: Handles chunked loading efficiently
+- **`ScrollContainer`**: Intersection observer for lazy loading
+- **`useColumnAnimation`** hook: Smooth animation management
+- **`AnimatedColumn`** component: Teleport logic and column rendering
+- **`useResponsiveAnimation`** hook: Device adaptation and speed adjustment
+
+#### Performance Optimizations
+- Memory management with cleanup mechanisms
+- Delta time clamping to prevent animation jumps
+- Error handling with graceful degradation
+- Loading states with skeleton animations
+- Column balancing for insufficient products
+
+#### User Experience
+- Smooth 60fps scrolling without stuttering
+- Visual balance with cards distributed evenly across columns
+- Working product links and wishlist buttons
+- Mobile-friendly adapted speeds and layouts
+- Infinite loop with seamless teleportation
+
+The catalog provides an engaging infinite scrolling experience that showcases products dynamically while maintaining all existing functionality and adapting beautifully to different screen sizes.
 
 ## 📱 Responsive Design
 
@@ -148,7 +206,7 @@ The project has since evolved into a showcase of enterprise-level frontend devel
 
 ## 👨‍💻 Author
 
-**Kostya Kunak** - Full-stack developer and university student in Ukraine
+**Konstantin Kunak** - Full-stack developer and university student in Ukraine
 
 Built completely from scratch with no templates or skeletons - every component, every line of code, every integration written from the ground up.
 

@@ -20,4 +20,21 @@ export const getProductSizes = async (productId) => {
         console.error(`Ошибка при получении размеров для продукта ${productId}:`, error);
         throw error;
     }
-}; 
+};
+
+export const getChunkedProducts = async (page = 0, direction = 'down', limit = 20) => {
+    try {
+        const response = await axios.get(`${API_CONFIG.PRODUCTS_URL}/chunked`, {
+            params: { page, direction, limit },
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Ошибка при получении chunked продуктов (page: ${page}, direction: ${direction}):`, error);
+        throw error;
+    }
+};
