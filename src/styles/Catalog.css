@@ -19,6 +19,8 @@
     background-color: #0c132c;
     min-height: 100vh;
     overflow-x: hidden;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .catalog h1,
@@ -29,20 +31,32 @@
 
 .catalog .product-grid {
     display: flex;
-    gap: 10px;
+    gap: 5px;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: stretch; /* Stretch all columns to same height */
 }
 
 .product-card.column-1,
 .product-card.column-2,
-.product-card.column-3 {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 60%; /* для column-1 */
+.product-card.column-3,
+.product-card.column-type {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    min-width: 0; /* Prevent flex items from overflowing */
 }
-.product-card.column-2 { width: 20%; }
-.product-card.column-3 { width: 20%; }
+
+.product-card.column-1 {
+    flex: 1; /* Left column can grow */
+}
+
+.product-card.column-2,
+.product-card.column-3 {
+    flex: 0 0 auto; /* Fix natural height, don't stretch */
+}
 
 .catalog .product-card {
     position: relative;
@@ -51,6 +65,22 @@
     box-shadow: var(--box-shadow);
     margin: 0;
     padding: 0;
+    height: 100%; /* Fill parent height */
+}
+
+/* Ensure column content doesn't have extra margins */
+.catalog .product-card > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: flex-start;
+    align-content: flex-start;
+}
+
+.catalog .product-card > div > * {
+    margin: 0 !important; /* Remove any external margins */
+    padding: 0 !important;
+    flex: 0 0 auto; /* Don't stretch cards - they should use natural height */
 }
 
 .catalog .product-card img {
@@ -61,14 +91,124 @@
     display: block;
 }
 
+.catalog .card-sizing-type-1,
+.catalog .card-sizing-type-2,
+.catalog .card-sizing-type-3 {
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
 .catalog .card-sizing-type-1 img { height: 88vh; }
 .catalog .card-sizing-type-2 img { height: 25vh; }
 .catalog .card-sizing-type-3 img { height: 35vh; }
 
 .catalog .favorite-icon { display: none !important; }
 
+/* Loading states */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: #f7f7f7;
+    font-size: 1.2rem;
+}
+
+.loading-skeleton {
+    background: linear-gradient(90deg, #1a223a 25%, #243047 50%, #1a223a 75%);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.loading-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.product-grid.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Error states */
+.error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: #e74c3c;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Responsive transitions */
+.catalog .product-grid {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.catalog .product-card {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Responsive column widths */
+@media (max-width: 768px) {
+    .product-card.column-1 { width: 100%; margin-bottom: 1rem; }
+    .product-card.column-2 { width: 100%; margin-bottom: 1rem; }
+    .product-card.column-3 { width: 100%; margin-bottom: 1rem; }
+    .catalog .product-grid { flex-direction: column; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .product-card.column-1 { width: 50%; }
+    .product-card.column-2 { width: 25%; }
+    .product-card.column-3 { width: 25%; }
+}
+
+@media (min-width: 1025px) {
+    .product-card.column-1 { width: 60%; }
+    .product-card.column-2 { width: 20%; }
+    .product-card.column-3 { width: 20%; }
+}
+
 .product-card-content {
     position: relative;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.catalog .product-card-content a {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.catalog .product-card-content img {
+    margin: 0;
+    padding: 0;
+    display: block;
 }
 
 .wishlist-button {
@@ -77,39 +217,59 @@
     right: 10px;
     z-index: 2;
     background: none !important;
-    border: 2px solid rgba(255,255,255,0.18) !important;
+    border: 2px solid rgba(255,255,255,0.5) !important;
     border-radius: 8px !important;
-    color: rgba(255,255,255,0.18) !important;
+    color: rgba(255,255,255,0.5) !important;
     font-size: 1.1em !important;
     cursor: pointer;
     padding: 1px 5px !important;
-    transition: color 0.4s, border-color 0.4s;
+    transition: color 0.3s, border-color 0.3s, opacity 0.3s !important;
     box-shadow: none !important;
     outline: none !important;
     background-clip: padding-box;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: scaleY(0.9) !important;
 }
 
-/* Активное состояние (товар в избранном) */
-.wishlist-button.in-wishlist,
+/* Показываем сердечко при наведении на карточку (полупрозрачное) */
+.product-card-content:hover .wishlist-button {
+    opacity: 0.7 !important;
+    visibility: visible !important;
+}
+
+/* При наведении на само сердечко - становится непрозрачным */
+.product-card-content:hover .wishlist-button:hover:not(.in-wishlist),
+.product-card-content:hover .wishlist-button:focus:not(.in-wishlist) {
+    opacity: 1 !important;
+    color: rgba(255,255,255,1) !important;
+    border-color: rgba(255,255,255,1) !important;
+}
+
+/* Активное состояние (товар в избранном) - красная обводка, всегда видим */
+.wishlist-button.in-wishlist {
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: #fff !important;
+    border-color: #e74c3c !important;
+    background: none !important;
+}
+
+/* Активное состояние при наведении на карточку - также красная обводка */
+.product-card-content:hover .wishlist-button.in-wishlist {
+    opacity: 1 !important;
+    color: #fff !important;
+    border-color: #e74c3c !important;
+    background: none !important;
+}
+
+/* При наведении на активное сердечко */
 .wishlist-button.in-wishlist:hover,
-.wishlist-button.in-wishlist:focus {
+.wishlist-button.in-wishlist:focus,
+.product-card-content:hover .wishlist-button.in-wishlist:hover,
+.product-card-content:hover .wishlist-button.in-wishlist:focus {
+    opacity: 1 !important;
     color: #fff !important;
     border-color: #e74c3c !important;
     background: none !important;
-}
-
-/* Наведение на сердечко — становится красным */
-.wishlist-button:hover,
-.wishlist-button:focus {
-    color: #e74c3c !important;
-    border-color: #e74c3c !important;
-    background: none !important;
-}
-
-/* Наведение на картинку — сердечко становится полностью белым */
-.product-card-content:hover .wishlist-button:not(.in-wishlist),
-.product-card-content:hover .wishlist-button:not(.in-wishlist):hover {
-    color: #fff !important;
-    border-color: #fff !important;
-    transition: color 0.2s, border-color 0.2s;
 }
