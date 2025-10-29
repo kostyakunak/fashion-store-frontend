@@ -1,9 +1,11 @@
 import React, { useState, useContext, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
+    const location = useLocation();
+    const isHomePage = location.pathname === '/';
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -38,6 +40,7 @@ const Navbar = () => {
                     {/* <Link to="/catalog">Каталог</Link> */}
                 </div>
 
+                {!isHomePage && (
                 <div className="navbar-actions">
                 <div 
                     className="navbar-account"
@@ -78,6 +81,7 @@ const Navbar = () => {
                         <i className="fas fa-shopping-cart navbar-icon"></i>
                     </Link>
                 </div>
+                )}
             </div>
         </nav>
     );
