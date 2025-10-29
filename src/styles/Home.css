@@ -20,8 +20,34 @@
 
     box-sizing: border-box;
 
-    background-color: #0c132c
+    background-color: #0c132c;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
+
+/* На главной странице navbar - часть flex-раскладки внутри main */
+.home main .navbar {
+    position: static !important; /* Часть потока документа - переопределяем fixed из Navbar.css */
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100%;
+    max-width: calc(100% - 25%); /* Максимальная ширина: 100% минус nav (25%) */
+    margin: 0;
+    padding: 1rem 0;
+    padding-right: 2rem; /* Стандартный отступ справа */
+    box-sizing: border-box;
+    flex-shrink: 0; /* Не сжимается в flex-контейнере */
+    flex-grow: 0; /* Не растягивается */
+    height: auto; /* Высота по содержимому */
+    min-height: auto;
+    max-height: none;
+    z-index: 1 !important; /* Низкий z-index, чтобы nav был выше */
+    background-color: #ffffff !important; /* Белый фон navbar */
+    overflow: hidden; /* Обрезаем все, что выходит за границы */
+}
+
 /* Стили для заголовков на странице */
 .home h1,
 .home h2 {
@@ -45,19 +71,21 @@
 
 }
 
-.home nav {
-    position: fixed; /* Фиксируем панель навигации */
-    top: 0;
-    right: 0; /* Если нужно справа, поменяй на right: 0; */
+/* Боковая навигация (только для nav внутри main) */
+.home main nav {
+    position: fixed !important; /* Фиксированная позиция - не двигается при прокрутке */
+    top: 0; /* Начинается от верха экрана */
+    right: 0; /* Прижата к правому краю */
     width: 25%; /* Ширина панели навигации */
-    height: 100vh; /* Высота панели на весь экран */
-
+    height: 100vh; /* Фиксированная высота панели на весь экран */
+    z-index: 1100 !important; /* Выше navbar (у navbar z-index: 1000) */
+    
     display: flex;
     justify-content: center; /* Центрируем содержимое по горизонтали */
     align-items: center; /* Центрируем содержимое по вертикали */
 }
 /* Стили для навигационного меню */
-.home nav ul {
+.home main nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -66,20 +94,19 @@
     justify-content: space-between; /* Равномерно распределяем пространство */
     height: 100%; /* Список занимает всю высоту панели */
     width: 100%;
-    background-color: rgba(76, 85,114, 0.1);
-    opacity: 0.7;
+    background-color: rgba(76, 85, 114, 0.07); /* Объединяем цвет и прозрачность */
     font-size: 30px;
     letter-spacing: 4px;
 }
 
 /* Стили для всех вместе элемента навигационного списка */
-.home nav ul li {
+.home main nav ul li {
 
     flex-grow: 1; /* Каждый элемент li растягивается на всё доступное пространство */
 }
 
 /* Стили для ссылок в навигационном меню */
-.home nav ul li a {
+.home main nav ul li a {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,28 +120,56 @@
 }
 
 /* Эффект при наведении на ссылку: подчёркивание */
-.home nav ul li a:hover {
+.home main nav ul li a:hover {
     background-color: rgba(76, 85,114, 0.35); /* Эффект при наведении */
 }
 
 /* Стили для основного контента страницы */
 .home main {
-    width: 75%;
-    margin-left: 0px;
-    padding: 0px;
-    min-height: 100vh; /* Гарантируем, что основной контент занимает всю высоту окна */
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
     background-color: none;
+}
 
+/* Контейнер для product-grid и боковой навигации */
+.home main .content-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex: 1;
+    /* Резервируем место справа для fixed nav */
+    padding-right: 25%;
+    box-sizing: border-box;
+}
+
+/* Убираем все margin у всех прямых дочерних элементов main */
+.home main > * {
+    margin: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 /* Сетка для товаров */
-.home .product-grid {
+.home main .product-grid {
     /* Используем CSS Grid для создания сетки */
-    display: column;
-    /* Автоматически подбираем количество колонок в зависимости от размера окна */
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    display: grid;
+    /* Одна колонка */
+    grid-template-columns: 1fr;
     /* Расстояние между элементами сетки */
-    gap: 20px;
+    gap: 0;
     /* Внутренние отступы */
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Занимает 100% от content-wrapper (который уже учитывает 25% для nav) */
+    flex: 1; /* Занимает оставшееся пространство */
+    align-content: start; /* Выравнивание контента сверху */
+    box-sizing: border-box; /* Padding учитывается в width */
 }
 
 /* Стили для карточек товаров */
@@ -195,9 +250,11 @@
     color: white; /* Цвет текста футера */
     text-align: center; /* Центрирование текста */
     padding: 10px; /* Отступы сверху и снизу */
+    padding-right: 25%; /* Освобождаем место справа под fixed nav */
     width: 100%; /* Ширина на всю страницу */
     margin-top: 20px; /* Отступ сверху, чтобы футер не прилипал к контенту */
     position: relative; /* Футер теперь будет относительным */
+    box-sizing: border-box;
 }
 
 .home {

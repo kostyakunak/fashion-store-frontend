@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
 
 import "../styles/Home.css";
 
@@ -39,41 +40,45 @@ function Home() {
     return (
         <div className="home">
             <main>
-                <nav>
-                    <ul>
-                        <li><Link to="/catalog">Каталог</Link></li>
-                        <li><Link to="/account">Особистий кабінет</Link></li>
-                        <li><Link to="/cart">Кошик</Link></li>
-                        <li><Link to="/wishlist">Обране</Link></li>
-                        <li><Link to="/contacts">Контакти</Link></li>
-                        <li><Link to="/admin">Панель адміністратора</Link></li>
-                    </ul>
-                </nav>
+                <Navbar />
+                
+                <div className="content-wrapper">
+                    <div className="product-grid">
+                        {loading ? (
+                            <p>Завантаження товарів...</p>
+                        ) : error ? (
+                            <p>Помилка: {error}</p>
+                        ) : products.length > 0 ? (
+                            products.map(product => (
+                                <div key={product.id} className="product-card">
+                                    <Link to={`/item?id=${product.id}`}>
+                                        <img
+                                            className="image-source"
+                                            src={product.images && product.images.length > 0 
+                                                ? product.images[0].imageUrl 
+                                                : "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=150&h=150&fit=crop&crop=center"}
+                                            alt={product.name}
+                                        />
+                                        <h3>{product.name}</h3>
+                                        <p className="price">{product.price} руб.</p>
+                                    </Link>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Товари не знайдені</p>
+                        )}
+                    </div>
 
-                <div className="product-grid">
-                    {loading ? (
-                        <p>Завантаження товарів...</p>
-                    ) : error ? (
-                        <p>Помилка: {error}</p>
-                    ) : products.length > 0 ? (
-                        products.map(product => (
-                            <div key={product.id} className="product-card">
-                                <Link to={`/item?id=${product.id}`}>
-                                    <img
-                                        className="image-source"
-                                        src={product.images && product.images.length > 0 
-                                            ? product.images[0].imageUrl 
-                                            : "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=150&h=150&fit=crop&crop=center"}
-                                        alt={product.name}
-                                    />
-                                    <h3>{product.name}</h3>
-                                    <p className="price">{product.price} руб.</p>
-                                </Link>
-                            </div>
-                        ))
-                    ) : (
-                        <p>Товари не знайдені</p>
-                    )}
+                    <nav>
+                        <ul>
+                            <li><Link to="/catalog">Каталог</Link></li>
+                            <li><Link to="/account">Особистий кабінет</Link></li>
+                            <li><Link to="/cart">Кошик</Link></li>
+                            <li><Link to="/wishlist">Обране</Link></li>
+                            <li><Link to="/contacts">Контакти</Link></li>
+                            <li><Link to="/admin">Панель адміністратора</Link></li>
+                        </ul>
+                    </nav>
                 </div>
             </main>
         </div>

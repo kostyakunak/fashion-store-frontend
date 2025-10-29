@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Atkinson';
+    src: url('fonts/PoiretOne-Regular.ttf');
+}
+
 .navbar {
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -19,6 +24,7 @@
 }
 
 .navbar-logo a {
+    font-family: 'Atkinson', Arial, sans-serif;
     font-size: 1.5rem;
     font-weight: bold;
     color: #333;
