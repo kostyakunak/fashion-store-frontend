@@ -104,16 +104,109 @@
     }
     
     /* На мобильных показываем side-menu */
-    .home main .navbar .side-menu,
-    .home main .navbar .side-menu-overlay {
+    .home main .navbar .side-menu {
+        display: flex !important; /* Показываем меню на мобильных */
+        flex-direction: column !important; /* Вертикальное расположение контента */
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important; /* Убеждаемся, что позиционирование fixed */
+        top: 0 !important;
+        right: -100% !important; /* По умолчанию меню скрыто за правым краем */
+        width: 320px !important; /* Ширина как на других страницах */
+        max-width: 85vw !important; /* Максимальная ширина */
+        height: 100vh !important; /* Высота на весь экран */
+        z-index: 1100 !important; /* Выше всех элементов */
+        background-color: #ffffff !important; /* Белый фон меню */
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1) !important; /* Тень как на других страницах */
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Плавная анимация выдвижения */
+        /* Когда меню закрыто, оно не должно перехватывать клики */
+        pointer-events: none !important;
+        /* Убеждаемся, что контент виден */
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        /* Важно: меню должно быть относительно viewport, а не navbar */
+        left: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        /* Элементы должны начинаться сверху, а не центрироваться */
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+    }
+    
+    /* Когда меню открыто, оно может перехватывать клики */
+    .home main .navbar .side-menu.open {
+        pointer-events: all !important;
+        right: 0 !important; /* Явно указываем, что меню должно быть видно */
+    }
+    
+    /* Убеждаемся, что контент меню виден и кликабелен */
+    .home main .navbar .side-menu .side-menu-header {
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
-        pointer-events: auto !important;
+        pointer-events: all !important;
+        position: relative !important;
+        width: 100% !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+        padding: 1rem 1.5rem !important; /* Стандартный padding как в Navbar.css */
     }
     
+    .home main .navbar .side-menu .side-menu-nav {
+        display: flex !important;
+        flex-direction: column !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: all !important;
+        width: 100% !important;
+        flex: 1 !important;
+        position: relative !important;
+        padding: 1rem 0 !important;
+        /* Элементы должны начинаться сверху, а не центрироваться */
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+    }
+    
+    .home main .navbar .side-menu .side-menu-link {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: all !important;
+        color: #333 !important;
+        position: relative !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 1rem 1.5rem !important; /* Стандартный padding как в Navbar.css */
+        align-items: center !important;
+        justify-content: center !important; /* Центрирование текста внутри ссылки по горизонтали */
+    }
+    
+    .home main .navbar .side-menu .side-menu-link span {
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: #333 !important;
+        display: inline-block !important;
+    }
+    
+    /* Контент меню использует стандартные стили из Navbar.css */
+    /* Не переопределяем видимость контента - он всегда виден внутри side-menu */
+    /* Меню скрывается через right: -100%, а не через opacity/visibility */
+    
+    /* Overlay должен быть активен только когда меню открыто */
     .home main .navbar .side-menu-overlay {
         display: block !important;
+        /* По умолчанию overlay неактивен (когда меню закрыто) */
+        pointer-events: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    /* Когда overlay активен (меню открыто), он может перехватывать клики */
+    .home main .navbar .side-menu-overlay.active {
+        pointer-events: all !important;
+        opacity: 0.7 !important;
+        visibility: visible !important;
     }
 }
 
@@ -364,7 +457,7 @@
         max-height: none !important;
         flex-shrink: 0 !important;
         flex-grow: 0 !important;
-        overflow: visible !important;
+        overflow: visible !important; /* Важно: не обрезаем side-menu */
         display: block !important;
         line-height: normal !important; /* Убираем лишний line-height */
     }
