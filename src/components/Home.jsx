@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
+import { AuthContext } from "../context/AuthContext";
 
 import "../styles/Home.css";
 
 function Home() {
+    const { user, isAdmin } = useContext(AuthContext);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -76,7 +78,9 @@ function Home() {
                             <li><Link to="/cart">Кошик</Link></li>
                             <li><Link to="/wishlist">Обране</Link></li>
                             <li><Link to="/contacts">Контакти</Link></li>
-                            <li><Link to="/admin">Панель адміністратора</Link></li>
+                            {user && isAdmin() && (
+                                <li><Link to="/admin">Панель адміністратора</Link></li>
+                            )}
                         </ul>
                     </nav>
                 </div>

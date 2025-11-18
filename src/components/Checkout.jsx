@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../styles/AccountDetails.css";
 import { Header } from "../scripts/Header";
-import { Footer } from "../scripts/Footer";
 import useCart from "../hooks/useCart";
 import { AuthContext } from "../context/AuthContext";
 import { API_CONFIG } from '../config/apiConfig';
@@ -81,7 +80,6 @@ const Checkout = () => {
                         <p>Завантаження профілю...</p>
                     </main>
                 </div>
-                <Footer />
             </div>
         );
     }
@@ -226,7 +224,6 @@ const Checkout = () => {
                     </section>
                 </main>
             </div>
-            <Footer />
         </div>
     );
 };

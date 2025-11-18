@@ -1,4 +1,4 @@
-/* Общие переменные */
+/* Общие переменные - единые для всего приложения */
 :root {
     --background-color: #111722;
     --primary-color: #243047;
@@ -7,6 +7,17 @@
     --font-family: 'Inter', 'Noto Sans', sans-serif;
     --border-color: rgba(36, 48, 71, 0.6);
     --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    --accent-color: #ff6f61;
+}
+
+/* Единый шрифт для всего приложения */
+body {
+    font-family: var(--font-family) !important;
+}
+
+/* Единые цвета текста */
+body, p, span, div, h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
 }
 
 /* Хедер */
@@ -47,13 +58,23 @@
     color: var(--hover-color); /* Светло-серый цвет при наведении */
 }
 
-/* Футер */
-.foot footer {
+/* Единый стиль футера для всего приложения */
+footer.unified-footer {
     background-color: var(--primary-color);
     color: var(--text-color);
     text-align: center;
-    padding: 10px;
+    padding: 20px 10px;
     font-size: 0.875rem;
-    box-shadow: var(--box-shadow);
+    font-family: var(--font-family);
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+    margin-top: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+footer.unified-footer p {
+    margin: 0;
+    color: var(--text-color);
+    font-family: var(--font-family);
 }
 

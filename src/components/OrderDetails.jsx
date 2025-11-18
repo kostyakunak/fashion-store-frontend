@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { AuthContext } from '../context/AuthContext';
 import useOrders from '../hooks/useOrders';
 import "../styles/OrderDetails.css";
-import { Footer } from "../scripts/Footer";
 import { Header } from "../scripts/Header";
 
 function OrderDetails() {
@@ -64,7 +63,6 @@ function OrderDetails() {
                 <main>
                     <div className="loading">Завантаження...</div>
                 </main>
-                <Footer />
             </div>
         );
     }
@@ -76,7 +74,6 @@ function OrderDetails() {
                 <main>
                     <div className="error">{error}</div>
                 </main>
-                <Footer />
             </div>
         );
     }
@@ -88,7 +85,6 @@ function OrderDetails() {
                 <main>
                     <div className="error">Замовлення не знайдено</div>
                 </main>
-                <Footer />
             </div>
         );
     }
@@ -158,7 +154,6 @@ function OrderDetails() {
                     </div>
                 </div>
             </main>
-            <Footer />
         </div>
     );
 }

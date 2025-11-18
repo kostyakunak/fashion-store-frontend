@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { API_CONFIG } from '../config/apiConfig';
 import useWishlist from '../hooks/useWishlist';
 import useCart from '../hooks/useCart';
+import Navbar from './Navbar';
 import './Wishlist.css';
 
 function Wishlist() {
@@ -66,44 +67,62 @@ function Wishlist() {
 
     if (loading) {
         return (
-            <div className="wishlist-container" style={{textAlign: 'center', marginTop: '3rem'}}>
-                <div className="spinner-border" />
+            <div className="wishlist">
+                <Navbar />
+                <main>
+                    <div className="wishlist-container" style={{textAlign: 'center'}}>
+                        <div className="spinner-border" />
+                    </div>
+                </main>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="wishlist-container" style={{textAlign: 'center', marginTop: '3rem'}}>
-                <h3>Виникла помилка</h3>
-                <p>{error}</p>
-                <button className="wishlist-move-btn" onClick={loadWishlist}>
-                    Спробувати ще раз
-                </button>
+            <div className="wishlist">
+                <Navbar />
+                <main>
+                    <div className="wishlist-container" style={{textAlign: 'center'}}>
+                        <h3>Виникла помилка</h3>
+                        <p>{error}</p>
+                        <button className="wishlist-move-btn" onClick={loadWishlist}>
+                            Спробувати ще раз
+                        </button>
+                    </div>
+                </main>
             </div>
         );
     }
 
     if (wishlistItems.length === 0) {
         return (
-            <div className="wishlist-container" style={{marginTop: '3rem'}}>
-                <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>Мій список бажань</h2>
-                <div className="wishlist-item" style={{textAlign: 'center', padding: '3rem'}}>
-                    <h3>Ваш список бажань порожній</h3>
-                    <p>Додайте товари, які вам подобаються, до списку бажань</p>
-                    <Link to="/products">
-                        <button className="wishlist-move-btn">
-                            Перейти до товарів
-                        </button>
-                    </Link>
-                </div>
+            <div className="wishlist">
+                <Navbar />
+                <main>
+                    <h1>Мій список бажань</h1>
+                    <div className="wishlist-container">
+                        <div className="wishlist-item" style={{textAlign: 'center', padding: '3rem'}}>
+                            <h3>Ваш список бажань порожній</h3>
+                            <p>Додайте товари, які вам подобаються, до списку бажань</p>
+                            <Link to="/products">
+                                <button className="wishlist-move-btn">
+                                    Перейти до товарів
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </main>
             </div>
         );
     }
 
     return (
-        <div className="wishlist-container" style={{marginTop: '3rem'}}>
-            <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>Мій список бажань</h2>
+        <div className="wishlist">
+            <Navbar />
+            <main>
+                <h1>Мій список бажань</h1>
+                <div className="wishlist-container">
             <div className="wishlist-row">
                 {wishlistItems.map(item => (
                     <div key={item.id} className="wishlist-col">
@@ -167,7 +186,9 @@ function Wishlist() {
                         </div>
                     </div>
                 ))}
-            </div>
+                </div>
+                </div>
+            </main>
         </div>
     );
 }

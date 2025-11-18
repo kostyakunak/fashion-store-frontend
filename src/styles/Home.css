@@ -35,7 +35,7 @@
     width: 100%;
     max-width: calc(100% - 25%); /* Максимальная ширина: 100% минус nav (25%) */
     margin: 0;
-    padding: 1rem 0;
+    padding: 1rem 0 !important; /* Одинаковый padding как на других страницах */
     padding-right: 2rem; /* Стандартный отступ справа */
     box-sizing: border-box;
     flex-shrink: 0; /* Не сжимается в flex-контейнере */
@@ -46,6 +46,75 @@
     z-index: 1 !important; /* Низкий z-index, чтобы nav был выше */
     background-color: #ffffff !important; /* Белый фон navbar */
     overflow: hidden; /* Обрезаем все, что выходит за границы */
+}
+
+/* Убеждаемся, что navbar-container на главной странице имеет такой же padding как на других страницах */
+.home main .navbar .navbar-container {
+    padding: 0 2rem !important; /* Такой же padding как в Navbar.css */
+    display: flex !important;
+    align-items: center !important;
+    min-height: 100% !important; /* Гарантируем минимальную высоту */
+}
+
+/* Убеждаемся, что логотип имеет такую же высоту на главной странице */
+.home main .navbar .navbar-logo {
+    display: flex !important;
+    align-items: center !important;
+    height: auto !important;
+}
+
+.home main .navbar .navbar-logo a {
+    line-height: 1.5 !important; /* Одинаковый line-height */
+    display: inline-block !important;
+}
+
+/* Скрываем элементы управления на главной странице на десктопе */
+.home main .navbar .navbar-actions.hide-on-desktop-home {
+    display: none !important;
+}
+
+/* Скрываем гамбургер-меню на главной странице на десктопе */
+.home main .navbar .hamburger-menu-btn.hide-on-desktop-home,
+.home main .navbar .navbar-actions .hamburger-menu-btn.hide-on-desktop-home,
+.home main .navbar .navbar-icon-link.hamburger-menu-btn.hide-on-desktop-home,
+.home main .navbar .navbar-actions .navbar-icon-link.hamburger-menu-btn.hide-on-desktop-home {
+    display: none !important;
+}
+
+/* Скрываем side-menu (выдвигающееся меню) на главной странице на десктопе */
+.home main .navbar .side-menu,
+.home main .navbar .side-menu-overlay {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* На мобильных всегда показываем элементы управления */
+@media (max-width: 768px) {
+    .home main .navbar .navbar-actions.hide-on-desktop-home {
+        display: flex !important;
+    }
+    
+    .home main .navbar .hamburger-menu-btn.hide-on-desktop-home,
+    .home main .navbar .navbar-actions .hamburger-menu-btn.hide-on-desktop-home,
+    .home main .navbar .navbar-icon-link.hamburger-menu-btn.hide-on-desktop-home,
+    .home main .navbar .navbar-actions .navbar-icon-link.hamburger-menu-btn.hide-on-desktop-home {
+        display: flex !important;
+    }
+    
+    /* На мобильных показываем side-menu */
+    .home main .navbar .side-menu,
+    .home main .navbar .side-menu-overlay {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+    
+    .home main .navbar .side-menu-overlay {
+        display: block !important;
+    }
 }
 
 /* Стили для заголовков на странице */
@@ -263,4 +332,154 @@
     /* height: 100vh; убрано */
     /* overflow: hidden; убрано */
     /* другие стили без overflow: hidden */
+}
+
+/* Мобильная адаптация (экраны до 768px) */
+@media (max-width: 768px) {
+    /* Скрываем боковую панель навигации на мобильных */
+    .home main nav {
+        display: none !important;
+    }
+    
+    /* Navbar на мобильных - фиксированный, как на других страницах */
+    .home main .navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        margin-bottom: 0 !important;
+        padding: 1rem 0 !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important; /* Возвращаем padding-bottom для полной высоты navbar */
+        padding-right: 1rem !important;
+        padding-left: 1rem !important;
+        z-index: 1000 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Возвращаем box-shadow для визуального разделения */
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+        line-height: normal !important; /* Убираем лишний line-height */
+    }
+    
+    /* Убеждаемся, что navbar-container виден и без отступов */
+    .home main .navbar .navbar-container {
+        width: 100% !important;
+        padding: 0 1rem !important;
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        line-height: normal !important;
+        height: auto !important;
+    }
+    
+    /* Убеждаемся, что логотип виден */
+    .home main .navbar .navbar-logo a {
+        color: #333 !important;
+        font-size: 1.5rem !important;
+    }
+    
+    /* Убеждаемся, что элементы управления видны - показываем всегда на мобильных */
+    .home main .navbar .navbar-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Убеждаемся, что иконки видны */
+    .home main .navbar .navbar-icon-link,
+    .home main .navbar .navbar-icon {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: #222 !important;
+    }
+    
+    /* Убеждаемся, что account icon виден */
+    .home main .navbar .account-icon {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Добавляем отступ сверху для main, чтобы контент не перекрывался navbar */
+    .home main {
+        padding-top: 60px !important; /* Высота navbar с padding (1rem сверху + 1rem снизу + высота контента ~35px) */
+        margin-top: 0 !important;
+        gap: 0 !important; /* Убираем gap между дочерними элементами */
+    }
+    
+    /* Убираем все отступы между navbar и content-wrapper */
+    .home main > .navbar {
+        margin-bottom: 0 !important;
+    }
+    
+    .home main > .content-wrapper {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Убираем резервирование места для боковой панели и все отступы */
+    .home main .content-wrapper {
+        padding-right: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Убираем отступы у product-grid */
+    .home main .product-grid {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+    
+    /* Убираем отступы у первой карточки товара */
+    .home main .product-grid .product-card:first-child {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-top: none !important;
+    }
+    
+    /* Убираем все возможные отступы у карточек товаров */
+    .home main .product-card {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Footer на мобильных без отступа справа */
+    .home footer {
+        padding-right: 0 !important;
+    }
+    
+    /* Адаптация карточек товаров для мобильных */
+    .home .product-card {
+        max-height: 70vh;
+    }
+    
+    /* Улучшаем читаемость текста на мобильных */
+    .home .product-card h3 {
+        font-size: 24px;
+        letter-spacing: 2px;
+    }
+    
+    .home .product-card p.price {
+        font-size: 20px;
+        margin-top: 50px;
+    }
 }

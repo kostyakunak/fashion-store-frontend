@@ -1,7 +1,8 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import PageWrapper from "./components/PageWrapper";
+import { Footer } from "./scripts/Footer";
 
 import Home from "./components/Home";
 import Catalog from "./components/Catalog";
@@ -40,12 +41,18 @@ import AdminOrdersGeneric from './pages/admin/AdminOrdersGeneric';
 import Checkout from "./components/Checkout";
 import AuthTest from './pages/AuthTest';
 
-function App() {
+// Компонент для условного отображения футера
+function AppContent() {
+    const location = useLocation();
+    
+    // Страницы, где НЕ нужен единый футер
+    const excludedPaths = ['/', '/catalog', '/account'];
+    const isAdminPage = location.pathname.startsWith('/admin');
+    const shouldShowFooter = !excludedPaths.includes(location.pathname) && !isAdminPage;
+    
     return (
-        <AuthProvider>
-            <Router>
-                <div className="App">
-                    <Routes>
+        <div className="App">
+            <Routes>
                         {/* Публічні маршрути */}
                         <Route path="/" element={<Home />} />
                         <Route path="/catalog" element={<PageWrapper><Catalog /></PageWrapper>} />
@@ -60,7 +67,7 @@ function App() {
                         <Route path="/account/details" element={<PrivateRoute><PageWrapper><AccountDetails /></PageWrapper></PrivateRoute>} />
                         <Route path="/orders" element={<PrivateRoute><PageWrapper><MyOrders /></PageWrapper></PrivateRoute>} />
                         <Route path="/my-orders" element={<PrivateRoute><PageWrapper><MyOrders /></PageWrapper></PrivateRoute>} />
-                        <Route path="/wishlist" element={<PrivateRoute><PageWrapper><Wishlist /></PageWrapper></PrivateRoute>} />
+                        <Route path="/wishlist" element={<PrivateRoute><Wishlist /></PrivateRoute>} />
                         <Route path="/cart" element={<PrivateRoute><PageWrapper><Cart /></PageWrapper></PrivateRoute>} />
                         <Route path="/orders/:orderId" element={<PrivateRoute><PageWrapper><OrderDetails /></PageWrapper></PrivateRoute>} />
                         <Route path="/checkout" element={<PrivateRoute><PageWrapper><Checkout /></PageWrapper></PrivateRoute>} />
@@ -87,7 +94,16 @@ function App() {
                         <Route path="/admin/debug" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminDebugger /></PageWrapper></PrivateRoute>} />
                         <Route path="/admin/orders-generic" element={<PrivateRoute requireAdmin={true}><PageWrapper><AdminOrdersGeneric /></PageWrapper></PrivateRoute>} />
                     </Routes>
-                </div>
+            {shouldShowFooter && <Footer />}
+        </div>
+    );
+}
+
+function App() {
+    return (
+        <AuthProvider>
+            <Router>
+                <AppContent />
             </Router>
         </AuthProvider>
     );

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../styles/AccountDetails.css";
 import { Header } from "../scripts/Header";
-import { Footer } from "../scripts/Footer";
 import { AuthContext } from "../context/AuthContext";
 import { getAddressesByUser, updateAddress, createAddress, deleteAddress } from "../api/addressesApi";
 
@@ -232,7 +231,7 @@ const AccountDetails = () => {
     };
 
     if (loading) {
-        return <div className="account-details"><Header /><div className="layout-container"><main><p>Завантаження...</p></main></div><Footer /></div>;
+        return <div className="account-details"><Header /><div className="layout-container"><main><p>Завантаження...</p></main></div></div>;
     }
 
     return (
@@ -241,9 +240,9 @@ const AccountDetails = () => {
             <div className="layout-container">
                 <main>
                     <section className="account-section">
-                        <h2 style={{marginBottom: '10px'}}>Account Details</h2>
+                        <h2 style={{marginBottom: '10px'}}>Деталі акаунта</h2>
                         <div className="title-container">
-                            <h2>My Details</h2>
+                            <h2>Мої дані</h2>
                         </div>
                         <div className="field">
                             <label>First Name</label>
@@ -279,13 +278,42 @@ const AccountDetails = () => {
 
                     <section className="account-section">
                         <div className="delivery-title-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
-                            <h2 style={{ textAlign: 'center', width: '100%', margin: 0 }}>Delivery Details</h2>
+                            <h2 style={{ textAlign: 'center', width: '100%', margin: 0 }}>Деталі доставки</h2>
                         </div>
                         {/* Новый блок: если нет ни одного адреса */}
                         {addresses.length === 0 ? (
-                          <div style={{ textAlign: 'center', margin: 24 }}>
-                            <p>У вас немає жодної адреси доставки.</p>
-                            <button onClick={handleAddAddress}>Додати адресу</button>
+                          <div style={{ 
+                            textAlign: 'center', 
+                            padding: '32px 24px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '20px'
+                          }}>
+                            <p style={{ 
+                              margin: 0,
+                              color: 'var(--color-text-secondary)',
+                              fontSize: '16px'
+                            }}>У вас немає жодної адреси доставки.</p>
+                            <button 
+                              onClick={handleAddAddress}
+                              style={{
+                                padding: '12px 32px',
+                                background: '#2c394a',
+                                color: '#fff',
+                                border: '1px solid transparent',
+                                borderRadius: '8px',
+                                fontWeight: '600',
+                                fontSize: '16px',
+                                cursor: 'pointer',
+                                transition: 'background 0.2s, opacity 0.2s',
+                                minWidth: '200px'
+                              }}
+                              onMouseEnter={(e) => e.target.style.background = '#354052'}
+                              onMouseLeave={(e) => e.target.style.background = '#2c394a'}
+                            >
+                              Додати адресу
+                            </button>
                           </div>
                         ) : (
                         // Контейнер стрелок и блока адреса
@@ -567,7 +595,6 @@ const AccountDetails = () => {
                     </section>
                 </main>
             </div>
-            <Footer />
         </div>
     );
 };

@@ -7,7 +7,6 @@ import ImageRoller from "../hooks/ImageRoller";
 import useImageModal from "../hooks/useImageModal";
 import useWishlist from "../hooks/useWishlist";
 import { Header } from "../scripts/Header";
-import { Footer } from "../scripts/Footer";
 import ProductWishlistButton from "./ProductWishlistButton";
 
 function Item() {
@@ -402,7 +401,6 @@ function Item() {
                     <div className="not-found">Товар не знайдено</div>
                 )}
             </main>
-            <Footer />
         </div>
     );
 }

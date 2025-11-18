@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Cart.css";
 import { Header } from "../scripts/Header";
-import { Footer } from "../scripts/Footer";
 import useCart from "../hooks/useCart";
 import { AuthContext } from "../context/AuthContext";
 
@@ -224,7 +223,6 @@ function Cart() {
                     </div>
                 )}
             </main>
-            <Footer />
         </div>
     );
 }

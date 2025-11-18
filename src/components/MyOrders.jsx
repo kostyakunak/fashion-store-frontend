@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import useOrders from '../hooks/useOrders';
 import "../styles/MyOrders.css";
-import { Header } from "../scripts/Header";
-import { Footer } from "../scripts/Footer";
+import Navbar from './Navbar';
 
 function MyOrders() {
     const { isAuthenticated, user } = useContext(AuthContext);
@@ -68,11 +67,10 @@ function MyOrders() {
     if (loading) {
         return (
             <div className="my_orders">
-                <Header />
+                <Navbar />
                 <main>
                     <div className="loading">Завантаження...</div>
                 </main>
-                <Footer />
             </div>
         );
     }
@@ -80,21 +78,20 @@ function MyOrders() {
     if (error) {
         return (
             <div className="my_orders">
-                <Header />
+                <Navbar />
                 <main>
                     <div className="error">{error}</div>
                 </main>
-                <Footer />
             </div>
         );
     }
 
     return (
         <div className="my_orders">
-            <Header />
+            <Navbar />
             <main>
                 <section className="container content-section">
-                    <h2>Мої замовлення</h2>
+                    <h1>Мої замовлення</h1>
                     
                     {orders.length === 0 ? (
                         <div className="no-orders">
@@ -172,7 +169,6 @@ function MyOrders() {
                     )}
                 </section>
             </main>
-            <Footer />
         </div>
     );
 }

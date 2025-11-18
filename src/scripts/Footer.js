@@ -19,5 +19,10 @@ export function Footer() {
         loadFooter();
     }, []);
 
-    return <footer dangerouslySetInnerHTML={{ __html: footer }} />;
+    return (
+        <footer 
+            className="unified-footer"
+            dangerouslySetInnerHTML={{ __html: footer }} 
+        />
+    );
 }
