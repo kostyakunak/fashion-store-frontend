@@ -163,16 +163,14 @@ const Navbar = () => {
                             <Link to="/catalog" onClick={handleMenuLinkClick} className="side-menu-link">
                                 <span>Каталог</span>
                             </Link>
-                            {user && (
-                                <Link to="/account" onClick={handleMenuLinkClick} className="side-menu-link">
-                                    <span>Особистий кабінет</span>
-                                </Link>
-                            )}
+                            <Link to="/account" onClick={handleMenuLinkClick} className="side-menu-link">
+                                <span>Особистий кабінет</span>
+                            </Link>
                             <Link to="/cart" onClick={handleMenuLinkClick} className="side-menu-link">
                                 <span>Кошик</span>
                             </Link>
                             <Link to="/wishlist" onClick={handleMenuLinkClick} className="side-menu-link">
-                                <span>Обране</span>
+                                <span>Список бажань</span>
                             </Link>
                             <Link to="/contacts" onClick={handleMenuLinkClick} className="side-menu-link">
                                 <span>Контакти</span>
