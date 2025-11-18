@@ -53,16 +53,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: box-shadow 0.25s cubic-bezier(.4,0,.2,1), background 0.25s cubic-bezier(.4,0,.2,1), border 0.18s cubic-bezier(.4,0,.2,1);
   padding: 0 0 18px 0;
   margin: 0;
-}
-
-.wishlist-item:hover {
-  background: linear-gradient(180deg, rgba(44,57,74,1) 60%, rgba(24,31,42,1) 100%);
-  box-shadow: 0 12px 40px 0 rgba(0,0,0,0.28);
-  border: 1.5px solid rgba(127,140,255,0.12);
-  /* transform: scale(1.025); */
 }
 
 .image-container {
@@ -86,10 +78,6 @@
   object-fit: cover;
   border-radius: 0;
   transition: none;
-}
-
-.wishlist-item:hover .product-image {
-  /* transform: scale(1.07); */
 }
 
 .wishlist-title {
@@ -153,6 +141,11 @@
   transition: background 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s;
   outline: none;
 }
+.wishlist-move-btn:hover {
+  background: #b1cce0bc;
+  color: #111722;
+}
+
 .wishlist-move-btn:focus, .wishlist-move-btn:active {
   border: 2px solid #6ec1ff;
   box-shadow: 0 0 0 2px rgba(110,193,255,0.18);
@@ -182,8 +175,9 @@
 }
 
 .wishlist-row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem; /* Одинаковые отступы по горизонтали и вертикали */
   margin: 0 15%; /* по 15% ширины слева и справа */
 }
 
@@ -191,22 +185,18 @@
   position: relative;
   width: 100%;
   padding: 0;
-  flex: 0 0 100%;
-  max-width: 100%;
   margin: 0;
 }
 
 @media (min-width: 768px) {
-  .wishlist-col {
-    flex: 0 0 50%;
-    max-width: 50%;
+  .wishlist-row {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 992px) {
-  .wishlist-col {
-    flex: 0 0 33.333333%;
-    max-width: 33.333333%;
+  .wishlist-row {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

@@ -35,20 +35,26 @@
     gap: 10px; /* Reduced gap between buttons */
     width: 90%; /* Slightly narrower to fit more on screen */
     max-width: 800px; /* Increased to allow larger buttons */
+    padding: 20px; /* Добавляем padding для предотвращения обрезания */
+    box-sizing: border-box;
+    margin: 0 auto; /* Центрируем контейнер */
 }
 
 .account .nav-button {
     text-decoration: none;
     background-color: #1e2433;
     color: #f7f7f7;
-    height: 180px; /* Increased height */
-    width: 390px; /* Increased width */
+    /* Используем aspect-ratio для сохранения соотношения сторон 390/180 = 2.166 */
+    /* Минимальное соотношение (основное) - широкие карточки */
+    aspect-ratio: 390 / 180;
+    width: 100%; /* Кнопки занимают всю доступную ширину в grid ячейке */
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 22px; /* Adjusted font size for larger buttons */
     border: 2px solid #2f3950;
     transition: transform 0.2s ease, background-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 /* Hover Effect */
@@ -56,4 +62,148 @@
     background-color: #2f3950; /* Adjusted hover background */
     color: #ffffff;
     transform: translateY(-3px);
+}
+
+/* Медиа-запросы для адаптивности */
+
+/* Планшеты и средние экраны (до 1024px) */
+@media (max-width: 1024px) {
+    .account .navigation {
+        max-width: 700px;
+        gap: 8px;
+        padding: 18px;
+    }
+    
+    .account .nav-button {
+        font-size: 20px;
+    }
+}
+
+/* Планшеты в портретной ориентации (до 768px) */
+@media (max-width: 768px) {
+    .account .navigation {
+        max-width: 600px;
+        gap: 8px;
+        padding: 15px;
+    }
+    
+    .account .nav-button {
+        font-size: 18px;
+    }
+}
+
+/* Мобильные устройства (до 640px) */
+@media (max-width: 640px) {
+    .account .navigation {
+        max-width: 100%;
+        width: 95%;
+        gap: 6px;
+        padding: 12px;
+    }
+    
+    .account .nav-button {
+        font-size: 16px;
+    }
+}
+
+/* Маленькие мобильные устройства (до 480px) */
+@media (max-width: 480px) {
+    .account .navigation {
+        width: 98%;
+        gap: 5px;
+        padding: 10px;
+    }
+    
+    .account .nav-button {
+        font-size: 14px;
+    }
+}
+
+/* Очень маленькие экраны (до 360px) */
+@media (max-width: 360px) {
+    .account .navigation {
+        width: 100%;
+        gap: 4px;
+        padding: 8px;
+    }
+    
+    .account .nav-button {
+        font-size: 12px;
+    }
+}
+
+/* Адаптация для вытянутых устройств - увеличение высоты карточек */
+
+/* Умеренно вытянутые устройства (высота от 800px) */
+@media (min-height: 800px) and (min-width: 640px) {
+    .account .nav-button {
+        /* Плавно уменьшаем aspect-ratio, увеличивая высоту */
+        aspect-ratio: 2.0;
+    }
+}
+
+/* Вытянутые устройства (высота от 900px) */
+@media (min-height: 900px) and (min-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.8;
+    }
+}
+
+/* Очень вытянутые устройства (высота от 1000px) */
+@media (min-height: 1000px) and (min-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.6;
+    }
+}
+
+/* Максимально вытянутые устройства (высота от 1100px) */
+@media (min-height: 1100px) and (min-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.4;
+    }
+}
+
+/* Экстремально вытянутые устройства (высота от 1200px) */
+@media (min-height: 1200px) and (min-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.2;
+    }
+}
+
+/* Максимальная высота - квадратные карточки (высота от 1400px) */
+@media (min-height: 1400px) and (min-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1; /* Квадратные карточки 1:1 */
+    }
+}
+
+/* Для мобильных вытянутых устройств (узкие но высокие) */
+@media (min-height: 700px) and (max-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.8;
+    }
+}
+
+@media (min-height: 800px) and (max-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.6;
+    }
+}
+
+@media (min-height: 900px) and (max-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.4;
+    }
+}
+
+@media (min-height: 1000px) and (max-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1.2;
+    }
+}
+
+@media (min-height: 1100px) and (max-width: 640px) {
+    .account .nav-button {
+        aspect-ratio: 1; /* Квадратные карточки на очень вытянутых мобильных */
+    }
 }
